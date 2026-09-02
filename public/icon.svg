@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Nucleus Cards</title>
+  <rect width="512" height="512" rx="112" fill="#09111f"/>
+  <path d="M132 362V150h55l138 135V150h55v212h-50L187 222v140z" fill="#f4f8ff"/>
+  <circle cx="374" cy="142" r="30" fill="#4d8dff"/>
+  <path d="M112 397h288" stroke="#3fc98a" stroke-width="18" stroke-linecap="round"/>
+</svg>

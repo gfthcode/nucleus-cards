@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { PlayerCohortBadges } from "@/components/player-cohort-badges";
 import { RookieComparison } from "@/components/rookie-comparison";
+import { RookieComparePool } from "@/components/rookie-compare-pool";
 import { cards, getTeam, players } from "@/lib/demo-data";
 
 const draftYears = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
@@ -166,6 +167,7 @@ export default async function RookiePage({
         </div>
       </section>
       <RookieComparison players={players} cards={cards} />
+      <RookieComparePool players={rookies} cards={cards} />
       <section className="comparison-panel">
         <div>
           <span className="section-kicker">COMPARE</span>

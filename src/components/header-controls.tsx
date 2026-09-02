@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { CircleUserRound, Moon, Sun } from "lucide-react";
 
 export function HeaderControls() {
   const [currency, setCurrency] = useState("CNY");
@@ -22,7 +23,7 @@ export function HeaderControls() {
   }
   return (
     <div className="top-actions">
-      <button
+      <button className="currency-button"
         aria-label="切换货币"
         onClick={() =>
           setCurrency(
@@ -30,16 +31,17 @@ export function HeaderControls() {
           )
         }
       >
-        {currency}⌄
+        <span>{currency}</span><small>⌄</small>
       </button>
-      <button
+      <button className="theme-button"
         aria-label={light ? "切换深色主题" : "切换浅色主题"}
         onClick={toggle}
       >
-        {light ? "●" : "◐"}
+        {light ? <Moon size={16} aria-hidden /> : <Sun size={16} aria-hidden />}
       </button>
-      <Link className="profile-button" href="/login">
-        演示账户
+      <Link className="profile-button" href="/settings">
+        <CircleUserRound size={17} aria-hidden />
+        <span>演示账户</span>
       </Link>
     </div>
   );

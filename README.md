@@ -22,7 +22,7 @@
 
 ## 快速启动
 
-要求 Node.js 20+ 与 pnpm 11+。
+要求 Node.js 22.13+ 与 pnpm 11+；CI 使用 Node.js 24。
 
 ```bash
 pnpm install --frozen-lockfile

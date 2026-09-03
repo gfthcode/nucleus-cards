@@ -154,6 +154,35 @@ export interface Card {
   demo: boolean;
 }
 
+export type CardImageType = "official" | "raw_card" | "graded_card" | "auction_scan" | "marketplace" | "catalog_scan" | "placeholder";
+export type ImageVerificationStatus = "verified" | "probable" | "unverified" | "mismatch";
+
+export interface CardImageRecord {
+  id: string;
+  cardId: string;
+  imageType: CardImageType;
+  frontUrl?: string;
+  backUrl?: string;
+  thumbnailUrl?: string;
+  sourceUrl?: string;
+  sourceName?: string;
+  sourceType?: "official" | "licensed" | "catalog" | "auction" | "marketplace";
+  sourceImageId?: string;
+  width?: number;
+  height?: number;
+  aspectRatio?: number;
+  isSlabbed: boolean;
+  gradingCompany?: string;
+  grade?: number;
+  imageVerified: boolean;
+  matchConfidence: number;
+  verificationStatus: ImageVerificationStatus;
+  lastCheckedAt?: string;
+  attribution?: string;
+  licenseStatus?: "permitted" | "attribution_required" | "unknown" | "not_permitted";
+  notes?: string;
+}
+
 export interface DataSource {
   id: string;
   name: string;

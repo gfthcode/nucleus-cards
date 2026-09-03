@@ -94,6 +94,10 @@ pnpm exec playwright install chromium
 2. 在 Vercel 选择 **Add New → Project**，导入该仓库。
 3. Framework Preset 保持 Next.js，安装命令使用 `pnpm install --frozen-lockfile`。
 4. 先设置 `NEXT_PUBLIC_DEMO_MODE=true` 即可部署演示站；启用生产数据时再配置 Supabase 与其他服务端变量。
+
+### 用户行为统计
+
+如需查看页面访问、按钮点击和热力图，可在部署平台配置 `NEXT_PUBLIC_GA_ID`（GA4）与 `NEXT_PUBLIC_CLARITY_ID`（Microsoft Clarity）。详细事件与查看路径见 [`docs/analytics.md`](docs/analytics.md)。
 5. 部署后访问 `/api/health`，再检查首页、行情、卡片详情和持仓流程。
 
 中国内地正式公开部署前，需要根据实际主体、服务器位置、域名和业务形态完成 ICP 备案/许可判断、网络安全与个人信息保护评估、数据跨境与数据源商业授权评估。Vercel 的可访问性和合规适用性也需单独评估。本仓库不构成法律意见。

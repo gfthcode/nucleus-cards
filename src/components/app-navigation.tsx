@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BellRing,
+  Gavel,
   ChartNoAxesCombined,
   CircleUserRound,
   Gauge,
@@ -18,6 +19,7 @@ import {
 const coreItems = [
   { label: "首页", href: "/", icon: Gauge },
   { label: "市场", href: "/market", icon: ChartNoAxesCombined },
+  { label: "拍卖雷达", href: "/auction-radar", icon: Gavel },
   { label: "新秀", href: "/rookies/2025", icon: Sparkles },
   { label: "持仓", href: "/portfolio", icon: WalletCards },
   { label: "我的", href: "/settings", icon: CircleUserRound },
@@ -41,7 +43,7 @@ export function SidebarNavigation() {
   return (
     <nav className="sidebar-navigation" aria-label="主要导航">
       <p className="nav-label">工作台</p>
-      {coreItems.slice(0, 4).map(({ label, href, icon: Icon }) => (
+      {coreItems.slice(0, 5).map(({ label, href, icon: Icon }) => (
         <Link className={isActive(pathname, href) ? "active" : ""} href={href} key={href}>
           <Icon size={17} aria-hidden />
           <span>{label}</span>

@@ -4,6 +4,7 @@ import { Activity, Search, ShieldCheck } from "lucide-react";
 import { MobileNavigation, SidebarNavigation } from "@/components/app-navigation";
 import { HeaderControls } from "@/components/header-controls";
 import { PwaRegister } from "@/components/pwa-register";
+import { Analytics } from "@/components/analytics";
 import { productConfig } from "@/config/product";
 import "./globals.css";
 
@@ -32,6 +33,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: `try{document.documentElement.dataset.theme=localStorage.getItem('nucleus-theme')||'dark'}catch(e){}` }} />
       </head>
       <body>
+        <Analytics />
         <a className="skip-link" href="#main-content">
           跳至主要内容
         </a>

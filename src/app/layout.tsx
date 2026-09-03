@@ -16,7 +16,14 @@ export const metadata: Metadata = {
   description: "NBA 球星卡行情监控、收藏管理与风险分析平台",
   applicationName: productConfig.name,
   manifest: "/manifest.webmanifest",
-  icons: { icon: "/icon.svg" },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon.svg", sizes: "512x512", type: "image/svg+xml" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export const viewport: Viewport = {

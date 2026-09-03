@@ -20,6 +20,10 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
   const [printRun, setPrintRun] = useState("all");
   const [selected, setSelected] = useState<string | null>(null);
   const [watched, setWatched] = useState<Set<string>>(new Set());
+  const [onlySales, setOnlySales] = useState(false);
+  const [highLiquidity, setHighLiquidity] = useState(false);
+  const [highTrust, setHighTrust] = useState(false);
+  const [recentSales, setRecentSales] = useState(false);
 
   const filtered = useMemo(() => rows.filter((row) => {
     const haystack = `${row.player.name} ${row.player.displayNameZh} ${row.brand} ${row.productLine} ${row.team?.name ?? ""}`.toLowerCase();
@@ -32,8 +36,10 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
       (price === "all" || (price === "under1k" && amount < 1000) || (price === "1k5k" && amount >= 1000 && amount <= 5000) || (price === "over5k" && amount > 5000)) &&
       (parallel === "all" || row.parallel.toLowerCase().includes(parallel)) &&
       (grade === "all" || (grade === "graded" ? row.condition === "graded" : row.condition !== "graded")) &&
-      (printRun === "all" || (printRun === "numbered" ? Boolean(row.printRun) : !row.printRun));
-  }).sort((a,b) => (b.latestSaleCny ?? 0) - (a.latestSaleCny ?? 0)), [rows, query, brand, draftYear, cohort, risk, price, parallel, grade, printRun]);
+      (printRun === "all" || (printRun === "numbered" ? Boolean(row.printRun) : !row.printRun)) &&
+      (!onlySales || row.sales30d > 0) && (!highLiquidity || row.liquidity >= 70) &&
+      (!highTrust || row.dataCompleteness >= 85) && (!recentSales || row.sales30d > 0);
+  }).sort((a,b) => (b.latestSaleCny ?? 0) - (a.latestSaleCny ?? 0)), [rows, query, brand, draftYear, cohort, risk, price, parallel, grade, printRun, onlySales, highLiquidity, highTrust, recentSales]);
 
   function toggleWatch(id: string) {
     setWatched((current) => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; });
@@ -42,7 +48,7 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
   return <>
     <section className="terminal-filter-panel" aria-label="行情筛选">
       <div className="terminal-filter-row">
-        <label className="terminal-market-search"><Search size={15} aria-hidden /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="球员、球队、品牌或系列" /></label>
+        <label className="terminal-market-search"><Search size={15} aria-hidden /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="筛选当前列表" /></label>
         <label><span>选秀年份</span><select value={draftYear} onChange={(e)=>setDraftYear(e.target.value)}><option value="all">全部</option>{[2026,2025,2024,2023,2022,2021,2020].map(year=><option key={year}>{year}</option>)}</select></label>
         <label><span>品牌</span><select value={brand} onChange={(e)=>setBrand(e.target.value)}><option value="all">全部品牌</option><option>Topps</option><option>Panini</option><option>Upper Deck</option></select></label>
         <label><span>价格区间</span><select value={price} onChange={(e)=>setPrice(e.target.value)}><option value="all">全部价格</option><option value="under1k">¥1,000 以下</option><option value="1k5k">¥1,000—5,000</option><option value="over5k">¥5,000 以上</option></select></label>
@@ -51,6 +57,10 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
       <div className="terminal-filter-tags" aria-label="快速筛选">
         <button className={cohort === "all" ? "active" : ""} onClick={()=>setCohort("all")}>全部卡片</button>
         <button className={cohort === "core_rookie" ? "active" : ""} onClick={()=>setCohort("core_rookie")}>核心新秀</button>
+        <button className={onlySales ? "active" : ""} onClick={()=>setOnlySales(!onlySales)}>有真实成交</button>
+        <button className={highLiquidity ? "active" : ""} onClick={()=>setHighLiquidity(!highLiquidity)}>高流动性</button>
+        <button className={highTrust ? "active" : ""} onClick={()=>setHighTrust(!highTrust)}>高可信度</button>
+        <button className={recentSales ? "active" : ""} onClick={()=>setRecentSales(!recentSales)}>近 7 天有成交</button>
         <button className={risk === "high" ? "active warning" : ""} onClick={()=>setRisk(risk === "high" ? "all" : "high")}>高风险</button>
         <label className="sr-only-label"><span>球员代际</span><select aria-label="球员代际" value={cohort} onChange={(e)=>setCohort(e.target.value)}><option value="all">全部代际</option><option value="core_rookie">核心新秀</option><option value="recent_rookie">近年新秀</option><option value="young_core">年轻核心</option><option value="prime">当打球员</option><option value="veteran">老将</option><option value="retired_legend">退役传奇</option></select></label>
       </div>
@@ -61,7 +71,7 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
         <label><span>风险等级</span><select value={risk} onChange={(e)=>setRisk(e.target.value)}><option value="all">全部</option><option value="low">低</option><option value="medium">中</option><option value="high">高</option></select></label>
       </div>}
     </section>
-    <div className="result-meta"><span>共 <b>{filtered.length}</b> 张标准化卡片</span><small>按最新可信成交价排序 · 在售标价不计入收益</small></div>
+    <div className="result-meta"><span>共 <b>{filtered.length}</b> 张标准化卡片</span><small>排序：最新可信成交价 ↓ · 在售标价不计入收益</small></div>
     <section className="market-table terminal-market-table data-panel">
       <div className="table-wrap"><table><thead><tr><th aria-label="关注" /><th>卡片名称</th><th>最新成交价</th><th>7D%</th><th>30D%</th><th>90D%</th><th>成交量</th><th>流动性评分</th></tr></thead>
       <tbody>{filtered.map((row)=><tr className={selected === row.id ? "selected" : ""} onClick={()=>setSelected(row.id)} key={row.id}>

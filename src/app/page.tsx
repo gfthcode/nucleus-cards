@@ -46,6 +46,15 @@ export default function Home() {
       <div><span className="section-kicker">MARKET OVERVIEW</span><h1>市场总览</h1><p>NBA 球星卡二级市场成交、流动性与风险监控</p></div>
       <div className="updated-at"><Clock3 size={14} aria-hidden /><span>数据更新于</span><b>2026-09-02 09:30 CST</b></div>
     </header>
+    <section className="terminal-hero-intent data-panel">
+      <div><span className="section-kicker">COLLECTOR INTELLIGENCE</span><h2>帮助收藏者区分真实成交、在售标价和风险信号</h2><p>把分散的市场数据整理成清晰、可核验的观察线索，不把演示数据包装成实时行情。</p></div>
+      <div className="terminal-hero-actions">
+        <Link className="primary" href="/market">搜索一张卡 <span>→</span></Link>
+        <Link href="/market#rankings">查看涨跌榜 <span>→</span></Link>
+        <Link href="/portfolio">管理我的持仓 <span>→</span></Link>
+      </div>
+    </section>
+    <div className="terminal-demo-notice"><span>演示数据 · 非实时行情</span><small>价格旁显示样本数量、更新时间和来源；样本不足时不生成可靠趋势。</small><Link href="/methodology">了解可信度规则 →</Link></div>
 
     <section className="terminal-summary-grid" aria-label="今日市场概览">
       <article><span>今日总成交额</span><strong>¥18,642,380</strong><small className="up"><ArrowUpRight size={13} /> 6.82% 较昨日</small></article>

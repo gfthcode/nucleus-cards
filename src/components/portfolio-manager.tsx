@@ -5,6 +5,7 @@ import type { Card, Player, PortfolioItem } from "@/types/domain";
 import { portfolioItemValue } from "@/lib/market-math";
 import { getPlayerCohortLabel } from "@/lib/player-cohorts";
 import { PlayerCohortBadges } from "@/components/player-cohort-badges";
+import { Eye, EyeOff } from "lucide-react";
 
 type JoinedCard = Card & { player: Player };
 const portfolioStorageKey = "nucleus-portfolio";
@@ -64,6 +65,7 @@ export function PortfolioManager({
 }) {
   const [items, setItems] = useLocalPortfolio(seed);
   const [editing, setEditing] = useState<string | null>(null);
+  const [valuesVisible, setValuesVisible] = useState(false);
   const [form, setForm] = useState({
     cardId: cards[0]?.id ?? "",
     quantity: "1",
@@ -163,24 +165,25 @@ export function PortfolioManager({
 
   return (
     <>
-      <section className="portfolio-metrics">
+      <section className="portfolio-metrics terminal-portfolio-metrics">
+        <button className="values-toggle" type="button" onClick={() => setValuesVisible((value) => !value)} aria-label={valuesVisible ? "隐藏资产数字" : "显示资产数字"}>{valuesVisible ? <EyeOff size={14} /> : <Eye size={14} />} {valuesVisible ? "隐藏数字" : "显示数字"}</button>
         <div>
           <span>总投入</span>
-          <b>¥{totals.cost.toLocaleString()}</b>
+          <b>{valuesVisible ? "¥" + totals.cost.toLocaleString() : "***"}</b>
           <small>含费用和成本</small>
         </div>
         <div>
           <span>当前估值</span>
-          <b>¥{totals.current.toLocaleString()}</b>
+          <b>{valuesVisible ? "¥" + totals.current.toLocaleString() : "***"}</b>
           <small>基于演示成交中位价</small>
         </div>
         <div>
           <span>未实现盈亏</span>
           <b className={profit >= 0 ? "up" : "down"}>
-            {profit >= 0 ? "+" : ""}¥{profit.toLocaleString()}
+            {valuesVisible ? (profit >= 0 ? "+" : "−") + "¥" + Math.abs(profit).toLocaleString() : "***"}
           </b>
           <small>
-            {totals.cost
+            {valuesVisible && totals.cost
               ? `${((profit / totals.cost) * 100).toFixed(1)}%`
               : "0%"}
           </small>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { PlayerCohortBadges } from "@/components/player-cohort-badges";
+import { Search, SlidersHorizontal, Star } from "lucide-react";
 import type { Card, Player, Team } from "@/types/domain";
 
 type MarketRow = Card & { player: Player; team?: Team };
@@ -12,247 +12,76 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
   const [brand, setBrand] = useState("all");
   const [draftYear, setDraftYear] = useState("all");
   const [cohort, setCohort] = useState("all");
-  const [spotlight, setSpotlight] = useState("all");
   const [risk, setRisk] = useState("all");
-  const [sort, setSort] = useState("latest");
+  const [price, setPrice] = useState("all");
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [parallel, setParallel] = useState("all");
+  const [grade, setGrade] = useState("all");
+  const [printRun, setPrintRun] = useState("all");
+  const [selected, setSelected] = useState<string | null>(null);
+  const [watched, setWatched] = useState<Set<string>>(new Set());
+  const [onlySales, setOnlySales] = useState(false);
+  const [highLiquidity, setHighLiquidity] = useState(false);
+  const [highTrust, setHighTrust] = useState(false);
+  const [recentSales, setRecentSales] = useState(false);
 
-  const filtered = useMemo(
-    () =>
-      rows
-        .filter((row) => {
-          const haystack =
-            `${row.player.name} ${row.player.displayNameZh} ${row.brand} ${row.productLine} ${row.team?.name ?? ""}`.toLowerCase();
-          return (
-            haystack.includes(query.toLowerCase()) &&
-            (brand === "all" || row.brand === brand) &&
-            (draftYear === "all" || row.draftYear === Number(draftYear)) &&
-            (cohort === "all" || row.player.cohort === cohort) &&
-            (spotlight === "all" ||
-              (spotlight === "core" && row.player.isCoreRookie) ||
-              (spotlight === "role" && row.player.isRolePlayer) ||
-              (spotlight === "trade" && row.player.isTradeHot) ||
-              (spotlight === "signing" && row.player.isSigningHot)) &&
-            (risk === "all" || row.riskLevel === risk)
-          );
-        })
-        .sort((a, b) =>
-          sort === "change30d"
-            ? (b.change30d ?? -999) - (a.change30d ?? -999)
-            : sort === "volume"
-              ? b.sales30d - a.sales30d
-              : sort === "liquidity"
-                ? b.liquidity - a.liquidity
-                : sort === "draftYear"
-                  ? b.player.draftYear - a.player.draftYear
-                  : sort === "age"
-                    ? a.player.age - b.player.age
-                    : (b.latestSaleCny ?? -1) - (a.latestSaleCny ?? -1),
-        ),
-    [rows, query, brand, draftYear, cohort, spotlight, risk, sort],
-  );
+  const filtered = useMemo(() => rows.filter((row) => {
+    const haystack = `${row.player.name} ${row.player.displayNameZh} ${row.brand} ${row.productLine} ${row.team?.name ?? ""}`.toLowerCase();
+    const amount = row.latestSaleCny ?? 0;
+    return haystack.includes(query.toLowerCase()) &&
+      (brand === "all" || row.brand === brand) &&
+      (draftYear === "all" || row.draftYear === Number(draftYear)) &&
+      (cohort === "all" || row.player.cohort === cohort) &&
+      (risk === "all" || row.riskLevel === risk) &&
+      (price === "all" || (price === "under1k" && amount < 1000) || (price === "1k5k" && amount >= 1000 && amount <= 5000) || (price === "over5k" && amount > 5000)) &&
+      (parallel === "all" || row.parallel.toLowerCase().includes(parallel)) &&
+      (grade === "all" || (grade === "graded" ? row.condition === "graded" : row.condition !== "graded")) &&
+      (printRun === "all" || (printRun === "numbered" ? Boolean(row.printRun) : !row.printRun)) &&
+      (!onlySales || row.sales30d > 0) && (!highLiquidity || row.liquidity >= 70) &&
+      (!highTrust || row.dataCompleteness >= 85) && (!recentSales || row.sales30d > 0);
+  }).sort((a,b) => (b.latestSaleCny ?? 0) - (a.latestSaleCny ?? 0)), [rows, query, brand, draftYear, cohort, risk, price, parallel, grade, printRun, onlySales, highLiquidity, highTrust, recentSales]);
 
-  return (
-    <>
-      <section className="filter-bar" aria-label="行情筛选">
-        <label className="search-field">
-          <span>搜索</span>
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="球员、球队、品牌或系列"
-          />
-        </label>
-        <label>
-          <span>品牌</span>
-          <select
-            value={brand}
-            onChange={(event) => setBrand(event.target.value)}
-          >
-            <option value="all">全部品牌</option>
-            <option>Topps</option>
-            <option>Panini</option>
-            <option>Upper Deck</option>
-          </select>
-        </label>
-        <label>
-          <span>选秀届</span>
-          <select
-            value={draftYear}
-            onChange={(event) => setDraftYear(event.target.value)}
-          >
-            <option value="all">全部年份</option>
-            {[2026, 2025, 2024, 2023, 2022, 2021, 2020].map((year) => (
-              <option value={year} key={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          <span>球员代际</span>
-          <select
-            value={cohort}
-            onChange={(event) => setCohort(event.target.value)}
-          >
-            <option value="all">全部代际</option>
-            <option value="core_rookie">核心新秀</option>
-            <option value="recent_rookie">近年新秀</option>
-            <option value="young_core">年轻核心</option>
-            <option value="prime">当打球员</option>
-            <option value="veteran">老将</option>
-            <option value="retired_legend">退役传奇</option>
-          </select>
-        </label>
-        <label>
-          <span>热点</span>
-          <select
-            value={spotlight}
-            onChange={(event) => setSpotlight(event.target.value)}
-          >
-            <option value="all">全部热点</option>
-            <option value="core">2025/2026 核心新秀</option>
-            <option value="role">角色球员</option>
-            <option value="trade">交易热点</option>
-            <option value="signing">签约热点</option>
-          </select>
-        </label>
-        <label>
-          <span>风险</span>
-          <select
-            value={risk}
-            onChange={(event) => setRisk(event.target.value)}
-          >
-            <option value="all">全部等级</option>
-            <option value="low">低风险</option>
-            <option value="medium">中风险</option>
-            <option value="high">高风险</option>
-          </select>
-        </label>
-        <label>
-          <span>排序</span>
-          <select
-            value={sort}
-            onChange={(event) => setSort(event.target.value)}
-          >
-            <option value="latest">最新成交价</option>
-            <option value="change30d">30 日涨跌</option>
-            <option value="volume">成交量</option>
-            <option value="liquidity">流动性</option>
-            <option value="draftYear">选秀年份</option>
-            <option value="age">球员年龄</option>
-          </select>
-        </label>
-      </section>
-      <div className="result-meta">
-        <span>
-          找到 <b>{filtered.length}</b> 张标准化卡片
-        </span>
-        <small>真实成交与在售标价分列显示</small>
+  function toggleWatch(id: string) {
+    setWatched((current) => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; });
+  }
+
+  return <>
+    <section className="terminal-filter-panel" aria-label="行情筛选">
+      <div className="terminal-filter-row">
+        <label className="terminal-market-search"><Search size={15} aria-hidden /><input data-analytics-event="search_used" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="筛选当前列表" /></label>
+        <label><span>选秀年份</span><select value={draftYear} onChange={(e)=>setDraftYear(e.target.value)}><option value="all">全部</option>{[2026,2025,2024,2023,2022,2021,2020].map(year=><option key={year}>{year}</option>)}</select></label>
+        <label><span>品牌</span><select value={brand} onChange={(e)=>setBrand(e.target.value)}><option value="all">全部品牌</option><option>Topps</option><option>Panini</option><option>Upper Deck</option></select></label>
+        <label><span>价格区间</span><select value={price} onChange={(e)=>setPrice(e.target.value)}><option value="all">全部价格</option><option value="under1k">¥1,000 以下</option><option value="1k5k">¥1,000—5,000</option><option value="over5k">¥5,000 以上</option></select></label>
+        <button data-analytics-event="advanced_filter_toggled" className={advancedOpen ? "filter-toggle active" : "filter-toggle"} onClick={()=>setAdvancedOpen(!advancedOpen)}><SlidersHorizontal size={14} />更多筛选</button>
       </div>
-      <section className="market-table data-panel">
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>标准化卡片</th>
-                <th>属性</th>
-                <th>最新真实成交</th>
-                <th>当前在售标价</th>
-                <th>30 日</th>
-                <th>成交 / 流动性</th>
-                <th>风险</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((row) => (
-                <tr key={row.id}>
-                  <td>
-                    <Link
-                      className="market-card-link"
-                      href={`/cards/${row.id}`}
-                    >
-                      <span className="mini-card">
-                        {row.player.name
-                          .split(" ")
-                          .map((part) => part[0])
-                          .join("")}
-                      </span>
-                      <span>
-                        <b>{row.player.name}</b>
-                        <small>
-                          {row.releaseYear} {row.productLine} {row.cardNumber}
-                        </small>
-                        <PlayerCohortBadges player={row.player} compact />
-                      </span>
-                    </Link>
-                  </td>
-                  <td>
-                    <span className="tag-row">
-                      <i>{row.rookie ? "RC" : "非 RC"}</i>
-                      <i>{row.parallel}</i>
-                      <i>
-                        {row.condition === "graded"
-                          ? `${row.gradingCompany} ${row.grade}`
-                          : "裸卡"}
-                      </i>
-                    </span>
-                  </td>
-                  <td>
-                    {row.latestSaleCny ? (
-                      <>
-                        <b>¥{row.latestSaleCny.toLocaleString()}</b>
-                        <small>{row.sales30d} 笔可信样本</small>
-                      </>
-                    ) : (
-                      <span className="no-data">暂无可信成交数据</span>
-                    )}
-                  </td>
-                  <td>
-                    {row.latestListingCny ? (
-                      <>
-                        <b>¥{row.latestListingCny.toLocaleString()}</b>
-                        <small>在售标价 · 非成交</small>
-                      </>
-                    ) : (
-                      <span className="no-data">暂无在售</span>
-                    )}
-                  </td>
-                  <td className={(row.change30d ?? 0) >= 0 ? "up" : "down"}>
-                    {row.change30d == null
-                      ? "—"
-                      : `${row.change30d > 0 ? "+" : ""}${row.change30d}%`}
-                  </td>
-                  <td>
-                    <b>
-                      {row.sales30d} / {row.liquidity}
-                    </b>
-                    <small>30 日成交 / 100</small>
-                  </td>
-                  <td>
-                    <span className={`risk-pill ${row.riskLevel}`}>
-                      {row.riskLevel === "low"
-                        ? "低"
-                        : row.riskLevel === "medium"
-                          ? "中"
-                          : "高"}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-              {!filtered.length && (
-                <tr>
-                  <td colSpan={7}>
-                    <div className="empty-state">
-                      <b>没有匹配结果</b>
-                      <span>调整关键词或筛选条件后重试。</span>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </>
-  );
+      <div className="terminal-filter-tags" aria-label="快速筛选">
+        <button className={cohort === "all" ? "active" : ""} onClick={()=>setCohort("all")}>全部卡片</button>
+        <button className={cohort === "core_rookie" ? "active" : ""} onClick={()=>setCohort("core_rookie")}>核心新秀</button>
+        <button className={onlySales ? "active" : ""} onClick={()=>setOnlySales(!onlySales)}>有真实成交</button>
+        <button className={highLiquidity ? "active" : ""} onClick={()=>setHighLiquidity(!highLiquidity)}>高流动性</button>
+        <button className={highTrust ? "active" : ""} onClick={()=>setHighTrust(!highTrust)}>高可信度</button>
+        <button className={recentSales ? "active" : ""} onClick={()=>setRecentSales(!recentSales)}>近 7 天有成交</button>
+        <button className={risk === "high" ? "active warning" : ""} onClick={()=>setRisk(risk === "high" ? "all" : "high")}>高风险</button>
+        <label className="sr-only-label"><span>球员代际</span><select aria-label="球员代际" value={cohort} onChange={(e)=>setCohort(e.target.value)}><option value="all">全部代际</option><option value="core_rookie">核心新秀</option><option value="recent_rookie">近年新秀</option><option value="young_core">年轻核心</option><option value="prime">当打球员</option><option value="veteran">老将</option><option value="retired_legend">退役传奇</option></select></label>
+      </div>
+      {advancedOpen && <div className="terminal-advanced-filters">
+        <label><span>平行版本</span><select value={parallel} onChange={(e)=>setParallel(e.target.value)}><option value="all">全部</option><option value="silver">Silver</option><option value="gold">Gold</option></select></label>
+        <label><span>评级状态</span><select value={grade} onChange={(e)=>setGrade(e.target.value)}><option value="all">全部</option><option value="graded">已评级</option><option value="raw">裸卡</option></select></label>
+        <label><span>限编数量</span><select value={printRun} onChange={(e)=>setPrintRun(e.target.value)}><option value="all">全部</option><option value="numbered">有限编</option><option value="open">非限编</option></select></label>
+        <label><span>风险等级</span><select value={risk} onChange={(e)=>setRisk(e.target.value)}><option value="all">全部</option><option value="low">低</option><option value="medium">中</option><option value="high">高</option></select></label>
+      </div>}
+    </section>
+    <div className="result-meta"><span>共 <b>{filtered.length}</b> 张标准化卡片</span><small>排序：最新可信成交价 ↓ · 在售标价不计入收益</small></div>
+    <section className="market-table terminal-market-table data-panel">
+      <div className="table-wrap"><table><thead><tr><th aria-label="关注" /><th>卡片名称</th><th>最新成交价</th><th>7D%</th><th>30D%</th><th>90D%</th><th>成交量</th><th>流动性评分</th></tr></thead>
+      <tbody>{filtered.map((row)=><tr className={selected === row.id ? "selected" : ""} onClick={()=>setSelected(row.id)} key={row.id}>
+        <td><button data-analytics-event="watchlist_toggled" data-analytics-label={row.player.name} className={watched.has(row.id) ? "watch active" : "watch"} aria-label={watched.has(row.id) ? "取消关注" : "加入关注"} onClick={(event)=>{event.stopPropagation();toggleWatch(row.id);}}><Star size={14} fill={watched.has(row.id) ? "currentColor" : "none"} /></button></td>
+        <td><Link data-analytics-event="card_viewed" data-analytics-label={row.player.name} className="market-card-link" href={`/cards/${row.id}`}><span className="mini-card">{row.player.name.split(" ").map(p=>p[0]).join("").slice(0,2)}</span><span><b>{row.player.name}</b><small>{row.releaseYear} {row.brand} {row.productLine} {row.cardNumber} · {row.parallel}</small></span></Link></td>
+        <td data-label="最新成交价">{row.latestSaleCny ? <><b className="mono">¥{row.latestSaleCny.toLocaleString()}</b><small>真实成交</small></> : <span className="no-data">暂无成交</span>}</td>
+        {[row.change7d,row.change30d,row.change90d].map((value,index)=><td data-label={["7D","30D","90D"][index]} className={(value ?? 0) >= 0 ? "up mono" : "down mono"} key={index}>{value == null ? "—" : `${value > 0 ? "+" : ""}${value}%`}</td>)}
+        <td data-label="成交量"><b className="mono">{row.sales30d}</b><small>近 30 日</small></td>
+        <td data-label="流动性"><b className="mono">{row.liquidity}</b><span className="liquidity-meter"><i style={{width:`${row.liquidity}%`}} /></span></td>
+      </tr>)}{!filtered.length && <tr><td colSpan={8}><div className="empty-state"><b>暂无成交数据</b><span>调整筛选条件或刷新后重试。</span><button onClick={()=>{setQuery("");setBrand("all");setDraftYear("all");}}>刷新</button></div></td></tr>}</tbody></table></div>
+    </section>
+  </>;
 }

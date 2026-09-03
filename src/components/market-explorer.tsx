@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, Star } from "lucide-react";
 import type { Card, Player, Team } from "@/types/domain";
+import { CardIdentity } from "@/components/card-image";
 
 type MarketRow = Card & { player: Player; team?: Team };
 
@@ -76,7 +77,7 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
       <div className="table-wrap"><table><thead><tr><th aria-label="关注" /><th>卡片名称</th><th>最新成交价</th><th>7D%</th><th>30D%</th><th>90D%</th><th>成交量</th><th>流动性评分</th></tr></thead>
       <tbody>{filtered.map((row)=><tr className={selected === row.id ? "selected" : ""} onClick={()=>setSelected(row.id)} key={row.id}>
         <td><button data-analytics-event="watchlist_toggled" data-analytics-label={row.player.name} className={watched.has(row.id) ? "watch active" : "watch"} aria-label={watched.has(row.id) ? "取消关注" : "加入关注"} onClick={(event)=>{event.stopPropagation();toggleWatch(row.id);}}><Star size={14} fill={watched.has(row.id) ? "currentColor" : "none"} /></button></td>
-        <td><Link data-analytics-event="card_viewed" data-analytics-label={row.player.name} className="market-card-link" href={`/cards/${row.id}`}><span className="mini-card">{row.player.name.split(" ").map(p=>p[0]).join("").slice(0,2)}</span><span><b>{row.player.name}</b><small>{row.releaseYear} {row.brand} {row.productLine} {row.cardNumber} · {row.parallel}</small></span></Link></td>
+        <td><Link data-analytics-event="card_viewed" data-analytics-label={row.player.name} className="market-card-link" href={`/cards/${row.id}`}><CardIdentity card={row} player={row.player} /></Link></td>
         <td data-label="最新成交价">{row.latestSaleCny ? <><b className="mono">¥{row.latestSaleCny.toLocaleString()}</b><small>真实成交</small></> : <span className="no-data">暂无成交</span>}</td>
         {[row.change7d,row.change30d,row.change90d].map((value,index)=><td data-label={["7D","30D","90D"][index]} className={(value ?? 0) >= 0 ? "up mono" : "down mono"} key={index}>{value == null ? "—" : `${value > 0 ? "+" : ""}${value}%`}</td>)}
         <td data-label="成交量"><b className="mono">{row.sales30d}</b><small>近 30 日</small></td>

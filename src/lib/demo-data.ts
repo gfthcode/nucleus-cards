@@ -7,6 +7,7 @@ import type {
   PortfolioItem,
   Sale,
   Team,
+  PlayerTeamMembership,
 } from "@/types/domain";
 
 const teamRows = [
@@ -1732,6 +1733,15 @@ export function getCard(id: string) {
 }
 export function getTeam(idOrSlug: string) {
   return teams.find((item) => item.id === idOrSlug || item.slug === idOrSlug);
+}
+
+// The UI consumes memberships rather than treating Player.currentTeamId as permanent history.
+// Production sync jobs can replace this deterministic demo projection with official roster data.
+export const playerTeamMemberships: PlayerTeamMembership[] = players.flatMap((player) => player.currentTeamId ? [{ id: `membership-${player.id}-${player.currentTeamId}`, playerId: player.id, teamId: player.currentTeamId, status: "active" as const, startDate: `${player.draftYear}-10-01`, rosterType: "active" as const, source: "demo", lastVerifiedAt: "2026-09-03T09:30:00Z", verificationStatus: "probable" as const }] : []);
+
+export function getCurrentTeamPlayers(teamId: string) {
+  const memberIds = new Set(playerTeamMemberships.filter((membership) => membership.teamId === teamId && membership.status === "active" && ["active", "two_way"].includes(membership.rosterType)).map((membership) => membership.playerId));
+  return players.filter((player) => memberIds.has(player.id));
 }
 export function getPlayerCards(playerId: string) {
   return cards.filter((item) => item.playerId === playerId);

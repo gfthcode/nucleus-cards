@@ -14,6 +14,8 @@
   --orange: #f2a33c;
   --shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
 }
+.team-card-grid { display:grid; gap:8px; grid-template-columns:repeat(2,minmax(0,1fr)); }.team-card-grid > a { background:var(--terminal-panel-raised); border:1px solid var(--terminal-line); padding:10px; text-decoration:none; }.team-card-grid .card-identity { min-width:0; }.team-card-metrics { color:var(--terminal-muted); display:block; font-size:9px; margin-top:8px; }
+@media (max-width: 760px) { .team-card-grid { grid-template-columns:1fr; } }
 * {
   box-sizing: border-box;
 }

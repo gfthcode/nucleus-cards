@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
-import { cards, players, teams } from "@/lib/demo-data";
+import { cards, getCurrentTeamPlayers, teams } from "@/lib/demo-data";
+import { activeAuctions } from "@/lib/auction-data";
 
 export const metadata: Metadata = { title: "NBA 球队" };
 
@@ -31,12 +32,10 @@ export default function TeamsPage() {
               {teams
                 .filter((team) => team.conference === conference)
                 .map((team) => {
-                  const roster = players.filter(
-                    (player) => player.currentTeamId === team.id,
-                  );
-                  const teamCards = cards.filter(
-                    (card) => card.printedTeamId === team.id,
-                  );
+                  const roster = getCurrentTeamPlayers(team.id);
+                  const rosterIds = new Set(roster.map((player) => player.id));
+                  const teamCards = cards.filter((card) => rosterIds.has(card.playerId));
+                  const teamAuctions = activeAuctions.filter((auction) => rosterIds.has(auction.playerId));
                   return (
                     <Link
                       className="team-tile"
@@ -56,7 +55,7 @@ export default function TeamsPage() {
                         </small>
                       </span>
                       <em>
-                        {roster.length} 球员 / {teamCards.length} 卡片
+                          {roster.length} 球员 / {teamCards.length} 卡片 · {teamAuctions.length} 拍卖
                       </em>
                     </Link>
                   );

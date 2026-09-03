@@ -14,6 +14,7 @@ export type SourceAuthorization =
 
 export interface Team {
   id: string;
+  nbaTeamId?: string;
   slug: string;
   abbreviation: string;
   name: string;
@@ -21,7 +22,16 @@ export interface Team {
   conference: "East" | "West";
   division: string;
   color: string;
+  fullName?: string;
+  logoUrl?: string;
+  secondaryColor?: string;
+  active?: boolean;
+  lastUpdatedAt?: string;
 }
+
+export type RosterType = "active" | "two_way" | "inactive" | "injured" | "g_league_assignment" | "10_day" | "exhibit_10" | "waived" | "free_agent";
+export type MembershipVerification = "verified" | "probable" | "stale" | "disputed";
+export interface PlayerTeamMembership { id: string; playerId: string; teamId: string; status: "active" | "inactive" | "ended"; startDate: string; endDate?: string; jerseyNumber?: string; rosterType: RosterType; source: string; lastVerifiedAt: string; verificationStatus: MembershipVerification; }
 
 export interface Player {
   id: string;

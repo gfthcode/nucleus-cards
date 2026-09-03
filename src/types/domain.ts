@@ -80,6 +80,43 @@ export interface Listing {
   originalUrl?: string;
 }
 
+export type AuctionRegion = "GLOBAL" | "INTL" | "CN";
+export type AuctionSaleType = "auction" | "buy_now" | "best_offer" | "fixed_price" | "unknown";
+export type AuctionStatus = "scheduled" | "live" | "ending_soon" | "ended" | "sold" | "unsold" | "cancelled";
+
+export interface AuctionEvent {
+  id: string;
+  sourceId: string;
+  sourceName: string;
+  sourceRegion: "CN" | "HK" | "INTL";
+  auctionUrl: string;
+  playerId: string;
+  cardId: string;
+  playerName: string;
+  cardYear: number;
+  manufacturer: string;
+  setName: string;
+  parallel: string;
+  cardNumber: string;
+  rookieDesignation: boolean;
+  gradingCompany?: string;
+  grade?: number;
+  currency: string;
+  startingBid: number;
+  currentBid: number;
+  bidCount: number;
+  watcherCount: number;
+  viewCount: number;
+  startTime: string;
+  endTime: string;
+  auctionStatus: AuctionStatus;
+  lastUpdatedAt: string;
+  sourceVerified: boolean;
+  saleType: AuctionSaleType;
+  heatScore: number;
+  heatChange24h: number;
+}
+
 export interface Card {
   id: string;
   identityKey: string;

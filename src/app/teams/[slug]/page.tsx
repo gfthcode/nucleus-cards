@@ -4,7 +4,10 @@ import { PageHeader } from "@/components/page-header";
 import { PlayerCohortBadges } from "@/components/player-cohort-badges";
 import { CardIdentity } from "@/components/card-image";
 import { activeAuctions } from "@/lib/auction-data";
-import { cards, getCurrentTeamPlayers, getPlayer, getTeam, teams } from "@/lib/demo-data";
+import { cards, getPlayer, getTeam, teams } from "@/lib/demo-data";
+import { getTeamRosterSnapshot } from "@/lib/roster-sync";
+
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return teams.map((team) => ({ slug: team.slug }));
@@ -14,7 +17,8 @@ export default async function TeamPage({ params }: PageProps<"/teams/[slug]">) {
   const { slug } = await params;
   const team = getTeam(slug);
   if (!team) notFound();
-  const roster = getCurrentTeamPlayers(team.id);
+  const rosterSnapshot = await getTeamRosterSnapshot(team);
+  const roster = rosterSnapshot.players;
   const rosterIds = new Set(roster.map((player) => player.id));
   const teamCards = cards.filter((card) => rosterIds.has(card.playerId));
   const printedCards = cards.filter((card) => card.printedTeamId === team.id);
@@ -25,18 +29,28 @@ export default async function TeamPage({ params }: PageProps<"/teams/[slug]">) {
       <PageHeader
         eyebrow={`${team.conference.toUpperCase()} · ${team.division.toUpperCase()}`}
         title={team.name}
-        description={`${team.city} · 当前阵容对应的球员、球星卡、成交与拍卖活动。数据源接入前显示为演示资料。`}
+        description={`${team.city} · 当前阵容对应的球员、球星卡、成交与拍卖活动。`}
         actions={
           <span className="team-hero-mark" style={{ background: team.color }}>
             {team.abbreviation}
           </span>
         }
       />
+      <div className={`roster-source-note ${rosterSnapshot.source.configured ? "is-live" : "is-demo"}`}>
+        <span className="status-dot" aria-hidden />
+        <span>
+          阵容来源：{rosterSnapshot.source.label} · {rosterSnapshot.source.message}
+          {rosterSnapshot.roster?.fetchedAt
+            ? ` · 更新于 ${new Date(rosterSnapshot.roster.fetchedAt).toLocaleString("zh-CN", { hour: "2-digit", minute: "2-digit" })}`
+            : ""}
+        </span>
+        <Link href={`/api/teams/${team.slug}/roster`} target="_blank">查看同步状态 ↗</Link>
+      </div>
       <section className="team-summary-grid">
         <div>
           <span>当前球员</span>
           <b>{roster.length || "—"}</b>
-          <small>当前阵容 · 演示同步</small>
+          <small>当前阵容 · {rosterSnapshot.source.configured ? "授权同步" : "演示回退"}</small>
         </div>
         <div>
           <span>新秀与年轻核心</span>
@@ -92,8 +106,8 @@ export default async function TeamPage({ params }: PageProps<"/teams/[slug]">) {
               ))
             ) : (
               <div className="empty-state">
-                <b>演示名单暂无更多球员</b>
-                <span>数据库结构已支持完整阵容导入。</span>
+                <b>{rosterSnapshot.error ? "授权阵容暂时不可用" : "暂无当前阵容"}</b>
+                <span>{rosterSnapshot.error ?? "数据库结构已支持完整阵容导入。"}</span>
               </div>
             )}
           </div>

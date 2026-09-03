@@ -1,14 +1,17 @@
 import { dataSources } from "@/lib/demo-data";
-export const dynamic = "force-static";
+import { getRosterSourceStatus } from "@/lib/roster-sync";
+export const dynamic = "force-dynamic";
 export function GET() {
+  const rosterSource = getRosterSourceStatus();
   return Response.json({
     status: "ok",
-    mode: "demo",
+    mode: rosterSource.configured ? "licensed" : "demo",
     sources: dataSources.map((source) => ({
       id: source.id,
       enabled: source.enabled,
       authorization: source.authorization,
     })),
-    updatedAt: "2026-08-31T01:30:00Z",
+    rosterSource,
+    updatedAt: new Date().toISOString(),
   });
 }

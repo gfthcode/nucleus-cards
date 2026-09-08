@@ -1,21 +1,23 @@
 # NBA 阵容与 Membership 同步
 
-Teams 页面现在通过 `getTeamRosterSnapshot()` 读取统一的 Membership 关系。生产环境配置授权源后，页面会优先读取 Sportradar NBA v8 Team Profile，并生成 Membership 同步计划；没有密钥或上游暂时不可用时，页面会明确标记为演示回退，不会把演示名单伪装成实时阵容。
+Teams 页面现在通过 `getTeamRosterSnapshot()` 读取统一的 Membership 关系。默认使用带抓取时间的 NBA.com League Roster 公开快照；配置授权源后，页面会优先读取 Sportradar NBA v8 Team Profile，并生成 Membership 同步计划。数据会明确标注来源和快照时间，不会把演示名单伪装成实时阵容。
 
 ## 推荐数据源
 
-默认适配器是 Sportradar。它是 NBA 官方数据源支持的数据提供商，Team Profile 返回当前活跃阵容，并提供 `ACT`、`TWO-WAY`、`IR`、`M-LEAGUE`、`TEN-DAY` 等状态。接口需要 `x-api-key`，密钥只从服务器环境变量读取。
+默认适配器是 NBA.com 公开阵容快照，不需要 API 密钥。需要更及时状态时可切换到 Sportradar 授权适配器；Team Profile 返回当前活跃阵容，并提供 `ACT`、`TWO-WAY`、`IR`、`M-LEAGUE`、`TEN-DAY` 等状态。接口需要 `x-api-key`，密钥只从服务器环境变量读取。
 
 ## 配置
 
 在 Netlify 的 Site configuration → Environment variables 中添加：
 
 ```text
-NBA_ROSTER_PROVIDER=sportradar
+NBA_ROSTER_PROVIDER=nba_official
 SPORTRADAR_API_KEY=
 SPORTRADAR_ACCESS_LEVEL=trial 或 production
 SPORTRADAR_LANGUAGE=zh
 ```
+
+`nba_official` 使用仓库内保存的 NBA.com 公开阵容快照；`sportradar` 仅在拥有授权密钥时启用。
 
 在 Netlify 的变量值输入框中粘贴你从 Sportradar 获取的密钥。不要把密钥提交到 GitHub、浏览器代码或聊天窗口。添加变量后触发一次新的生产部署。
 

@@ -3,12 +3,13 @@ import { GET as getHealth } from "@/app/api/health/route";
 import { POST as importSales } from "@/app/api/import/sales/route";
 
 describe("API routes", () => {
-  it("reports demo source health", async () => {
+  it("reports the official public roster source health", async () => {
     const response = getHealth();
     const body = await response.json();
     expect(response.status).toBe(200);
     expect(body.status).toBe("ok");
-    expect(body.mode).toBe("demo");
+    expect(body.mode).toBe("licensed");
+    expect(body.rosterSource.provider).toBe("nba_official");
     expect(body.sources.length).toBeGreaterThan(0);
   });
 

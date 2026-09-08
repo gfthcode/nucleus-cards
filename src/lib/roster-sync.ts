@@ -10,14 +10,16 @@ import {
   getTeam,
   playerTeamMemberships,
   players,
+  officialRosterRecords,
+  getPlayer,
 } from "@/lib/demo-data";
 
-export type RosterProvider = "demo" | "sportradar";
+export type RosterProvider = "demo" | "sportradar" | "nba_official";
 
 export interface RosterSourceStatus {
   provider: RosterProvider;
   label: string;
-  authorization: "official-api" | "demo";
+  authorization: "official-api" | "official-web" | "demo";
   configured: boolean;
   endpoint: string;
   message: string;
@@ -55,18 +57,29 @@ export interface MembershipSyncPlan {
 const SPORTRADAR_BASE_URL = "https://api.sportradar.com/nba";
 
 function configuredProvider(): RosterProvider {
-  return process.env.NBA_ROSTER_PROVIDER === "sportradar" &&
-    Boolean(process.env.SPORTRADAR_API_KEY?.trim())
-    ? "sportradar"
-    : "demo";
+  const requestedProvider = process.env.NBA_ROSTER_PROVIDER?.trim();
+  if (requestedProvider === "sportradar" && Boolean(process.env.SPORTRADAR_API_KEY?.trim())) return "sportradar";
+  if (!requestedProvider || requestedProvider === "nba_official") return "nba_official";
+  return "demo";
 }
 
 export function getRosterSourceStatus(): RosterSourceStatus {
   const requestedProvider = process.env.NBA_ROSTER_PROVIDER;
   const hasKey = Boolean(process.env.SPORTRADAR_API_KEY?.trim());
-  const configured = configuredProvider() === "sportradar";
+  const provider = configuredProvider();
+  const configured = provider !== "demo";
 
   if (configured) {
+    if (provider === "nba_official") {
+      return {
+        provider: "nba_official",
+        label: "NBA.com 官方公开阵容快照",
+        authorization: "official-web",
+        configured: true,
+        endpoint: "https://www.nba.com/players",
+        message: "阵容来自 NBA.com 公开号单快照；不需要 API 密钥，卡片与行情仍需独立来源。",
+      };
+    }
     return {
       provider: "sportradar",
       label: "Sportradar NBA 官方数据",
@@ -246,9 +259,33 @@ async function fetchSportradarRoster(team: Team): Promise<NormalizedRoster> {
   return normalizeRoster(payload, externalTeamId);
 }
 
+function fetchOfficialWebRoster(team: Team): NormalizedRoster {
+  const fetchedAt = "2026-09-08T00:00:00.000Z";
+  return {
+    provider: "nba_official",
+    teamExternalId: team.abbreviation,
+    fetchedAt,
+    sourceUpdatedAt: fetchedAt,
+    players: officialRosterRecords
+      .filter((record) => record.teamAbbreviation === team.abbreviation)
+      .map((record) => ({
+        sourcePlayerId: record.personId,
+        officialReferenceId: record.sourceSlug,
+        fullName: record.name,
+        jerseyNumber: record.jerseyNumber || undefined,
+        position: record.position || undefined,
+        rookieYear: record.draftYear || undefined,
+        rosterType: "active" as const,
+        sourceStatus: "NBA.com current roster",
+        sourceUpdatedAt: fetchedAt,
+      })),
+  };
+}
+
 function matchedPlayer(rosterPlayer: NormalizedRosterPlayer): Player | undefined {
   const normalized = normalizeName(rosterPlayer.fullName);
-  return players.find((player) => normalizeName(player.name) === normalized);
+  return players.find((player) => normalizeName(player.name) === normalized) ??
+    getPlayer(`nba-${rosterPlayer.sourcePlayerId}`);
 }
 
 function isCurrentRosterType(rosterType: RosterType) {
@@ -310,7 +347,7 @@ export function buildMembershipSyncPlan({
       endDate: undefined,
       jerseyNumber: rosterPlayer.jerseyNumber,
       rosterType: rosterPlayer.rosterType,
-      source: "sportradar",
+      source: roster.provider,
       lastVerifiedAt: now,
       verificationStatus: "verified" as MembershipVerification,
     };
@@ -327,6 +364,14 @@ export function buildMembershipSyncPlan({
 
 export async function getTeamRosterSnapshot(team: Team) {
   const source = getRosterSourceStatus();
+  if (source.configured && source.provider === "nba_official") {
+    const roster = fetchOfficialWebRoster(team);
+    const plan = buildMembershipSyncPlan({ teamId: team.id, roster });
+    const syncedPlayers = plan.upserts
+      .map((membership) => getPlayer(membership.playerId))
+      .filter((player): player is Player => Boolean(player));
+    return { source, roster, plan, players: syncedPlayers, error: undefined };
+  }
   if (source.configured && source.provider === "sportradar") {
     try {
       const roster = await fetchSportradarRoster(team);
@@ -336,7 +381,9 @@ export async function getTeamRosterSnapshot(team: Team) {
         source,
         roster,
         plan,
-        players: players.filter((player) => playerIds.has(player.id)),
+        players: players
+          .map((player) => getPlayer(player.id))
+          .filter((player): player is Player => Boolean(player && playerIds.has(player.id))),
         error: undefined,
       };
     } catch (error) {

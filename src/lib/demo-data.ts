@@ -9,6 +9,12 @@ import type {
   Team,
   PlayerTeamMembership,
 } from "@/types/domain";
+import officialRosterSnapshot from "@/data/nba-official-roster.json";
+
+type OfficialRosterRecord = (typeof officialRosterSnapshot.records)[number];
+
+export const officialRosterRecords: OfficialRosterRecord[] =
+  officialRosterSnapshot.records;
 
 const teamRows = [
   [
@@ -290,6 +296,38 @@ export const teams: Team[] = teamRows.map(
 
 const teamId = (abbr: string) =>
   teams.find((team) => team.abbreviation === abbr)?.id;
+
+function createOfficialPlayer(record: OfficialRosterRecord, currentTeamId?: string): Player {
+  const currentYear = new Date().getFullYear();
+  const draftYear = Number(record.draftYear) || currentYear;
+  const cohort: Player["cohort"] =
+    draftYear >= currentYear - 1
+      ? "recent_rookie"
+      : draftYear >= currentYear - 4
+        ? "young_core"
+        : "veteran";
+  return {
+    id: `nba-${record.personId}`,
+    name: record.name,
+    displayNameZh: record.name,
+    position: record.position || "—",
+    draftYear,
+    draftPick: record.draftPick ?? undefined,
+    currentTeamId,
+    formerTeamIds: [],
+    age: 0,
+    minutes: 0,
+    points: 0,
+    rebounds: 0,
+    assists: 0,
+    marketHeat: 0,
+    cohort,
+    isMarketActive: false,
+    injuryStatus: "healthy",
+    riskLevel: "low",
+    demo: false,
+  };
+}
 
 export const players: Player[] = [
   {
@@ -1726,7 +1764,10 @@ export const brands = [
 ];
 
 export function getPlayer(id: string) {
-  return players.find((item) => item.id === id);
+  return players.find((item) => item.id === id) ??
+    officialRosterRecords
+      .map((record) => createOfficialPlayer(record, teamId(record.teamAbbreviation)))
+      .find((item) => item.id === id);
 }
 export function getCard(id: string) {
   return cards.find((item) => item.id === id);
@@ -1739,8 +1780,12 @@ export function getTeam(idOrSlug: string) {
 // Production sync jobs can replace this deterministic demo projection with official roster data.
 export const playerTeamMemberships: PlayerTeamMembership[] = players.flatMap((player) => player.currentTeamId ? [{ id: `membership-${player.id}-${player.currentTeamId}`, playerId: player.id, teamId: player.currentTeamId, status: "active" as const, startDate: `${player.draftYear}-10-01`, rosterType: "active" as const, source: "demo", lastVerifiedAt: "2026-09-03T09:30:00Z", verificationStatus: "probable" as const }] : []);
 
-export function getCurrentTeamPlayers(teamId: string) {
-  const memberIds = new Set(playerTeamMemberships.filter((membership) => membership.teamId === teamId && membership.status === "active" && ["active", "two_way"].includes(membership.rosterType)).map((membership) => membership.playerId));
+export function getCurrentTeamPlayers(targetTeamId: string) {
+  const officialPlayers = officialRosterRecords
+    .filter((record) => teamId(record.teamAbbreviation) === targetTeamId)
+    .map((record) => createOfficialPlayer(record, targetTeamId));
+  if (officialPlayers.length) return officialPlayers;
+  const memberIds = new Set(playerTeamMemberships.filter((membership) => membership.teamId === targetTeamId && membership.status === "active" && ["active", "two_way"].includes(membership.rosterType)).map((membership) => membership.playerId));
   return players.filter((player) => memberIds.has(player.id));
 }
 export function getPlayerCards(playerId: string) {

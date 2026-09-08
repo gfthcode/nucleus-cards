@@ -34,6 +34,10 @@
 
 限制：最多 1000 条、请求体最多 2 MB、币种仅 CNY/HKD/USD。合法请求返回 `202 queued-for-review`；记录不会直接变成平台认证成交。
 
+### `POST /api/import/verified-sales`
+
+证据优先的历史成交导入接口。每条记录必须提供 `originalUrl`、`externalSaleId`、`evidenceSnapshot`，并且 `verified` 必须为 `true`；缺少来源证据的价格会被拒绝。接口返回 `202 queued-for-review`，没有配置 Supabase 时只进入演示审核队列，不会伪造持久化成功。
+
 ### `GET /api/account/export`
 
 演示返回当前演示资料、持仓与提醒的 JSON 附件。生产版必须只导出已认证用户自己的数据。
@@ -59,3 +63,4 @@
 ## AI Provider
 
 Provider 输入标准化卡片、球员、周期与证据；输出必须通过 `aiAnalysisSchema`。生产 Provider 的 API Key 只可在服务端读取，且仍需执行禁用词、概率一致性、证据和免责声明校验。
+

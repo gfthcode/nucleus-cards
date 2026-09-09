@@ -5,6 +5,7 @@ import { MobileNavigation, SidebarNavigation } from "@/components/app-navigation
 import { HeaderControls } from "@/components/header-controls";
 import { PwaRegister } from "@/components/pwa-register";
 import { Analytics } from "@/components/analytics";
+import { DataTrustBar } from "@/components/data-provenance";
 import { productConfig } from "@/config/product";
 import "./globals.css";
 
@@ -61,6 +62,7 @@ export default function RootLayout({
             <HeaderControls />
           </header>
           <div className="advice-disclaimer"><ShieldCheck size={13} aria-hidden /><span>数据仅供参考，不构成投资建议。</span><Link href="/methodology">数据与免责声明</Link></div>
+          <DataTrustBar />
           <div id="main-content" className="terminal-content">{children}</div>
           <footer className="terminal-footer"><p>{productConfig.disclaimer}</p><nav><Link href="/methodology">数据方法</Link><Link href="/settings">隐私</Link></nav></footer>
         </div>

@@ -210,7 +210,7 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
                         <small>
                           {sale.communitySubmitted
                             ? "社区提交"
-                            : sale.verified ? "来源已核验" : "演示平台记录 · 待外部核验"}
+                            : card.demo ? "演示来源 · 无外部成交凭证" : sale.verified ? "来源已核验" : "待外部核验"}
                         </small>
                       </td>
                       <td>

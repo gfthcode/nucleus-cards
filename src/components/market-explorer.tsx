@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, Star } from "lucide-react";
 import type { Card, Player, Team } from "@/types/domain";
 import { CardIdentity } from "@/components/card-image";
@@ -10,7 +11,8 @@ import { MetricHelp } from "@/components/data-provenance";
 type MarketRow = Card & { player: Player; team?: Team };
 
 export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
-  const [query, setQuery] = useState("");
+  const searchParams = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [brand, setBrand] = useState("all");
   const [draftYear, setDraftYear] = useState("all");
   const [cohort, setCohort] = useState("all");

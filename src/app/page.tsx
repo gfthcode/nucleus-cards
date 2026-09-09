@@ -30,7 +30,7 @@ const active = [
 
 function RankingList({ rows, tone }: { rows: string[][]; tone: "up" | "down" | "active" }) {
   return <div className="terminal-ranking-list">
-    {rows.map((row, index) => <Link href="/market" className="terminal-ranking-row" key={row[0]}>
+    {rows.map((row, index) => <Link href={`/market?q=${encodeURIComponent(row[0])}`} className="terminal-ranking-row" key={row[0]}>
       <span className="terminal-rank">{String(index + 1).padStart(2, "0")}</span>
       <span className="terminal-avatar">{row[0].split(" ").map((part) => part[0]).join("").slice(0, 2)}</span>
       <span className="terminal-player"><b>{row[0]}</b><small>{row[1]}</small></span>
@@ -44,7 +44,7 @@ export default function Home() {
   return <main className="page-shell terminal-dashboard">
     <header className="terminal-page-heading">
       <div><span className="section-kicker">MARKET OVERVIEW</span><h1>市场总览</h1><p>NBA 球星卡二级市场成交、流动性与风险监控</p></div>
-      <div className="updated-at"><Clock3 size={14} aria-hidden /><span>数据更新于</span><b>2026-09-02 09:30 CST</b></div>
+      <div className="updated-at"><Clock3 size={14} aria-hidden /><span>数据状态</span><b>演示快照 · 2026-09-09</b></div>
     </header>
     <section className="terminal-hero-intent data-panel">
       <div><span className="section-kicker">COLLECTOR INTELLIGENCE</span><h2>帮助收藏者区分真实成交、在售标价和风险信号</h2><p>把分散的市场数据整理成清晰、可核验的观察线索，不把演示数据包装成实时行情。</p></div>
@@ -68,7 +68,7 @@ export default function Home() {
       <article className="data-panel terminal-heatmap-panel">
         <div className="terminal-panel-heading"><div><span className="section-kicker">TODAY&apos;S HEATMAP</span><h2>今日热力图</h2></div><div className="heatmap-legend"><span><i className="up" />上涨</span><span><i className="down" />下跌</span></div></div>
         <div className="terminal-heatmap">
-          {heatmap.map(([name, change, size, tone]) => <Link href="/market" className={`heatmap-cell ${size} ${tone}`} key={name}><b>{name}</b><span>{change}</span><small>成交活跃度</small></Link>)}
+          {heatmap.map(([name, change, size, tone]) => <Link href={`/market?q=${encodeURIComponent(name)}`} className={`heatmap-cell ${size} ${tone}`} key={name}><b>{name}</b><span>{change}</span><small>成交活跃度 · 点击查看样本</small></Link>)}
         </div>
       </article>
 

@@ -61,7 +61,7 @@ export default function MethodologyPage() {
             <span className="section-kicker">SOURCE REGISTRY</span>
             <h2>数据源状态</h2>
           </div>
-          <small>更新时间 2026-08-31 09:30 CST</small>
+          <small>{productConfig.demoDataUpdatedLabel} · 真实来源需单独核验</small>
         </div>
         <div className="table-wrap">
           <table>
@@ -101,6 +101,14 @@ export default function MethodologyPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      </section>
+      <section className="data-panel methodology-compare">
+        <div className="section-heading"><div><span className="section-kicker">HOW TO READ</span><h2>三类用户的最短使用路径</h2></div></div>
+        <div className="method-path-grid">
+          <article><b>资深收藏者</b><span>先看来源与样本量 → 打开成交证据 → 对比同系列卡。</span></article>
+          <article><b>刚入坑用户</b><span>先搜索球员 → 阅读指标提示 → 只把 Heat 当作活跃度。</span></article>
+          <article><b>观望用户</b><span>先看覆盖面板 → 判断数据状态 → 再决定是否关注或导出。</span></article>
         </div>
       </section>
       <section className="brand-registry">

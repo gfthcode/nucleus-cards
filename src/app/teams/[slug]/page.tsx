@@ -91,7 +91,7 @@ export default async function TeamPage({ params }: PageProps<"/teams/[slug]">) {
             <tbody>
               {playerMarketRows.map((row) => (
                 <tr key={row.player.id}>
-                  <td><Link href={`/players/${row.player.id}`} className="team-player-link"><b>{row.player.displayNameZh}</b><small>{row.player.position} · 当前球队</small></Link></td>
+                  <td><Link href={`/players/${row.player.id}`} className="team-player-link"><b>{row.player.displayNameZh}</b><small>{row.player.position} · 当前球队 · 卡片发行球队另计</small></Link></td>
                   <td className="mono">{row.totalCards || "—"}<small>{row.verifiedCards} 已验证</small></td>
                   <td className="mono">{row.sales30d || "—"}<small>{row.hasEnoughPriceData ? (row.change30d == null ? "—" : `${row.change30d >= 0 ? "+" : ""}${row.change30d.toFixed(1)}%`) : "样本不足"}</small></td>
                   <td className="mono">{row.activeAuctions || "—"}<small>{row.auctionHeat == null ? "暂无热度" : `Heat ${row.auctionHeat}`}</small></td>
@@ -115,7 +115,7 @@ export default async function TeamPage({ params }: PageProps<"/teams/[slug]">) {
             <div><span>已验证覆盖</span><b>{coverage.verifiedCardCoverage == null ? "—" : `${coverage.verifiedCardCoverage}%`}</b></div>
             <div><span>市场数据覆盖</span><b>{coverage.marketDataCoverage == null ? "—" : `${coverage.marketDataCoverage}%`}</b></div>
           </div>
-          {coverage.currentPlayers > coverage.playersWithCards && <p className="coverage-warning">仍有 {coverage.currentPlayers - coverage.playersWithCards} 名当前球员暂无已匹配卡牌，已保留在阵容中，等待 Card Import Queue。</p>}
+          {coverage.currentPlayers > coverage.playersWithCards && <p className="coverage-warning">仍有 {coverage.currentPlayers - coverage.playersWithCards} 名当前球员暂无已匹配卡牌，已保留在阵容中。卡牌缺失不代表球员没有发行卡，等待 Card Import Queue。</p>}
         </div>
         <div className="data-panel">
           <div className="section-heading"><div><span className="section-kicker">ROOKIE MARKET</span><h2>球队新秀市场</h2></div></div>

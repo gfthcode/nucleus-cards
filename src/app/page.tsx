@@ -59,7 +59,7 @@ export default function Home() {
 
     <section className="terminal-summary-grid" aria-label="今日市场概览">
       <article><span>今日总成交额</span><strong>¥18,642,380</strong><small className="up"><ArrowUpRight size={13} /> 6.82% 较昨日</small></article>
-      <article><span>活跃卡片</span><strong>1,248</strong><small className="neutral">覆盖 18 个数据来源</small></article>
+      <article><span>演示卡片</span><strong>1,248</strong><small className="neutral">产品功能样本，不代表全市场覆盖</small></article>
       <article><span>上涨 / 下跌</span><strong><i className="up">684</i> / <i className="down">392</i></strong><small className="neutral">64.6% 市场宽度</small></article>
       <article><span>市场热度指数</span><strong>78.4</strong><small className="up"><ArrowUpRight size={13} /> 4.2 pts · 偏热</small></article>
     </section>

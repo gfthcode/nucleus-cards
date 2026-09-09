@@ -17,7 +17,7 @@ export default function MarketPage() {
       <PageHeader
         eyebrow="MARKET"
         title="球星卡行情市场"
-        description="按球员、球队、2020—2026 选秀届、球员代际、品牌、成交量、流动性与风险筛选。当前为可核验规则演示，授权数据接入后会替换样本。"
+        description="按球员、球队、2020—2026 选秀届、球员代际、品牌、成交量、流动性与风险筛选。先看来源和样本量，再看价格变化。"
       />
       <div className="data-quality-strip">
         <DemoDataBadge />

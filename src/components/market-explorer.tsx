@@ -74,6 +74,7 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
       </div>}
     </section>
     <div className="result-meta"><span>共 <b>{filtered.length}</b> 张标准化卡片</span><small>排序：最新成交样本 ↓ · 在售标价不计入收益 · <MetricHelp label="流动性评分" description="结合成交频率、在售深度与样本稳定性的观察指标，不代表价格回报。" /></small></div>
+    <div className="market-reading-guide" role="note"><b>读表顺序</b><span>① 先确认“演示/核验”标签</span><span>② 用成交量判断样本是否足够</span><span>③ Heat/流动性是活跃度，不是收益率</span><Link href="/methodology#metrics">查看指标口径 →</Link></div>
     <section className="market-table terminal-market-table data-panel">
       <div className="table-wrap"><table><thead><tr><th aria-label="关注" /><th>卡片名称</th><th>最新成交价</th><th>7D%</th><th>30D%</th><th>90D%</th><th>成交量</th><th>流动性评分</th></tr></thead>
       <tbody>{filtered.map((row)=><tr className={selected === row.id ? "selected" : ""} onClick={()=>setSelected(row.id)} key={row.id}>

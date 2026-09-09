@@ -55,7 +55,7 @@ export default function TeamsPage() {
                         </small>
                       </span>
                       <em>
-                          {roster.length} 球员 / {teamCards.length} 卡片 · {teamAuctions.length} 拍卖
+                          {roster.length} 球员 · {teamCards.length ? `${teamCards.length} 张演示卡` : "卡牌数据待接入"} · {teamAuctions.length ? `${teamAuctions.length} 场演示拍卖` : "拍卖数据待接入"}
                       </em>
                     </Link>
                   );

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { MarketExplorer } from "@/components/market-explorer";
 import { PageHeader } from "@/components/page-header";
 import { cards, getPlayer, getTeam } from "@/lib/demo-data";
+import { DemoDataBadge } from "@/components/data-provenance";
 
 export const metadata: Metadata = { title: "行情市场" };
 
@@ -16,9 +17,10 @@ export default function MarketPage() {
       <PageHeader
         eyebrow="MARKET"
         title="球星卡行情市场"
-        description="按球员、球队、2020—2026 选秀届、球员代际、交易签约热点、品牌、成交量、流动性与风险筛选。所有数据均为演示数据。"
+        description="按球员、球队、2020—2026 选秀届、球员代际、品牌、成交量、流动性与风险筛选。当前为可核验规则演示，授权数据接入后会替换样本。"
       />
       <div className="data-quality-strip">
+        <DemoDataBadge />
         <span>
           <b>78.4%</b> 数据覆盖率
         </span>

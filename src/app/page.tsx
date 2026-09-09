@@ -55,6 +55,7 @@ export default function Home() {
       </div>
     </section>
     <div className="terminal-demo-notice"><span>演示数据 · 非实时行情</span><small>价格旁显示样本数量、更新时间和来源；样本不足时不生成可靠趋势。</small><Link href="/methodology">了解可信度规则 →</Link></div>
+    <section className="terminal-start-guide data-panel" aria-label="快速开始"><div><span className="section-kicker">QUICK START</span><h2>第一次使用？三步找到可核验线索</h2></div><div className="start-guide-steps"><Link href="/market"><b>01</b><span>搜索卡片<small>按球员、品牌、年份筛选</small></span></Link><Link href="/auction-radar"><b>02</b><span>核对来源<small>区分成交、挂牌与拍卖</small></span></Link><Link href="/methodology"><b>03</b><span>阅读口径<small>了解 Heat、流动性与样本限制</small></span></Link></div></section>
 
     <section className="terminal-summary-grid" aria-label="今日市场概览">
       <article><span>今日总成交额</span><strong>¥18,642,380</strong><small className="up"><ArrowUpRight size={13} /> 6.82% 较昨日</small></article>

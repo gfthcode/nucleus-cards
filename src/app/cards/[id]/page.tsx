@@ -7,6 +7,7 @@ import { CurrencyValue } from "@/components/currency-switcher";
 import { PriceChart } from "@/components/price-chart";
 import { PlayerCohortBadges } from "@/components/player-cohort-badges";
 import { productConfig } from "@/config/product";
+import { DemoDataBadge, EvidenceBadge, MetricHelp } from "@/components/data-provenance";
 import { DeterministicDemoAI } from "@/lib/ai-analysis";
 import { calculateMarketReference } from "@/lib/market-math";
 import { getPlayerCohortLabel } from "@/lib/player-cohorts";
@@ -77,7 +78,7 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
         </div>
         <div className="card-overview">
           <div className="tag-row">
-            <i>{card.demo ? "演示数据" : "已验证"}</i>
+            {card.demo ? <DemoDataBadge compact /> : <EvidenceBadge verified />}
             {card.rookie && <i>ROOKIE CARD</i>}
             <i>{card.type}</i>
             <i>{card.parallel}</i>
@@ -112,7 +113,7 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
         </div>
         <aside className="quote-panel">
           <div className="quote-label">
-            <span>最新真实成交</span>
+            <span>最新真实成交（演示样本） <MetricHelp label="成交样本" description="演示模式中的金额仅用于界面验证；接入授权来源并通过核验后，才会标记为真实平台成交。" /></span>
             <em>{marketReference.samples} 笔计算样本</em>
           </div>
           <CurrencyValue cny={card.latestSaleCny} />
@@ -178,7 +179,7 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
           <div className="section-heading">
             <div>
               <span className="section-kicker">TRANSACTIONS</span>
-              <h2>真实成交记录</h2>
+              <h2>成交样本记录</h2>
             </div>
             <small>{trustedSales.length} 笔纳入计算</small>
           </div>
@@ -209,7 +210,7 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
                         <small>
                           {sale.communitySubmitted
                             ? "社区提交"
-                            : "演示平台记录"}
+                            : sale.verified ? "来源已核验" : "演示平台记录 · 待外部核验"}
                         </small>
                       </td>
                       <td>
@@ -221,8 +222,10 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
                       <td>
                         {sale.isOutlier ? (
                           <span className="risk-pill high">已排除异常</span>
-                        ) : sale.verified ? (
-                          <span className="risk-pill low">已验证</span>
+                        ) : sale.verified && !card.demo ? (
+                          <span className="risk-pill low">已核验</span>
+                        ) : card.demo ? (
+                          <span className="risk-pill medium">演示样本</span>
                         ) : (
                           <span className="risk-pill medium">待审核</span>
                         )}

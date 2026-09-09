@@ -10,7 +10,7 @@ export function CardVisual({
   side?: "front" | "back";
 }) {
   return <div className={`card-visual ${side} image-placeholder`} aria-label={`${player.displayNameZh} ${side === "front" ? "卡片正面" : "卡片背面"}图片暂缺`}>
-    <span className="card-brand">IMAGE NOT AVAILABLE</span>
+    <span className="card-brand">暂无已核验卡图</span>
     <div className="player-monogram">{side === "front" ? "CARD" : "BACK"}</div>
     <div className="card-player"><b>{player.name}</b><small>{card.releaseYear} · {card.productLine}</small></div>
     <span className="card-number">#{card.cardNumber}</span>

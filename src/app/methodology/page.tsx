@@ -46,7 +46,7 @@ export default function MethodologyPage() {
         title="数据方法与授权状态"
         description="公开解释行情的来源、计算、异常处理、完整度和 AI 分析边界。没有授权的数据不进行侵入式采集。"
       />
-      <section className="method-grid">
+      <section id="metrics" className="method-grid">
         {methods.map(([title, body], index) => (
           <article key={title}>
             <span>0{index + 1}</span>
@@ -120,7 +120,7 @@ export default function MethodologyPage() {
           </article>
         ))}
       </section>
-      <section className="legal-panel">
+      <section id="feedback" className="legal-panel methodology-feedback">
         <h2>免责声明与合规边界</h2>
         <p>{productConfig.disclaimer}</p>
         <ul>
@@ -136,6 +136,7 @@ export default function MethodologyPage() {
           </li>
           <li>中国内地正式部署前需完成 ICP 备案、数据合规和内容运营评估。</li>
         </ul>
+        <div className="feedback-callout"><div><b>发现数据错误或缺少来源？</b><span>请附上卡片身份键、页面链接、截图和原始成交链接；演示记录不会被升级为真实成交。</span></div><a href="mailto:feedback@nucleus-cards.example?subject=Nucleus%20Cards%20数据纠错" data-analytics-event="data_feedback_email">发送纠错邮件 →</a></div>
       </section>
     </main>
   );

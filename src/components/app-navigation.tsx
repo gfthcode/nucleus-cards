@@ -71,7 +71,7 @@ export function MobileNavigation() {
       {coreItems.map(({ label, href, icon: Icon }) => (
         <Link className={isActive(pathname, href) ? "active" : ""} href={href} key={href}>
           <Icon size={19} aria-hidden />
-          <span>{label}</span>
+          <span>{label === "市场" ? "行情" : label}</span>
         </Link>
       ))}
     </nav>

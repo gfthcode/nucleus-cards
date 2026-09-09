@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, Star } from "lucide-react";
 import type { Card, Player, Team } from "@/types/domain";
 import { CardIdentity } from "@/components/card-image";
+import { MetricHelp } from "@/components/data-provenance";
 
 type MarketRow = Card & { player: Player; team?: Team };
 
@@ -49,7 +50,7 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
   return <>
     <section className="terminal-filter-panel" aria-label="行情筛选">
       <div className="terminal-filter-row">
-        <label className="terminal-market-search"><Search size={15} aria-hidden /><input data-analytics-event="search_used" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="筛选当前列表" /></label>
+        <label className="terminal-market-search"><Search size={15} aria-hidden /><input data-analytics-event="search_used" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="球员、球队、品牌或系列" /></label>
         <label><span>选秀年份</span><select value={draftYear} onChange={(e)=>setDraftYear(e.target.value)}><option value="all">全部</option>{[2026,2025,2024,2023,2022,2021,2020].map(year=><option key={year}>{year}</option>)}</select></label>
         <label><span>品牌</span><select value={brand} onChange={(e)=>setBrand(e.target.value)}><option value="all">全部品牌</option><option>Topps</option><option>Panini</option><option>Upper Deck</option></select></label>
         <label><span>价格区间</span><select value={price} onChange={(e)=>setPrice(e.target.value)}><option value="all">全部价格</option><option value="under1k">¥1,000 以下</option><option value="1k5k">¥1,000—5,000</option><option value="over5k">¥5,000 以上</option></select></label>
@@ -58,7 +59,7 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
       <div className="terminal-filter-tags" aria-label="快速筛选">
         <button className={cohort === "all" ? "active" : ""} onClick={()=>setCohort("all")}>全部卡片</button>
         <button className={cohort === "core_rookie" ? "active" : ""} onClick={()=>setCohort("core_rookie")}>核心新秀</button>
-        <button className={onlySales ? "active" : ""} onClick={()=>setOnlySales(!onlySales)}>有真实成交</button>
+        <button className={onlySales ? "active" : ""} onClick={()=>setOnlySales(!onlySales)}>有成交样本</button>
         <button className={highLiquidity ? "active" : ""} onClick={()=>setHighLiquidity(!highLiquidity)}>高流动性</button>
         <button className={highTrust ? "active" : ""} onClick={()=>setHighTrust(!highTrust)}>高可信度</button>
         <button className={recentSales ? "active" : ""} onClick={()=>setRecentSales(!recentSales)}>近 7 天有成交</button>
@@ -72,16 +73,16 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
         <label><span>风险等级</span><select value={risk} onChange={(e)=>setRisk(e.target.value)}><option value="all">全部</option><option value="low">低</option><option value="medium">中</option><option value="high">高</option></select></label>
       </div>}
     </section>
-    <div className="result-meta"><span>共 <b>{filtered.length}</b> 张标准化卡片</span><small>排序：最新可信成交价 ↓ · 在售标价不计入收益</small></div>
+    <div className="result-meta"><span>共 <b>{filtered.length}</b> 张标准化卡片</span><small>排序：最新成交样本 ↓ · 在售标价不计入收益 · <MetricHelp label="流动性评分" description="结合成交频率、在售深度与样本稳定性的观察指标，不代表价格回报。" /></small></div>
     <section className="market-table terminal-market-table data-panel">
       <div className="table-wrap"><table><thead><tr><th aria-label="关注" /><th>卡片名称</th><th>最新成交价</th><th>7D%</th><th>30D%</th><th>90D%</th><th>成交量</th><th>流动性评分</th></tr></thead>
       <tbody>{filtered.map((row)=><tr className={selected === row.id ? "selected" : ""} onClick={()=>setSelected(row.id)} key={row.id}>
         <td><button data-analytics-event="watchlist_toggled" data-analytics-label={row.player.name} className={watched.has(row.id) ? "watch active" : "watch"} aria-label={watched.has(row.id) ? "取消关注" : "加入关注"} onClick={(event)=>{event.stopPropagation();toggleWatch(row.id);}}><Star size={14} fill={watched.has(row.id) ? "currentColor" : "none"} /></button></td>
         <td><Link data-analytics-event="card_viewed" data-analytics-label={row.player.name} className="market-card-link" href={`/cards/${row.id}`}><CardIdentity card={row} player={row.player} /></Link></td>
-        <td data-label="最新成交价">{row.latestSaleCny ? <><b className="mono">¥{row.latestSaleCny.toLocaleString()}</b><small>真实成交</small></> : <span className="no-data">暂无成交</span>}</td>
+        <td data-label="最新成交价">{row.latestSaleCny ? <><b className="mono">¥{row.latestSaleCny.toLocaleString()}</b><small>{row.demo ? "演示成交样本" : "已核验成交"}</small></> : <span className="no-data">暂无成交</span>}</td>
         {[row.change7d,row.change30d,row.change90d].map((value,index)=><td data-label={["7D","30D","90D"][index]} className={(value ?? 0) >= 0 ? "up mono" : "down mono"} key={index}>{value == null ? "—" : `${value > 0 ? "+" : ""}${value}%`}</td>)}
         <td data-label="成交量"><b className="mono">{row.sales30d}</b><small>近 30 日</small></td>
-        <td data-label="流动性"><b className="mono">{row.liquidity}</b><span className="liquidity-meter"><i style={{width:`${row.liquidity}%`}} /></span></td>
+        <td data-label="流动性"><b className="mono">{row.liquidity}</b><span className="liquidity-meter" title="观察指标，不代表价格回报"><i style={{width:`${row.liquidity}%`}} /></span></td>
       </tr>)}{!filtered.length && <tr><td colSpan={8}><div className="empty-state"><b>暂无成交数据</b><span>调整筛选条件或刷新后重试。</span><button onClick={()=>{setQuery("");setBrand("all");setDraftYear("all");}}>刷新</button></div></td></tr>}</tbody></table></div>
     </section>
   </>;

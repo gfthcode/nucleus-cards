@@ -44,16 +44,20 @@ function RankingList({ rows, tone }: { rows: string[][]; tone: "up" | "down" | "
 }
 
 export default function Home() {
-  const featuredCard = cards.find((card) => card.id === "2") ?? cards[0];
-  const featuredPlayer = getPlayer(featuredCard.playerId);
-  const featuredReference = calculateMarketReference(getCardSales(featuredCard.id));
+  const heroSlides = ["2", "19", "20", "21"].flatMap((cardId) => {
+    const card = cards.find((item) => item.id === cardId);
+    const player = card ? getPlayer(card.playerId) : undefined;
+    return card && player
+      ? [{ card, player, reference: calculateMarketReference(getCardSales(card.id)) }]
+      : [];
+  });
 
-  if (!featuredPlayer) {
+  if (!heroSlides.length) {
     return null;
   }
 
   return <main className="page-shell terminal-dashboard">
-    <ImmersiveHomeHero card={featuredCard} player={featuredPlayer} reference={featuredReference} />
+    <ImmersiveHomeHero slides={heroSlides} />
     <header className="terminal-page-heading">
       <div><span className="section-kicker">MARKET OVERVIEW</span><h1>市场总览</h1><p>NBA 球星卡二级市场成交、流动性与风险监控</p></div>
       <div className="updated-at"><Clock3 size={14} aria-hidden /><span>数据状态</span><b>演示快照 · 2026-09-09</b></div>

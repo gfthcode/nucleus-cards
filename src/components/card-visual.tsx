@@ -17,7 +17,7 @@ export function CardVisual({
 
   if (hasFrontImage) {
     return <div className={`card-visual ${side} has-card-image`} aria-label={`${player.displayNameZh} 卡片正面图片`}>
-      <img src={image.frontUrl} alt={`${player.name} ${card.releaseYear} ${card.productLine} ${card.parallel} #${card.cardNumber}`} />
+      <img src={image.frontUrl} alt={`${player.name} ${card.releaseYear} ${card.productLine} ${card.parallel} #{card.cardNumber}`} />
       <span className="card-image-credit">{image.sourceName ?? "用户提供图片"} · 待授权核验</span>
     </div>;
   }

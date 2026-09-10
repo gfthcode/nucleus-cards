@@ -176,7 +176,7 @@ export interface CardImageRecord {
   thumbnailUrl?: string;
   sourceUrl?: string;
   sourceName?: string;
-  sourceType?: "official" | "licensed" | "catalog" | "auction" | "marketplace";
+  sourceType?: "official" | "licensed" | "catalog" | "auction" | "marketplace" | "user-provided";
   sourceImageId?: string;
   width?: number;
   height?: number;

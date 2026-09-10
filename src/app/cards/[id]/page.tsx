@@ -10,7 +10,7 @@ import { productConfig } from "@/config/product";
 import { DemoDataBadge, EvidenceBadge, MetricHelp } from "@/components/data-provenance";
 import { DeterministicDemoAI } from "@/lib/ai-analysis";
 import { calculateMarketReference } from "@/lib/market-math";
-import { getPlayerCohortLabel } from "@/lib/player-cohorts";
+import { getPlayerCohortLabel } from "@/lib/player-cohorts";\nimport { getCardImage } from "@/lib/card-images";
 import {
   cards,
   dataSources,
@@ -53,7 +53,7 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
   const printedTeam = card.printedTeamId
     ? getTeam(card.printedTeamId)
     : undefined;
-  const cardSales = getCardSales(card.id);
+  const cardSales = getCardSales(card.id);\n  const cardImage = getCardImage(card);
   const marketReference = calculateMarketReference(cardSales);
   const ai = await new DeterministicDemoAI().analyze(card, player, "7-30d");
   const trustedSales = cardSales.filter(
@@ -74,7 +74,7 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
         <div className="card-gallery">
           <CardVisual card={card} player={player} />
           <CardVisual card={card} player={player} side="back" />
-          <small>正反面均为演示占位图，不代表真实卡面。</small>
+          <small>{cardImage.frontUrl ? "正面为用户提供卡图；授权状态仍需单独核验。" : "正反面均为演示占位图，不代表真实卡面。"}</small>
         </div>
         <div className="card-overview">
           <div className="tag-row">

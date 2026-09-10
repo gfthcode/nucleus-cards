@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Activity, Search, ShieldCheck } from "lucide-react";
 import {
@@ -123,9 +124,7 @@ export default function RootLayout({
             href="/"
             aria-label={`${productConfig.name} 首页`}
           >
-            <span className="brand-mark" aria-hidden>
-              N
-            </span>
+            <span className="brand-mark" aria-hidden><Image src="/icon.svg" alt="" width={40} height={40} priority /></span>
             <span>
               <b>{productConfig.name}</b>
               <small>CARDS INTELLIGENCE</small>
@@ -145,7 +144,7 @@ export default function RootLayout({
         <div className="terminal-main">
           <header className="terminal-topbar">
             <Link className="mobile-brand" href="/">
-              <span className="brand-mark">N</span>
+              <span className="brand-mark"><Image src="/icon.svg" alt="" width={40} height={40} priority /></span>
               <b>{productConfig.name}</b>
             </Link>
             <label className="global-search">

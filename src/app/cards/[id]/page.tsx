@@ -10,7 +10,8 @@ import { productConfig } from "@/config/product";
 import { DemoDataBadge, EvidenceBadge, MetricHelp } from "@/components/data-provenance";
 import { DeterministicDemoAI } from "@/lib/ai-analysis";
 import { calculateMarketReference } from "@/lib/market-math";
-import { getPlayerCohortLabel } from "@/lib/player-cohorts";\nimport { getCardImage } from "@/lib/card-images";
+import { getPlayerCohortLabel } from "@/lib/player-cohorts";
+import { getCardImage } from "@/lib/card-images";
 import {
   cards,
   dataSources,
@@ -53,7 +54,8 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
   const printedTeam = card.printedTeamId
     ? getTeam(card.printedTeamId)
     : undefined;
-  const cardSales = getCardSales(card.id);\n  const cardImage = getCardImage(card);
+  const cardSales = getCardSales(card.id);
+  const cardImage = getCardImage(card);
   const marketReference = calculateMarketReference(cardSales);
   const ai = await new DeterministicDemoAI().analyze(card, player, "7-30d");
   const trustedSales = cardSales.filter(

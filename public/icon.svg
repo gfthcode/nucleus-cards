@@ -1,7 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
   <title id="title">Nucleus Cards</title>
-  <rect width="512" height="512" rx="112" fill="#09111f"/>
-  <path d="M132 362V150h55l138 135V150h55v212h-50L187 222v140z" fill="#f4f8ff"/>
-  <circle cx="374" cy="142" r="30" fill="#4d8dff"/>
-  <path d="M112 397h288" stroke="#3fc98a" stroke-width="18" stroke-linecap="round"/>
+  <rect width="512" height="512" rx="112" fill="#07101d"/>
+  <rect x="12" y="12" width="488" height="488" rx="100" fill="none" stroke="#3b82f6" stroke-width="12"/>
+  <path d="M145 370V142h48l174 170V142h48v228h-43L193 205v165z" fill="#3b82f6"/>
+  <path d="M390 142h-49v49h49z" fill="#2dd4bf"/>
+  <ellipse cx="256" cy="293" rx="188" ry="58" fill="none" stroke="#60a5fa" stroke-width="18" transform="rotate(12 256 293)"/>
+  <circle cx="220" cy="286" r="42" fill="#07101d" stroke="#0f172a" stroke-width="8"/>
+  <path d="M180 276c26 9 54 20 80 40M195 251c22 22 36 48 40 82M253 245c-17 19-27 45-28 81" fill="none" stroke="#3b82f6" stroke-width="7" stroke-linecap="round"/>
 </svg>

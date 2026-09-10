@@ -1,11 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 export const metadata: Metadata = { title: "登录" };
 export default function LoginPage() {
   return (
     <main className="auth-page">
       <section>
-        <span className="brand-mark">N</span>
+        <span className="brand-mark"><Image src="/icon.svg" alt="" width={56} height={56} priority /></span>
         <span className="section-kicker">NUCLEUS CARDS</span>
         <h1>登录你的收藏工作台</h1>
         <p>

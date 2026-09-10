@@ -5,8 +5,20 @@ import { PlayerCohortBadges } from "@/components/player-cohort-badges";
 import { RookieComparison } from "@/components/rookie-comparison";
 import { RookieComparePool } from "@/components/rookie-compare-pool";
 import { cards, getTeam, players } from "@/lib/demo-data";
+import type { Metadata } from "next";
 
 const draftYears = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/rookies/[year]">): Promise<Metadata> {
+  const { year } = await params;
+  return {
+    title: `${year} NBA 新秀球星卡观察`,
+    description: `查看 ${year} 选秀届球员的球星卡行情样本、热度、成交活跃度和风险提示。AI 综合观察不等于投资建议。`,
+    alternates: { canonical: `/rookies/${year}` },
+  };
+}
 
 export function generateStaticParams() {
   return draftYears.map((year) => ({ year: String(year) }));

@@ -27,13 +27,9 @@ function formatCny(value: number | null) {
 }
 
 export function ImmersiveHomeHero({
-  card,
-  player,
-  reference,
+  slides,
 }: {
-  card: Card;
-  player: Player;
-  reference: MarketReference;
+  slides: Array<{ card: Card; player: Player; reference: MarketReference }>;
 }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [progress, setProgress] = useState(0);
@@ -67,9 +63,13 @@ export function ImmersiveHomeHero({
     };
   }, [reducedMotion]);
 
-  const scene = (start: number, end: number, y = 16) => ({
+  const activeIndex = Math.min(slides.length - 1, Math.floor(progress * slides.length));
+  const activeSlide = slides[activeIndex] ?? slides[slides.length - 1];
+  const { card, player, reference } = activeSlide;
+
+  const scene = (start: number, end: number, y = 16, x = "0") => ({
     opacity: reducedMotion ? (start === 0 ? 1 : 0) : sceneOpacity(progress, start, end),
-    transform: `translate3d(0, ${reducedMotion ? 0 : (1 - sceneOpacity(progress, start, end)) * y}px, 0)`,
+    transform: `translate3d(${x}, ${reducedMotion ? 0 : (1 - sceneOpacity(progress, start, end)) * y}px, 0)`,
   });
 
   return (
@@ -80,7 +80,7 @@ export function ImmersiveHomeHero({
         <div className="immersive-orbit immersive-orbit-two" aria-hidden="true" />
         <div className="immersive-scene-eyebrow">NUCLEUS CARDS / MARKET SIGNALS</div>
 
-        <div className="immersive-copy immersive-copy-intro" style={scene(0, 0.3, 28)}>
+        <div className="immersive-copy immersive-copy-intro" style={scene(0, 0.3, 28, "-50%")}>
           <span className="section-kicker">COLLECTOR INTELLIGENCE</span>
           <h2>只追踪真正重要的卡。</h2>
           <p>从一张卡开始，把身份、成交、挂牌和风险信号放回同一条可核验链路。</p>
@@ -100,9 +100,12 @@ export function ImmersiveHomeHero({
             <span>{card.releaseYear} · {card.brand} {card.productLine}</span>
             <small>{card.parallel} · {card.condition === "graded" ? `${card.gradingCompany} ${card.grade}` : "Raw"}</small>
           </div>
+          <div className="immersive-slide-rail" aria-label="首页卡片序列">
+            {slides.map((slide, index) => <span className={index === activeIndex ? "active" : ""} key={slide.card.id}>{slide.player.name}</span>)}
+          </div>
         </div>
 
-        <div className="immersive-copy immersive-copy-signal" style={scene(0.24, 0.56, 20)}>
+        <div className="immersive-copy immersive-copy-signal" style={scene(0.24, 0.56, 20, "-50%")}>
           <span className="section-kicker">IDENTITY FIRST</span>
           <h2>先确认你看的，真的是同一张卡。</h2>
           <p>球员、年份、品牌、系列、卡号、平行和等级逐项对齐；图片未获授权时，界面会明确保留占位。</p>
@@ -119,7 +122,7 @@ export function ImmersiveHomeHero({
           <span className="immersive-data-note">{reference.precise ? "样本达到精确口径" : "样本不足：仅作观察线索"}</span>
         </div>
 
-        <div className="immersive-copy immersive-copy-close" style={scene(0.74, 1, 12)}>
+        <div className="immersive-copy immersive-copy-close" style={scene(0.74, 1, 12, "-50%")}>
           <span className="section-kicker">YOUR NEXT MOVE</span>
           <h2>一张卡，读懂市场。</h2>
           <p>把搜索、拍卖雷达和方法说明连起来，再决定是否加入自己的观察清单。</p>

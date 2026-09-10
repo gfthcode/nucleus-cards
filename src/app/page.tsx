@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { Activity, ArrowDownRight, ArrowUpRight, Clock3, ShieldAlert } from "lucide-react";
+import { ImmersiveHomeHero } from "@/components/immersive-home-hero";
+import { cards, getCardSales, getPlayer } from "@/lib/demo-data";
+import { calculateMarketReference } from "@/lib/market-math";
 
 const heatmap = [
   ["Cooper Flagg", "+12.8%", "xl", "strong"],
@@ -41,7 +44,16 @@ function RankingList({ rows, tone }: { rows: string[][]; tone: "up" | "down" | "
 }
 
 export default function Home() {
+  const featuredCard = cards.find((card) => card.id === "2") ?? cards[0];
+  const featuredPlayer = getPlayer(featuredCard.playerId);
+  const featuredReference = calculateMarketReference(getCardSales(featuredCard.id));
+
+  if (!featuredPlayer) {
+    return null;
+  }
+
   return <main className="page-shell terminal-dashboard">
+    <ImmersiveHomeHero card={featuredCard} player={featuredPlayer} reference={featuredReference} />
     <header className="terminal-page-heading">
       <div><span className="section-kicker">MARKET OVERVIEW</span><h1>市场总览</h1><p>NBA 球星卡二级市场成交、流动性与风险监控</p></div>
       <div className="updated-at"><Clock3 size={14} aria-hidden /><span>数据状态</span><b>演示快照 · 2026-09-09</b></div>

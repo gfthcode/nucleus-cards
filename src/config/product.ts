@@ -1,7 +1,9 @@
 export const productConfig = {
   name: "Nucleus Cards",
   shortName: "Nucleus",
-  siteUrl:\n    process.env.NEXT_PUBLIC_APP_URL?.replace(/\\/+$/, "") ||\n    "https://nucleus-cards.vercel.app",
+  siteUrl:
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\\/+$/, "") ||
+    "https://nucleus-cards.vercel.app",
   repositoryUrl: "https://github.com/gfthcode/nucleus-cards",
   defaultLocale: "zh-CN",
   supportedLocales: ["zh-CN", "zh-HK"] as const,

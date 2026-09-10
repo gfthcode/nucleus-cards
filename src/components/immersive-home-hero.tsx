@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import Link from "next/link";
 import { ArrowDown, ArrowRight, ExternalLink } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +14,8 @@ type MarketReference = {
   range: [number, number] | null;
   samples: number;
 };
+
+type PlayerPhoto = { url: string; sourceUrl: string; sourceName: string };
 
 function clamp(value: number) {
   return Math.min(1, Math.max(0, value));
@@ -29,7 +33,7 @@ function formatCny(value: number | null) {
 export function ImmersiveHomeHero({
   slides,
 }: {
-  slides: Array<{ card: Card; player: Player; reference: MarketReference }>;
+  slides: Array<{ card: Card; player: Player; reference: MarketReference; photo?: PlayerPhoto }>;
 }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [progress, setProgress] = useState(0);
@@ -91,6 +95,11 @@ export function ImmersiveHomeHero({
           transform: `translate3d(0, ${reducedMotion ? 0 : (progress * -14).toFixed(2)}%, 0) scale(${reducedMotion ? 1 : (1 + progress * 0.08).toFixed(3)})`,
         }}>
           <div className="immersive-card-halo" aria-hidden="true" />
+          {activeSlide.photo && <a className="immersive-player-photo" href={activeSlide.photo.sourceUrl} target="_blank" rel="noreferrer" aria-label={`${player.name} 赛场照片来源：${activeSlide.photo.sourceName}`}>
+            {/* Publicly traceable game-action image; card imagery remains a separate identity surface. */}
+            <img src={activeSlide.photo.url} alt={`${player.name} NBA 赛场照片`} loading="eager" />
+            <span>{activeSlide.photo.sourceName} ↗</span>
+          </a>}
           <div className="immersive-card-frame">
             <CardImage card={card} player={player} size="large" />
             <span className="immersive-card-stamp">{card.demo ? "演示身份" : "已核验身份"}</span>
@@ -112,7 +121,7 @@ export function ImmersiveHomeHero({
           <Link href={`/cards/${card.id}`} className="immersive-inline-link">查看完整卡片身份 <ArrowRight size={14} /></Link>
         </div>
 
-        <div className="immersive-market-panel" style={scene(0.5, 0.79, 16)}>
+        <div className="immersive-market-panel" style={{ opacity: reducedMotion ? 0.96 : sceneOpacity(progress, 0.5, 0.79) }}>
           <div><span className="section-kicker">MARKET REFERENCE</span><h2>先看成交，再看挂牌。</h2><p>当前样本来自站内演示数据，只有达到样本门槛才标记为精确。</p></div>
           <div className="immersive-market-metrics">
             <span><small>中位参考</small><b>{formatCny(reference.median)}</b></span>

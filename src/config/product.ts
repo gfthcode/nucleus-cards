@@ -1,6 +1,8 @@
 export const productConfig = {
   name: "Nucleus Cards",
   shortName: "Nucleus",
+  siteUrl: "https://nucleus-cards-gfthcode.netlify.app",
+  repositoryUrl: "https://github.com/gfthcode/nucleus-cards",
   defaultLocale: "zh-CN",
   supportedLocales: ["zh-CN", "zh-HK"] as const,
   defaultCurrency: "CNY" as const,

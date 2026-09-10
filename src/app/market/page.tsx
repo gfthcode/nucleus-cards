@@ -4,7 +4,12 @@ import { PageHeader } from "@/components/page-header";
 import { cards, getPlayer, getTeam } from "@/lib/demo-data";
 import { DemoDataBadge } from "@/components/data-provenance";
 
-export const metadata: Metadata = { title: "行情市场" };
+export const metadata: Metadata = {
+  title: "NBA 球星卡行情市场",
+  description:
+    "按球员、球队、品牌、选秀届和流动性筛选 NBA 球星卡。先区分成交样本与在售标价，再阅读价格区间和数据完整度。",
+  alternates: { canonical: "/market" },
+};
 
 export default function MarketPage() {
   const rows = cards.map((card) => ({

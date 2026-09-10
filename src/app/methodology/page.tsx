@@ -3,7 +3,12 @@ import { PageHeader } from "@/components/page-header";
 import { brands, dataSources } from "@/lib/demo-data";
 import { productConfig } from "@/config/product";
 
-export const metadata: Metadata = { title: "数据方法与合规说明" };
+export const metadata: Metadata = {
+  title: "NBA 球星卡数据方法与合规说明",
+  description:
+    "解释 Nucleus Cards 的数据来源、成交与在售区分、异常处理、授权边界和演示快照规则。",
+  alternates: { canonical: "/methodology" },
+};
 const methods = [
   [
     "成交价与标价",
@@ -61,7 +66,9 @@ export default function MethodologyPage() {
             <span className="section-kicker">SOURCE REGISTRY</span>
             <h2>数据源状态</h2>
           </div>
-          <small>{productConfig.demoDataUpdatedLabel} · 真实来源需单独核验</small>
+          <small>
+            {productConfig.demoDataUpdatedLabel} · 真实来源需单独核验
+          </small>
         </div>
         <div className="table-wrap">
           <table>
@@ -104,11 +111,54 @@ export default function MethodologyPage() {
         </div>
       </section>
       <section className="data-panel methodology-compare">
-        <div className="section-heading"><div><span className="section-kicker">HOW TO READ</span><h2>三类用户的最短使用路径</h2></div></div>
+        <div className="section-heading">
+          <div>
+            <span className="section-kicker">HOW TO READ</span>
+            <h2>三类用户的最短使用路径</h2>
+          </div>
+        </div>
         <div className="method-path-grid">
-          <article><b>资深收藏者</b><span>先看来源与样本量 → 打开成交证据 → 对比同系列卡。</span></article>
-          <article><b>刚入坑用户</b><span>先搜索球员 → 阅读指标提示 → 只把 Heat 当作活跃度。</span></article>
-          <article><b>观望用户</b><span>先看覆盖面板 → 判断数据状态 → 再决定是否关注或导出。</span></article>
+          <article>
+            <b>资深收藏者</b>
+            <span>先看来源与样本量 → 打开成交证据 → 对比同系列卡。</span>
+          </article>
+          <article>
+            <b>刚入坑用户</b>
+            <span>先搜索球员 → 阅读指标提示 → 只把 Heat 当作活跃度。</span>
+          </article>
+          <article>
+            <b>观望用户</b>
+            <span>先看覆盖面板 → 判断数据状态 → 再决定是否关注或导出。</span>
+          </article>
+        </div>
+      </section>
+      <section className="data-panel methodology-faq" id="faq">
+        <div className="section-heading">
+          <div>
+            <span className="section-kicker">FAQ</span>
+            <h2>球星卡行情数据常见问题</h2>
+          </div>
+        </div>
+        <div className="method-path-grid">
+          <article>
+            <h3>页面上的价格都是真实成交价吗？</h3>
+            <p>
+              不是。标注为演示数据的金额只用于验证页面功能；只有完成授权接入、来源核验和导入的记录，才可标记为平台真实成交。
+            </p>
+          </article>
+          <article>
+            <h3>在售标价可以当作成交价吗？</h3>
+            <p>
+              不可以。在售标价是卖方报价，成交记录是已完成交易，两者在系统中分开存储，也不会混入历史收益计算。
+            </p>
+          </article>
+          <article>
+            <h3>Heat 是价格涨幅吗？</h3>
+            <p>
+              不是。Heat
+              代表搜索、关注、成交和拍卖活跃度，不等于回报率，也不构成投资建议。
+            </p>
+          </article>
         </div>
       </section>
       <section className="brand-registry">
@@ -144,8 +194,56 @@ export default function MethodologyPage() {
           </li>
           <li>中国内地正式部署前需完成 ICP 备案、数据合规和内容运营评估。</li>
         </ul>
-        <div className="feedback-callout"><div><b>发现数据错误或缺少来源？</b><span>请附上卡片身份键、页面链接、截图和原始成交链接；演示记录不会被升级为真实成交。</span></div><a href="mailto:feedback@nucleus-cards.example?subject=Nucleus%20Cards%20数据纠错" data-analytics-event="data_feedback_email">发送纠错邮件 →</a></div>
+        <div className="feedback-callout">
+          <div>
+            <b>发现数据错误或缺少来源？</b>
+            <span>
+              请附上卡片身份键、页面链接、截图和原始成交链接；演示记录不会被升级为真实成交。
+            </span>
+          </div>
+          <a
+            href="mailto:feedback@nucleus-cards.example?subject=Nucleus%20Cards%20数据纠错"
+            data-analytics-event="data_feedback_email"
+          >
+            发送纠错邮件 →
+          </a>
+        </div>
       </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "页面上的价格都是真实成交价吗？",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "不是。标注为演示数据的金额只用于验证页面功能；只有完成授权接入、来源核验和导入的记录，才可标记为平台真实成交。",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "在售标价可以当作成交价吗？",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "不可以。在售标价是卖方报价，成交记录是已完成交易，两者在系统中分开存储，也不会混入历史收益计算。",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Heat 是价格涨幅吗？",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "不是。Heat 代表搜索、关注、成交和拍卖活跃度，不等于回报率，也不构成投资建议。",
+                },
+              },
+            ],
+          }),
+        }}
+      />
     </main>
   );
 }

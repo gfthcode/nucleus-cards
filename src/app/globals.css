@@ -3602,3 +3602,23 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 @media (min-width: 1025px) { .terminal-sidebar { width: 252px; } .terminal-main { margin-left: 252px; } }
 @media (max-width: 1024px) and (min-width: 768px) { .terminal-sidebar { width: 212px; } .terminal-main { margin-left: 212px; } }
 @media (max-width: 767px) { .terminal-sidebar { display: none; } .terminal-main { margin-left: 0; } .terminal-topbar { height: 50px; padding: 0 14px; } .advice-disclaimer { top: 50px; } .terminal-content .page-shell { padding: 18px 14px 28px; } .home-anchor-nav { top: 50px; } .home-highlights { grid-template-columns: repeat(2, minmax(0, 1fr)); } .home-highlight-card:first-child { border-radius: 10px 0 0 0; } .home-highlight-card:nth-child(2) { border-radius: 0 10px 0 0; } .home-highlight-card:nth-child(3) { border-radius: 0 0 0 10px; } .home-highlight-card:last-child { border-radius: 0 0 10px 0; } }
+
+/* Phase 4–9 shared page language: collection, entities, market, AI, settings and auth. */
+.inner-page { display: grid; gap: 18px; }
+.collection-grid, .team-grid, .team-card-grid, .related-terminal-cards { gap: 12px; }
+.collection-grid > *, .team-tile, .team-card, .mini-card, .ai-analysis-panel, .settings-grid > *, .auth-page > section { border-radius: 10px; }
+.team-tile, .mini-card, .collection-grid a { transition: border-color .15s, background .15s, transform .15s; }
+.team-tile:hover, .mini-card:hover, .collection-grid a:hover { border-color: rgba(96,165,250,.48); transform: translateY(-2px); }
+.card-detail-page, .player-terminal-page, .team-detail-grid, .portfolio-layout, .alerts-layout, .settings-grid, .admin-page { gap: 18px; }
+.card-hero-grid, .profile-hero, .player-terminal-overview, .team-intelligence-panel { border-radius: 12px; }
+.card-info-grid, .player-stat-grid, .portfolio-metrics, .market-stat-grid { gap: 1px; }
+.card-info-grid > *, .player-stat-grid > *, .portfolio-metrics > *, .market-stat-grid > * { background: var(--terminal-panel); border: 1px solid var(--terminal-line); }
+.player-terminal-tabs a, .tabs a, .tab-button { border-radius: 999px; }
+.ai-analysis-panel { background: var(--terminal-panel); border: 1px solid var(--terminal-line); box-shadow: 0 12px 30px rgba(0,0,0,.12); }
+.ai-columns, .ai-prob-grid { gap: 10px; }
+.auth-page { background: radial-gradient(circle at 50% 0%, rgba(37,99,235,.18), transparent 42%), var(--terminal-bg); }
+.auth-page > section { background: var(--terminal-panel); border: 1px solid var(--terminal-line); box-shadow: 0 20px 60px rgba(0,0,0,.22); }
+.setting-list, .notification-panel, .privacy-callout, .security-note { border-radius: 10px; }
+.modal, .drawer, .bottom-sheet, [role="dialog"] { border-radius: 14px; }
+.toast, .provenance-badge, .sale-badge, .risk-pill { border-radius: 999px; }
+.skeleton { border-radius: 10px; }

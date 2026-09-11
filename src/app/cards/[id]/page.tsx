@@ -59,7 +59,7 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
   const marketReference = calculateMarketReference(cardSales);
   const ai = await new DeterministicDemoAI().analyze(card, player, "7-30d");
   const trustedSales = cardSales.filter(
-    (sale) => !sale.isOutlier && !sale.isBundle,
+    (sale) => sale.verified && !sale.isOutlier && !sale.isBundle,
   );
   const latestSource = (id: string) =>
     dataSources.find((source) => source.id === id)?.name ?? "未披露";

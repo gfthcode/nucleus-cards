@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowDown, ArrowRight, ExternalLink } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { Card, Player } from "@/types/domain";
+import { CardVisual } from "@/components/card-visual";
 
 type MarketReference = {
   precise: boolean;
@@ -83,10 +84,15 @@ export function ImmersiveHomeHero({
         <div className="immersive-orbit immersive-orbit-two" aria-hidden="true" />
         <div className="immersive-scene-eyebrow">NUCLEUS CARDS / MARKET SIGNALS</div>
 
+        <div className="immersive-card-product" aria-label={`${player.displayNameZh} 交易卡主视觉`}>
+          <CardVisual card={card} player={player} />
+          <span className="immersive-card-product-meta">{player.name} · {card.releaseYear} {card.productLine} · {card.parallel}</span>
+        </div>
+
         <div className="immersive-copy immersive-copy-intro" style={scene(0, 0.3, 28, "-50%")}>
-          <span className="section-kicker">COLLECTOR INTELLIGENCE</span>
-          <h2>只追踪真正重要的卡。</h2>
-          <p>从一张卡开始，把身份、成交、挂牌和风险信号放回同一条可核验链路。</p>
+          <span className="section-kicker">THE MARKET BEHIND EVERY CARD</span>
+          <h2>每一张卡，背后都有一座市场。</h2>
+          <p>从身份、成交到挂牌与风险，把收藏判断放回同一条可核验链路。</p>
           <span className="immersive-scroll-hint"><ArrowDown size={14} /> 向下滚动探索</span>
         </div>
 

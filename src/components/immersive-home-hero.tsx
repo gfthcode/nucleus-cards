@@ -6,7 +6,6 @@ import Link from "next/link";
 import { ArrowDown, ArrowRight, ExternalLink } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { Card, Player } from "@/types/domain";
-import { CardImage } from "@/components/card-image";
 
 type MarketReference = {
   precise: boolean;
@@ -15,7 +14,7 @@ type MarketReference = {
   samples: number;
 };
 
-type PlayerPhoto = { url: string; sourceUrl: string; sourceName: string };
+type PlayerPhoto = { url: string; sourceUrl: string; sourceName: string; isLogo?: boolean };
 
 function clamp(value: number) {
   return Math.min(1, Math.max(0, value));
@@ -91,29 +90,10 @@ export function ImmersiveHomeHero({
           <span className="immersive-scroll-hint"><ArrowDown size={14} /> 向下滚动探索</span>
         </div>
 
-        {activeSlide.photo && <a className={`immersive-player-photo ${activeIndex === 0 ? "is-lead" : ""}`} href={activeSlide.photo.sourceUrl} target="_blank" rel="noreferrer" aria-label={`${player.name} 赛场照片来源：${activeSlide.photo.sourceName}`}>
-          {/* The game photo is the hero subject; card imagery remains a separate market identity surface. */}
-          <img src={activeSlide.photo.url} alt={`${player.name} NBA 赛场照片`} loading="eager" />
+        {activeSlide.photo && <a className={`immersive-player-photo ${activeIndex === 0 ? "is-lead" : ""} ${activeSlide.photo.isLogo ? "is-logo" : ""}`} href={activeSlide.photo.sourceUrl} target="_blank" rel="noreferrer" aria-label={`${player.name} 图片来源：${activeSlide.photo.sourceName}`}>
+          <img src={activeSlide.photo.url} alt={activeSlide.photo.isLogo ? "NBA 官方 Logo" : `${player.name} NBA 赛场照片`} loading="eager" />
           <span>{activeSlide.photo.sourceName} ↗</span>
         </a>}
-
-        <div className="immersive-card-stage" style={{
-          transform: `translate3d(0, ${reducedMotion ? 0 : (progress * -14).toFixed(2)}%, 0) scale(${reducedMotion ? 1 : (1 + progress * 0.08).toFixed(3)})`,
-        }}>
-          <div className="immersive-card-halo" aria-hidden="true" />
-          <div className="immersive-card-frame">
-            <CardImage card={card} player={player} size="large" />
-            <span className="immersive-card-stamp">{card.demo ? "演示身份" : "已核验身份"}</span>
-          </div>
-          <div className="immersive-card-caption">
-            <b>{player.name}</b>
-            <span>{card.releaseYear} · {card.brand} {card.productLine}</span>
-            <small>{card.parallel} · {card.condition === "graded" ? `${card.gradingCompany} ${card.grade}` : "Raw"}</small>
-          </div>
-          <div className="immersive-slide-rail" aria-label="首页卡片序列">
-            {slides.map((slide, index) => <span className={index === activeIndex ? "active" : ""} key={slide.card.id}>{slide.player.name}</span>)}
-          </div>
-        </div>
 
         <div className="immersive-copy immersive-copy-signal" style={scene(0.24, 0.56, 20, "-50%")}>
           <span className="section-kicker">IDENTITY FIRST</span>

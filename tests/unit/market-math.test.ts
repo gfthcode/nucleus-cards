@@ -63,6 +63,33 @@ describe("market calculations", () => {
       samples: 2,
     });
   });
+  it("excludes unverified submissions from the reference price", () => {
+    const sale = (id: string, price: number, verified: boolean): Sale => ({
+      id,
+      cardId: "1",
+      sourceId: "community",
+      soldAt: "2026-01-01",
+      originalAmount: price,
+      originalCurrency: "CNY",
+      convertedCny: price,
+      exchangeRate: 1,
+      verified,
+      communitySubmitted: !verified,
+      isBundle: false,
+      isOutlier: false,
+    });
+    expect(
+      calculateMarketReference([
+        sale("verified", 100, true),
+        sale("unverified", 900, false),
+      ]),
+    ).toEqual({
+      precise: false,
+      median: 100,
+      range: [100, 100],
+      samples: 1,
+    });
+  });
   it("computes bounded liquidity", () => {
     expect(
       liquidityScore({

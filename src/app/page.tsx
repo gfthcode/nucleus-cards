@@ -32,7 +32,7 @@ const active = [
 ];
 
 const heroPhotos = {
-  "2": { url: "https://commons.wikimedia.org/wiki/Special:FilePath/San%20Antonio%20at%20Toronto%20-%20Wembanyama%202024.jpg", sourceUrl: "https://commons.wikimedia.org/wiki/File:San_Antonio_at_Toronto_-_Wembanyama_2024.jpg", sourceName: "Wikimedia Commons" },
+  "2": { url: "https://cdn.nba.com/logos/nba/nba-logoman-75-word_white.svg", sourceUrl: "https://www.nba.com", sourceName: "NBA.com 官方 Logo", isLogo: true },
   "19": { url: "https://commons.wikimedia.org/wiki/Special:FilePath/Shai%20Gilgeous-Alexander%20%2851815871018%29%20%28cropped%29.jpg", sourceUrl: "https://commons.wikimedia.org/wiki/File:Shai_Gilgeous-Alexander_(51815871018)_(cropped).jpg", sourceName: "Wikimedia Commons" },
   "20": { url: "https://commons.wikimedia.org/wiki/Special:FilePath/LeBron%20James%2018112009%201.jpg", sourceUrl: "https://commons.wikimedia.org/wiki/File:LeBron_James_18112009_1.jpg", sourceName: "Wikimedia Commons" },
   "21": { url: "https://upload.wikimedia.org/wikipedia/commons/3/38/Jalen_Williams_OKCThunder_2025_NBA_Cup_%28cropped%29_%28cropped%29.jpg", sourceUrl: "https://commons.wikimedia.org/wiki/File:Jalen_Williams_OKCThunder_2025_NBA_Cup_(cropped)_(cropped).jpg", sourceName: "Wikimedia Commons · CC BY 4.0" },

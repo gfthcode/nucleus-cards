@@ -65,7 +65,12 @@ export default function Home() {
 
   return <main className="page-shell terminal-dashboard">
     <ImmersiveHomeHero slides={heroSlides} />
-    <header className="terminal-page-heading">
+    <nav className="home-anchor-nav" aria-label="首页快捷导航">
+      <span className="home-anchor-brand">Nucleus / NBA Cards</span>
+      <div><a href="#overview">总览</a><a href="#market">市场</a><a href="#auction">拍卖雷达</a><a href="#methodology">数据口径</a></div>
+      <Link className="home-anchor-cta" href="/market">开始检索 <span>→</span></Link>
+    </nav>
+    <header className="terminal-page-heading" id="overview">
       <div><span className="section-kicker">MARKET OVERVIEW</span><h1>市场总览</h1><p>NBA 球星卡二级市场成交、流动性与风险监控</p></div>
       <div className="updated-at"><Clock3 size={14} aria-hidden /><span>数据状态</span><b>演示快照 · 2026-09-09</b></div>
     </header>
@@ -77,8 +82,16 @@ export default function Home() {
         <Link href="/portfolio">管理我的持仓 <span>→</span></Link>
       </div>
     </section>
+    <section className="home-highlights" aria-label="平台能力">
+      {[
+        ["01", "市场检索", "按球员、品牌、年份定位卡片", "/market"],
+        ["02", "拍卖雷达", "追踪挂牌与拍卖机会", "/auction-radar"],
+        ["03", "球队与球员", "从 NBA 阵容进入球员档案", "/teams"],
+        ["04", "可信口径", "查看来源、样本与更新时间", "/methodology"],
+      ].map(([index, title, description, href]) => <Link href={href} key={title} className="home-highlight-card"><b>{index}</b><span><strong>{title}</strong><small>{description}</small></span><i>↗</i></Link>)}
+    </section>
     <div className="terminal-demo-notice"><span>演示数据 · 非实时行情</span><small>价格旁显示样本数量、更新时间和来源；样本不足时不生成可靠趋势。</small><Link href="/methodology">了解可信度规则 →</Link></div>
-    <section className="terminal-start-guide data-panel" aria-label="快速开始"><div><span className="section-kicker">QUICK START</span><h2>第一次使用？三步找到可核验线索</h2></div><div className="start-guide-steps"><Link href="/market"><b>01</b><span>搜索卡片<small>按球员、品牌、年份筛选</small></span></Link><Link href="/auction-radar"><b>02</b><span>核对来源<small>区分成交、挂牌与拍卖</small></span></Link><Link href="/methodology"><b>03</b><span>阅读口径<small>了解 Heat、流动性与样本限制</small></span></Link></div></section>
+    <section className="terminal-start-guide data-panel" id="methodology" aria-label="快速开始"><div><span className="section-kicker">QUICK START</span><h2>第一次使用？三步找到可核验线索</h2></div><div className="start-guide-steps"><Link href="/market"><b>01</b><span>搜索卡片<small>按球员、品牌、年份筛选</small></span></Link><Link href="/auction-radar"><b>02</b><span>核对来源<small>区分成交、挂牌与拍卖</small></span></Link><Link href="/methodology"><b>03</b><span>阅读口径<small>了解 Heat、流动性与样本限制</small></span></Link></div></section>
 
     <section className="terminal-summary-grid" aria-label="今日市场概览">
       <article><span>今日总成交额</span><strong>¥18,642,380</strong><small className="up"><ArrowUpRight size={13} /> 6.82% 较昨日</small></article>
@@ -87,7 +100,7 @@ export default function Home() {
       <article><span>市场热度指数</span><strong>78.4</strong><small className="up"><ArrowUpRight size={13} /> 4.2 pts · 偏热</small></article>
     </section>
 
-    <section className="terminal-dashboard-grid">
+    <section className="terminal-dashboard-grid" id="market">
       <article className="data-panel terminal-heatmap-panel">
         <div className="terminal-panel-heading"><div><span className="section-kicker">TODAY&apos;S HEATMAP</span><h2>今日热力图</h2></div><div className="heatmap-legend"><span><i className="up" />上涨</span><span><i className="down" />下跌</span></div></div>
         <div className="terminal-heatmap">
@@ -95,7 +108,7 @@ export default function Home() {
         </div>
       </article>
 
-      <article className="data-panel terminal-activity-panel">
+      <article className="data-panel terminal-activity-panel" id="auction">
         <div className="terminal-panel-heading"><div><span className="section-kicker">LIQUIDITY</span><h2>成交活跃榜</h2></div><Link href="/market">完整榜单 →</Link></div>
         <RankingList rows={active} tone="active" />
         <div className="panel-footnote"><Activity size={13} /> 按近 24 小时可信成交笔数排序</div>

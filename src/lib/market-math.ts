@@ -54,7 +54,12 @@ export function detectOutliers(values: number[]): boolean[] {
 }
 
 export function calculateMarketReference(sales: Sale[]) {
-  const trusted = sales.filter((sale) => !sale.isBundle && !sale.isOutlier);
+  // A marketplace listing or an unverified community submission is not a
+  // completed sale. Keep those records available to the UI, but never let
+  // them influence the historical reference price.
+  const trusted = sales.filter(
+    (sale) => sale.verified && !sale.isBundle && !sale.isOutlier,
+  );
   const prices = trusted.map((sale) => sale.convertedCny);
   const midpoint = median(prices);
   if (prices.length < 3) {

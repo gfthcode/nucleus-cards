@@ -3622,3 +3622,17 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .modal, .drawer, .bottom-sheet, [role="dialog"] { border-radius: 14px; }
 .toast, .provenance-badge, .sale-badge, .risk-pill { border-radius: 999px; }
 .skeleton { border-radius: 10px; }
+
+/* Product-first hero: card is the object, player imagery is atmosphere, data stays quiet. */
+.immersive-card-product { align-items: center; display: flex; flex-direction: column; gap: 10px; left: 72%; position: absolute; top: 51%; transform: translate(-50%, -50%) rotate(2deg); width: clamp(230px, 27vw, 390px); z-index: 5; }
+.immersive-card-product .card-visual { aspect-ratio: .71; background: #0f1725; border: 1px solid rgba(255,255,255,.16); border-radius: 13px; box-shadow: 0 35px 90px rgba(0,0,0,.56), 0 0 34px rgba(59,130,246,.16); overflow: hidden; width: 100%; }
+.immersive-card-product .card-visual.has-card-image img { height: 100%; object-fit: contain; width: 100%; }
+.immersive-card-product .card-visual.image-placeholder { align-items: center; display: flex; flex-direction: column; justify-content: center; padding: 22px; }
+.immersive-card-product .card-image-credit { display: none; }
+.immersive-card-product-meta { color: rgba(226,232,240,.7); font: 500 9px ui-monospace, SFMono-Regular, monospace; letter-spacing: .04em; text-align: center; }
+.immersive-player-photo { opacity: .16; right: 5%; transform: translateY(-50%) rotate(-5deg) scale(1.1); z-index: 2; }
+.immersive-player-photo.is-lead { opacity: .2; }
+.immersive-player-photo::after { background: linear-gradient(180deg, rgba(3,12,32,.2), rgba(3,12,32,.95)); }
+.immersive-copy-intro { z-index: 6; }
+.immersive-copy-intro h2 { max-width: 510px; }
+@media (max-width: 767px) { .immersive-card-product { left: 50%; top: 30%; transform: translate(-50%, -50%) rotate(1deg); width: min(55vw, 230px); } .immersive-card-product .card-visual { border-radius: 10px; } .immersive-player-photo, .immersive-player-photo.is-lead { opacity: .1; transform: translate(-50%, -50%) rotate(-3deg) scale(1.05); } .immersive-copy-intro { top: 69%; } }

@@ -4,9 +4,15 @@ import { getCardImage } from "@/lib/card-images";
 
 export function CardImage({ card, player, image, size = "medium", preferAuctionImage = false }: { card: Card; player: Player; image?: CardImageRecord; size?: "thumbnail" | "small" | "medium" | "large"; preferAuctionImage?: boolean }) {
   const record = image ?? getCardImage(card);
-  const alt = `${card.releaseYear}-${String(card.releaseYear + 1).slice(-2)} ${card.brand} ${card.productLine} ${player.name} ${card.parallel} #${card.cardNumber}`;
+  const alt = `${card.releaseYear}-${String(card.releaseYear + 1).slice(-2)} ${card.brand} ${card.productLine} ${player.name} ${card.parallel} ${card.cardNumber}`;
   return <div className={`card-image card-image-${size} ${record.imageType === "placeholder" ? "is-placeholder" : ""}`} aria-label={alt}>
-    {record.frontUrl ? <img src={record.frontUrl} alt={alt} loading={size === "large" ? "eager" : "lazy"} onError={(event) => { event.currentTarget.hidden = true; event.currentTarget.parentElement?.classList.add("is-placeholder"); }} /> : <><span className="card-image-placeholder">暂无已核验卡图</span><small>{card.releaseYear} · {card.productLine}</small><small>{card.parallel} · #{card.cardNumber}</small></>}
+    {record.frontUrl ? <img src={record.frontUrl} alt={alt} loading={size === "large" ? "eager" : "lazy"} onError={(event) => { event.currentTarget.hidden = true; event.currentTarget.parentElement?.classList.add("is-placeholder"); }} /> : <>
+      <span className="card-image-placeholder">卡图待授权上传</span>
+      <strong className="card-image-player">{player.name}</strong>
+      <small>{card.releaseYear} · {card.brand} {card.productLine}</small>
+      <small>{card.parallel} · {card.cardNumber}</small>
+      <em className="card-image-status">未使用虚构卡面</em>
+    </>}
     {record.imageType !== "placeholder" && <small className="card-image-source">{preferAuctionImage ? "Auction Scan" : record.sourceName ?? "已验证卡图"}</small>}
   </div>;
 }

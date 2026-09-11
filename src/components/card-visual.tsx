@@ -26,7 +26,7 @@ export function CardVisual({
     <span className="card-brand">暂无已核验卡图</span>
     <div className="player-monogram">{side === "front" ? "CARD" : "BACK"}</div>
     <div className="card-player"><b>{player.name}</b><small>{card.releaseYear} · {card.productLine}</small></div>
-    <span className="card-number">#{card.cardNumber}</span>
+    <span className="card-number">{card.cardNumber}</span>
     <small className="card-image-missing">{card.parallel} · 暂无已验证卡图</small>
   </div>;
 }

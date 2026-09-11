@@ -3273,6 +3273,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .global-search { align-items: center; background: var(--terminal-panel); border: 1px solid var(--terminal-line); border-radius: 5px; color: var(--terminal-muted); display: flex; gap: 8px; max-width: 440px; padding: 0 10px; width: 42%; }
 .global-search input { background: transparent; border: 0; color: var(--terminal-text); font-size: 11px; height: 34px; min-width: 0; outline: 0; width: 100%; }
 .global-search kbd { background: var(--terminal-panel-raised); border: 1px solid var(--terminal-line); border-radius: 3px; color: var(--terminal-muted); font-size: 9px; padding: 2px 5px; white-space: nowrap; }
+.global-search-submit { background: transparent; border: 0; color: var(--terminal-muted); cursor: pointer; font-size: 15px; line-height: 1; padding: 0 2px; }
+.global-search-submit:hover { color: var(--terminal-text); }
 .market-session { align-items: center; color: var(--terminal-muted); display: flex; font-size: 10px; gap: 6px; margin-left: auto; white-space: nowrap; }
 .market-session i { margin: 0; }
 .top-actions { align-items: center; display: flex; gap: 7px; }

@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Activity, Search, ShieldCheck } from "lucide-react";
+import { Activity, ShieldCheck } from "lucide-react";
 import {
   MobileNavigation,
   SidebarNavigation,
@@ -10,6 +10,7 @@ import { HeaderControls } from "@/components/header-controls";
 import { PwaRegister } from "@/components/pwa-register";
 import { Analytics } from "@/components/analytics";
 import { DataTrustBar } from "@/components/data-provenance";
+import { GlobalSearch } from "@/components/global-search";
 import { productConfig } from "@/config/product";
 import "./globals.css";
 
@@ -147,11 +148,7 @@ export default function RootLayout({
               <span className="brand-mark"><Image src="/icon.svg" alt="" width={40} height={40} priority /></span>
               <b>{productConfig.name}</b>
             </Link>
-            <label className="global-search">
-              <Search size={16} aria-hidden />
-              <input aria-label="全局搜索" placeholder="搜索球员、卡片或球队" />
-              <kbd>⌘ K</kbd>
-            </label>
+            <GlobalSearch />
             <div className="market-session">
               <i /> 美东市场 · 盘后
             </div>

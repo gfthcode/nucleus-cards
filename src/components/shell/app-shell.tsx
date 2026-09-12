@@ -12,6 +12,7 @@ import { PwaRegister } from "@/components/pwa-register";
 import { productConfig } from "@/config/product";
 import { ShellFooterNavigation, ShellMobileNavigation, ShellNavigation } from "./shell-navigation";
 import styles from "./app-shell.module.css";
+import marketingStyles from "@/components/marketing/marketing.module.css";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -54,29 +55,29 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 }
 
 function MarketingChrome({ children }: { children: React.ReactNode }) {
-  return <div className={styles.marketingShell}>
-    <a className={styles.marketingSkip} href="#main-content">跳至主要内容</a>
-    <header className={styles.marketingHeader}>
-      <Link className={styles.marketingBrand} href="/" aria-label="Nucleus Cards 首页">
+  return <div className={marketingStyles.marketingShell}>
+    <a className={marketingStyles.marketingSkip} href="#main-content">跳至主要内容</a>
+    <header className={marketingStyles.marketingHeader}>
+      <Link className={marketingStyles.marketingBrand} href="/" aria-label="Nucleus Cards 首页">
         <Image src="/icon.svg" alt="" width={38} height={38} priority />
         <span><b>Nucleus Cards</b><small>SPORTS CARD INTELLIGENCE</small></span>
       </Link>
-      <nav className={styles.marketingNav} aria-label="公开页面导航">
+      <nav className={marketingStyles.marketingNav} aria-label="公开页面导航">
         <a href="#features">功能</a>
         <a href="#market">行情</a>
         <a href="#scanner">识别器</a>
         <a href="#collection">收藏</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <div className={styles.marketingActions}>
+      <div className={marketingStyles.marketingActions}>
         <button type="button" aria-label="切换语言">中 / EN</button>
         <a href="https://github.com/gfthcode/nucleus-cards" target="_blank" rel="noreferrer">GitHub</a>
         <Link href="/market">进入应用</Link>
       </div>
     </header>
-    <div id="main-content" className={styles.marketingContent}>{children}</div>
-    <nav className={styles.marketingMobileNav} aria-label="手机导航"><Link href="/">首页</Link><Link href="/market">行情</Link><Link href="/collections/demo">收藏</Link><Link href="/analysis">AI</Link></nav>
-    <footer className={styles.marketingFooter}>
+    <div id="main-content" className={marketingStyles.marketingContent}>{children}</div>
+    <nav className={marketingStyles.marketingMobileNav} aria-label="手机导航"><Link href="/">首页</Link><Link href="/market">行情</Link><Link href="/collections/demo">收藏</Link><Link href="/analysis">AI</Link></nav>
+    <footer className={marketingStyles.marketingFooter}>
       <div><b>Nucleus Cards</b><span>NBA 球星卡收藏、行情与研究工具。</span></div>
       <nav aria-label="页脚导航"><a href="#features">功能</a><a href="#market">行情</a><Link href="/methodology">数据口径</Link><Link href="/settings">隐私</Link></nav>
       <small>演示快照 · 真实成交需接入授权来源核验</small>

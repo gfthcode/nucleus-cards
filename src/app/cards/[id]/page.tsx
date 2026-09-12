@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CardActions } from "@/components/card-actions";
-import { CardVisual } from "@/components/card-visual";
-import { CurrencyValue } from "@/components/currency-switcher";
+import { CardDetailHero } from "@/components/card-detail-hero";
 import { PriceChart } from "@/components/price-chart";
-import { PlayerCohortBadges } from "@/components/player-cohort-badges";
 import { productConfig } from "@/config/product";
-import { DemoDataBadge, EvidenceBadge, MetricHelp } from "@/components/data-provenance";
 import { DeterministicDemoAI } from "@/lib/ai-analysis";
 import { calculateMarketReference } from "@/lib/market-math";
 import { getPlayerCohortLabel } from "@/lib/player-cohorts";
-import { getCardImage } from "@/lib/card-images";
 import {
   cards,
   dataSources,
@@ -55,7 +49,6 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
     ? getTeam(card.printedTeamId)
     : undefined;
   const cardSales = getCardSales(card.id);
-  const cardImage = getCardImage(card);
   const marketReference = calculateMarketReference(cardSales);
   const ai = await new DeterministicDemoAI().analyze(card, player, "7-30d");
   const trustedSales = cardSales.filter(
@@ -65,108 +58,7 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
     dataSources.find((source) => source.id === id)?.name ?? "未披露";
   return (
     <main className="page-shell inner-page card-detail-page">
-      <nav className="breadcrumbs" aria-label="面包屑">
-        <Link href="/market">行情市场</Link>
-        <span>›</span>
-        <Link href={`/players/${player.id}`}>{player.name}</Link>
-        <span>›</span>
-        <b>{card.cardNumber}</b>
-      </nav>
-      <section className="card-hero-grid">
-        <div className="card-gallery">
-          <CardVisual card={card} player={player} />
-          <CardVisual card={card} player={player} side="back" />
-          <small>{cardImage.frontUrl ? "正面为用户提供卡图；授权状态仍需单独核验。" : "正反面均为演示占位图，不代表真实卡面。"}</small>
-        </div>
-        <div className="card-overview">
-          <div className="tag-row">
-            {card.demo ? <DemoDataBadge compact /> : <EvidenceBadge verified />}
-            {card.rookie && <i>ROOKIE CARD</i>}
-            <i>{card.type}</i>
-            <i>{card.parallel}</i>
-          </div>
-          <PlayerCohortBadges player={player} />
-          <h1>{player.name}</h1>
-          <h2>
-            {card.releaseYear} {card.productLine} {card.cardNumber}
-          </h2>
-          <p>
-            {card.parallel}
-            {card.printRun ? ` /${card.printRun}` : ""} ·{" "}
-            {card.autograph ? (card.autographType ?? "签字") : "非签字"} ·{" "}
-            {card.memorabilia ? (card.materialType ?? "含物料") : "无物料"}
-          </p>
-          <div className="identity-box">
-            <span>稳定身份键</span>
-            <code>{card.identityKey}</code>
-            <small>数据匹配置信度 {card.matchConfidence}%</small>
-          </div>
-          <div className="team-relation">
-            <div>
-              <span>球员当前球队</span>
-              <b>{currentTeam?.name ?? "退役 / 未披露"}</b>
-            </div>
-            <div>
-              <span>卡片印刷球队</span>
-              <b>{printedTeam?.name ?? "未披露"}</b>
-            </div>
-          </div>
-          <CardActions />
-        </div>
-        <aside className="quote-panel">
-          <div className="quote-label">
-            <span>最新真实成交（演示样本） <MetricHelp label="成交样本" description="演示模式中的金额仅用于界面验证；接入授权来源并通过核验后，才会标记为真实平台成交。" /></span>
-            <em>{marketReference.samples} 笔计算样本</em>
-          </div>
-          <CurrencyValue cny={card.latestSaleCny} />
-          <div className="quote-separator" />
-          <div className="listing-quote">
-            <span>最新在售标价</span>
-            <b>
-              {card.latestListingCny
-                ? `¥${card.latestListingCny.toLocaleString()}`
-                : "暂无在售"}
-            </b>
-            <small>在售不是成交，不能用于历史收益计算</small>
-          </div>
-          <div className="period-grid">
-            {[
-              ["7日", card.change7d],
-              ["30日", card.change30d],
-              ["90日", card.change90d],
-              ["1年", card.change1y],
-            ].map(([label, value]) => (
-              <div key={String(label)}>
-                <span>{label}</span>
-                <b className={(Number(value) || 0) >= 0 ? "up" : "down"}>
-                  {value == null
-                    ? "—"
-                    : `${Number(value) > 0 ? "+" : ""}${value}%`}
-                </b>
-              </div>
-            ))}
-          </div>
-        </aside>
-      </section>
-      <section className="market-stat-grid">
-        {[
-          [
-            "历史区间",
-            marketReference.range
-              ? `¥${marketReference.range[0].toLocaleString()}—¥${marketReference.range[1].toLocaleString()}`
-              : "暂无",
-          ],
-          ["30 日成交量", `${card.sales30d} 笔`],
-          ["当前在售", `${card.listingsCount} 张`],
-          ["流动性", `${card.liquidity}/100`],
-          ["数据完整度", `${card.dataCompleteness}%`],
-        ].map(([label, value]) => (
-          <div key={label}>
-            <span>{label}</span>
-            <b>{value}</b>
-          </div>
-        ))}
-      </section>
+      <CardDetailHero card={card} player={player} currentTeam={currentTeam} printedTeam={printedTeam} reference={marketReference} />
       {!marketReference.precise && (
         <div className="data-warning">
           <b>样本不足</b>
@@ -177,7 +69,7 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
         <PriceChart />
       </section>
       <div className="card-info-grid">
-        <section className="data-panel">
+        <section className="data-panel" id="recent-sales">
           <div className="section-heading">
             <div>
               <span className="section-kicker">TRANSACTIONS</span>
@@ -300,7 +192,7 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
           </div>
         </section>
       </div>
-      <section className="ai-analysis-panel">
+      <section className="ai-analysis-panel" id="analysis">
         <header>
           <div>
             <span>DETERMINISTIC AI · {ai.modelVersion}</span>

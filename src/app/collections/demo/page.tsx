@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { CardVisual } from "@/components/card-visual";
 import { cards, demoPortfolio, getPlayer } from "@/lib/demo-data";
+import styles from "./collection.module.css";
 
 export const metadata: Metadata = {
   title: "Nucleus Collector 的公开收藏",
@@ -18,42 +19,22 @@ export default function PublicCollectionPage() {
       card: cards.find((card) => card.id === item.cardId)!,
     }));
   return (
-    <main className="page-shell inner-page public-profile">
-      <section className="profile-hero">
-        <span className="collector-avatar">NC</span>
-        <div>
-          <span className="section-kicker">PUBLIC COLLECTION · DEMO</span>
-          <h1>Nucleus Collector</h1>
-          <p>
-            专注现代新秀卡与高流动性经典卡。所有展示均为演示数据，不提供交易或私信。
-          </p>
-          <div className="profile-meta">
-            <span>公开卡片 {publicItems.length}</span>
-            <span>收藏合集 2</span>
-            <span>中国香港 · 时区 Asia/Hong_Kong</span>
-          </div>
-        </div>
-        <button className="button button-secondary">复制公开链接</button>
+    <main className={`${styles.page} page-shell inner-page`}>
+      <section className={styles.masthead}>
+        <span className={styles.avatar}>NC</span>
+        <div><span>PUBLIC COLLECTION · DEMO</span><h1>Nucleus Collector</h1><p>现代新秀与高流动性经典卡的公开橱窗。展示是收藏者选择公开的演示条目，不提供交易撮合或私信入口。</p></div>
+        <dl><div><dt>公开卡片</dt><dd>{publicItems.length}</dd></div><div><dt>收藏合集</dt><dd>02</dd></div><div><dt>公开模式</dt><dd>DEMO</dd></div></dl>
       </section>
-      <div className="public-privacy">
-        <b>隐私说明</b>
-        <span>真实姓名、联系方式、购买成本、盈亏和精确资产总额默认隐藏。</span>
-      </div>
-      <section className="collection-section">
-        <div className="section-heading">
-          <div>
-            <span className="section-kicker">FEATURED COLLECTION</span>
-            <h2>公开卡片</h2>
-          </div>
-          <small>收藏者主动公开</small>
-        </div>
-        <div className="collection-grid">
+      <aside className={styles.privacy}><b>隐私由收藏者决定</b><span>真实姓名、联系方式、成本、盈亏和精确资产总额默认隐藏。</span><Link href="/portfolio">管理我的持仓 →</Link></aside>
+      <section className={styles.collection}>
+        <header><div><span>FEATURED CARDS</span><h2>公开的收藏选择</h2></div><small>卡片优先 · 收藏者主动公开</small></header>
+        <div className={styles.grid}>
           {publicItems.map(({ item, card }) => {
             const player = getPlayer(card.playerId)!;
             return (
-              <Link href={`/cards/${card.id}`} key={item.id}>
+              <Link href={`/cards/${card.id}`} key={item.id} className={styles.product}>
                 <CardVisual card={card} player={player} />
-                <div>
+                <div className={styles.productCopy}>
                   <b>{player.name}</b>
                   <span>
                     {card.releaseYear} {card.productLine}

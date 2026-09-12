@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { MarketExplorer } from "@/components/market-explorer";
-import { PageHeader } from "@/components/page-header";
 import { cards, getPlayer, getTeam } from "@/lib/demo-data";
 import { DemoDataBadge } from "@/components/data-provenance";
+import styles from "./market.module.css";
 
 export const metadata: Metadata = {
   title: "NBA 球星卡行情市场",
@@ -19,26 +19,19 @@ export default function MarketPage() {
   }));
   return (
     <main className="page-shell inner-page">
-      <PageHeader
-        eyebrow="MARKET"
-        title="球星卡行情市场"
-        description="按球员、球队、2020—2026 选秀届、球员代际、品牌、成交量、流动性与风险筛选。先看来源和样本量，再看价格变化。"
-      />
-      <div className="data-quality-strip">
-        <DemoDataBadge />
-        <span>
-          <b>78.4%</b> 数据覆盖率
-        </span>
-        <span>
-          <b>{cards.length}</b> 张标准化卡片
-        </span>
-        <span>
-          <b>6</b> 个数据源状态
-        </span>
-        <span className="warn">
-          <b>4</b> 条待审核异常
-        </span>
-      </div>
+      <header className={styles.masthead}>
+        <div>
+          <span>THE MARKET</span>
+          <h1>球星卡行情市场</h1>
+          <p className={styles.headline}>卡片，不只是目录。</p>
+          <p>从成交样本开始，逐层阅读版本、评级、流动性与数据状态。这里的卡片是可研究的产品，而不是被压缩进数据表的一行文字。</p>
+        </div>
+        <aside>
+          <DemoDataBadge />
+          <strong>{cards.length}<small> 张标准化卡片</small></strong>
+          <p>数据覆盖 78.4% · 4 条待审核异常<br />在售标价与成交样本始终分开。</p>
+        </aside>
+      </header>
       <MarketExplorer rows={rows} />
     </main>
   );

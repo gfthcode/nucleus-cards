@@ -1,8 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/page-header";
 import { PortfolioManager } from "@/components/portfolio-manager";
 import { cards, demoPortfolio, getPlayer } from "@/lib/demo-data";
+import styles from "./portfolio.module.css";
 
 export const metadata: Metadata = { title: "我的持仓" };
 
@@ -12,25 +12,11 @@ export default function PortfolioPage() {
     player: getPlayer(card.playerId)!,
   }));
   return (
-    <main className="page-shell inner-page">
-      <PageHeader
-        eyebrow="PRIVATE PORTFOLIO"
-        title="我的持仓"
-        description="录入数量、买入价与成本，查看估值、未实现盈亏、集中度与球员代际分布。演示模式仅在当前浏览器本地保存。"
-        actions={
-          <Link className="button button-secondary" href="/collections/demo">
-            查看公开收藏页
-          </Link>
-        }
-      />
-      <div className="privacy-callout">
-        <b>默认隐私保护已开启</b>
-        <span>
-          真实姓名、联系方式、购买成本、盈亏和精确资产总额不会公开；只有明确开启的卡片会进入公开主页。
-        </span>
-      </div>
-      <PortfolioManager seed={demoPortfolio} cards={joined} />
-      <section className="concentration-grid">
+    <main className={`${styles.page} page-shell inner-page`}>
+      <header className={styles.masthead}><div><span>PRIVATE COLLECTION</span><h1>收藏，<br />但不必公开。</h1><p>持仓、成本与估值默认保存在当前浏览器；你决定哪一张卡片进入公开收藏展示。</p></div><aside><span>PRIVACY MODE</span><b>ON</b><small>资产数值默认隐藏</small><Link href="/collections/demo">预览公开收藏 →</Link></aside></header>
+      <div className={styles.note}><b>本地演示持仓</b><span>添加、编辑和公开状态仅写入此浏览器。真实资产数据不会上传，也不会自动生成交易建议。</span></div>
+      <div className={styles.manager}><PortfolioManager seed={demoPortfolio} cards={joined} /></div>
+      <section className={`${styles.supporting} concentration-grid`}>
         <article className="data-panel">
           <div className="section-heading">
             <div>

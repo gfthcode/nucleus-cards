@@ -2,31 +2,34 @@
 
 import { getCardImage } from "@/lib/card-images";
 import type { Card, Player } from "@/types/domain";
+import styles from "./card-visual.module.css";
 
 export function CardVisual({
   card,
   player,
   side = "front",
+  density = "default",
 }: {
   card: Card;
   player: Player;
   side?: "front" | "back";
+  density?: "default" | "compact";
 }) {
   const image = getCardImage(card);
-  const hasFrontImage = side === "front" && Boolean(image.frontUrl);
+  const imageUrl = side === "back" ? image.backUrl : image.frontUrl;
+  const hasImage = Boolean(imageUrl);
+  const price = card.latestSaleCny ? `¥${card.latestSaleCny.toLocaleString()}` : "暂无成交";
+  const change = card.change30d;
 
-  if (hasFrontImage) {
-    return <div className={`card-visual ${side} has-card-image`} aria-label={`${player.displayNameZh} 卡片正面图片`}>
-      <img src={image.frontUrl} alt={`${player.name} ${card.releaseYear} ${card.productLine} ${card.parallel} ${card.cardNumber}`} />
-      <span className="card-image-credit">{image.sourceName ?? "用户提供图片"} · 待授权核验</span>
-    </div>;
-  }
-
-  return <div className={`card-visual ${side} image-placeholder`} aria-label={`${player.displayNameZh} ${side === "front" ? "卡片正面" : "卡片背面"}图片暂缺`}>
-    <span className="card-brand">暂无已核验卡图</span>
-    <div className="player-monogram">{side === "front" ? "CARD" : "BACK"}</div>
-    <div className="card-player"><b>{player.name}</b><small>{card.releaseYear} · {card.productLine}</small></div>
-    <span className="card-number">{card.cardNumber}</span>
-    <small className="card-image-missing">{card.parallel} · 暂无已验证卡图</small>
+  return <div className={`${styles.card} ${side === "back" ? styles.sideBack : ""} ${density === "compact" ? styles.compact : ""}`} aria-label={`${player.displayNameZh} ${side === "front" ? "卡片正面" : "卡片背面"}`}>
+    <div className={styles.imageWrap}>
+      {imageUrl && hasImage ? <img src={imageUrl} alt={`${player.name} ${card.releaseYear} ${card.productLine} ${card.parallel} #${card.cardNumber}`} /> : <div className={styles.placeholder}><b>{side === "front" ? "CARD IMAGE" : "CARD BACK"}</b><strong>{player.name}</strong><small>{card.releaseYear} · {card.brand} {card.productLine}<br />{card.parallel} · #{card.cardNumber}<br />未使用虚构卡面</small></div>}
+      {card.condition === "graded" && <span className={styles.grade}>{card.gradingCompany} {card.grade}</span>}
+    </div>
+    <div className={styles.meta}>
+      <b className={styles.player}>{player.name}</b>
+      <span className={styles.identity}>{card.releaseYear} {card.productLine} · {card.parallel} · #{card.cardNumber}</span>
+      <div className={styles.valueRow}><b>{price}</b><small className={change == null ? "" : change >= 0 ? styles.up : styles.down}>{change == null ? "样本不足" : `${change > 0 ? "+" : ""}${change}% / 30D`}</small></div>
+    </div>
   </div>;
 }

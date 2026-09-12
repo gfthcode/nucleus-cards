@@ -3,31 +3,29 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Search, SlidersHorizontal, Star } from "lucide-react";
-import type { Card, Player, Team } from "@/types/domain";
-import { CardIdentity } from "@/components/card-image";
+import { Grid2X2, List, Search, SlidersHorizontal, Star } from "lucide-react";
+import { CardVisual } from "@/components/card-visual";
 import { MetricHelp } from "@/components/data-provenance";
+import type { Card, Player, Team } from "@/types/domain";
+import styles from "./market-explorer.module.css";
 
 type MarketRow = Card & { player: Player; team?: Team };
+type View = "gallery" | "table";
+const years = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
 
 export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [brand, setBrand] = useState("all");
   const [draftYear, setDraftYear] = useState("all");
+  const [price, setPrice] = useState("all");
   const [cohort, setCohort] = useState("all");
   const [risk, setRisk] = useState("all");
-  const [price, setPrice] = useState("all");
   const [advancedOpen, setAdvancedOpen] = useState(false);
-  const [parallel, setParallel] = useState("all");
-  const [grade, setGrade] = useState("all");
-  const [printRun, setPrintRun] = useState("all");
-  const [selected, setSelected] = useState<string | null>(null);
-  const [watched, setWatched] = useState<Set<string>>(new Set());
   const [onlySales, setOnlySales] = useState(false);
   const [highLiquidity, setHighLiquidity] = useState(false);
-  const [highTrust, setHighTrust] = useState(false);
-  const [recentSales, setRecentSales] = useState(false);
+  const [view, setView] = useState<View>("gallery");
+  const [watched, setWatched] = useState<Set<string>>(new Set());
 
   const filtered = useMemo(() => rows.filter((row) => {
     const haystack = `${row.player.name} ${row.player.displayNameZh} ${row.brand} ${row.productLine} ${row.team?.name ?? ""}`.toLowerCase();
@@ -35,58 +33,39 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
     return haystack.includes(query.toLowerCase()) &&
       (brand === "all" || row.brand === brand) &&
       (draftYear === "all" || row.draftYear === Number(draftYear)) &&
-      (cohort === "all" || row.player.cohort === cohort) &&
       (risk === "all" || row.riskLevel === risk) &&
+      (cohort === "all" || row.player.cohort === cohort) &&
       (price === "all" || (price === "under1k" && amount < 1000) || (price === "1k5k" && amount >= 1000 && amount <= 5000) || (price === "over5k" && amount > 5000)) &&
-      (parallel === "all" || row.parallel.toLowerCase().includes(parallel)) &&
-      (grade === "all" || (grade === "graded" ? row.condition === "graded" : row.condition !== "graded")) &&
-      (printRun === "all" || (printRun === "numbered" ? Boolean(row.printRun) : !row.printRun)) &&
-      (!onlySales || row.sales30d > 0) && (!highLiquidity || row.liquidity >= 70) &&
-      (!highTrust || row.dataCompleteness >= 85) && (!recentSales || row.sales30d > 0);
-  }).sort((a,b) => (b.latestSaleCny ?? 0) - (a.latestSaleCny ?? 0)), [rows, query, brand, draftYear, cohort, risk, price, parallel, grade, printRun, onlySales, highLiquidity, highTrust, recentSales]);
+      (!onlySales || row.sales30d > 0) && (!highLiquidity || row.liquidity >= 70);
+  }).sort((a, b) => (b.latestSaleCny ?? 0) - (a.latestSaleCny ?? 0)), [rows, query, brand, draftYear, price, risk, cohort, onlySales, highLiquidity]);
 
-  function toggleWatch(id: string) {
-    setWatched((current) => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; });
-  }
+  function reset() { setQuery(""); setBrand("all"); setDraftYear("all"); setPrice("all"); setRisk("all"); setCohort("all"); setOnlySales(false); setHighLiquidity(false); }
+  function toggleWatch(id: string) { setWatched((current) => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; }); }
 
-  return <>
-    <section className="terminal-filter-panel" aria-label="行情筛选">
-      <div className="terminal-filter-row">
-        <label className="terminal-market-search"><Search size={15} aria-hidden /><input data-analytics-event="search_used" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="球员、球队、品牌或系列" /></label>
-        <label><span>选秀年份</span><select value={draftYear} onChange={(e)=>setDraftYear(e.target.value)}><option value="all">全部</option>{[2026,2025,2024,2023,2022,2021,2020].map(year=><option key={year}>{year}</option>)}</select></label>
-        <label><span>品牌</span><select value={brand} onChange={(e)=>setBrand(e.target.value)}><option value="all">全部品牌</option><option>Topps</option><option>Panini</option><option>Upper Deck</option></select></label>
-        <label><span>价格区间</span><select value={price} onChange={(e)=>setPrice(e.target.value)}><option value="all">全部价格</option><option value="under1k">¥1,000 以下</option><option value="1k5k">¥1,000—5,000</option><option value="over5k">¥5,000 以上</option></select></label>
-        <button data-analytics-event="advanced_filter_toggled" className={advancedOpen ? "filter-toggle active" : "filter-toggle"} onClick={()=>setAdvancedOpen(!advancedOpen)}><SlidersHorizontal size={14} />更多筛选</button>
+  return <section className={styles.explorer} aria-label="球星卡市场浏览器">
+    <div className={styles.controls}>
+      <label className={styles.search}><Search size={17} aria-hidden /><input data-analytics-event="search_used" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="球员、球队、品牌或系列" /></label>
+      <div className={styles.selects}>
+        <label><span>年份</span><select value={draftYear} onChange={(event) => setDraftYear(event.target.value)}><option value="all">全部年份</option>{years.map((year) => <option key={year}>{year}</option>)}</select></label>
+        <label><span>品牌</span><select value={brand} onChange={(event) => setBrand(event.target.value)}><option value="all">全部品牌</option><option>Topps</option><option>Panini</option><option>Upper Deck</option></select></label>
+        <label><span>成交区间</span><select value={price} onChange={(event) => setPrice(event.target.value)}><option value="all">全部价格</option><option value="under1k">¥1,000 以下</option><option value="1k5k">¥1,000—5,000</option><option value="over5k">¥5,000 以上</option></select></label>
+        <label><span>球员代际</span><select aria-label="球员代际" value={cohort} onChange={(event) => setCohort(event.target.value)}><option value="all">全部代际</option><option value="core_rookie">核心新秀</option><option value="recent_rookie">近年新秀</option><option value="young_core">年轻核心</option><option value="prime">当打球员</option><option value="veteran">老将</option><option value="retired_legend">退役传奇</option></select></label>
       </div>
-      <div className="terminal-filter-tags" aria-label="快速筛选">
-        <button className={cohort === "all" ? "active" : ""} onClick={()=>setCohort("all")}>全部卡片</button>
-        <button className={cohort === "core_rookie" ? "active" : ""} onClick={()=>setCohort("core_rookie")}>核心新秀</button>
-        <button className={onlySales ? "active" : ""} onClick={()=>setOnlySales(!onlySales)}>有成交样本</button>
-        <button className={highLiquidity ? "active" : ""} onClick={()=>setHighLiquidity(!highLiquidity)}>高流动性</button>
-        <button className={highTrust ? "active" : ""} onClick={()=>setHighTrust(!highTrust)}>高可信度</button>
-        <button className={recentSales ? "active" : ""} onClick={()=>setRecentSales(!recentSales)}>近 7 天有成交</button>
-        <button className={risk === "high" ? "active warning" : ""} onClick={()=>setRisk(risk === "high" ? "all" : "high")}>高风险</button>
-        <label className="sr-only-label"><span>球员代际</span><select aria-label="球员代际" value={cohort} onChange={(e)=>setCohort(e.target.value)}><option value="all">全部代际</option><option value="core_rookie">核心新秀</option><option value="recent_rookie">近年新秀</option><option value="young_core">年轻核心</option><option value="prime">当打球员</option><option value="veteran">老将</option><option value="retired_legend">退役传奇</option></select></label>
-      </div>
-      {advancedOpen && <div className="terminal-advanced-filters">
-        <label><span>平行版本</span><select value={parallel} onChange={(e)=>setParallel(e.target.value)}><option value="all">全部</option><option value="silver">Silver</option><option value="gold">Gold</option></select></label>
-        <label><span>评级状态</span><select value={grade} onChange={(e)=>setGrade(e.target.value)}><option value="all">全部</option><option value="graded">已评级</option><option value="raw">裸卡</option></select></label>
-        <label><span>限编数量</span><select value={printRun} onChange={(e)=>setPrintRun(e.target.value)}><option value="all">全部</option><option value="numbered">有限编</option><option value="open">非限编</option></select></label>
-        <label><span>风险等级</span><select value={risk} onChange={(e)=>setRisk(e.target.value)}><option value="all">全部</option><option value="low">低</option><option value="medium">中</option><option value="high">高</option></select></label>
-      </div>}
-    </section>
-    <div className="result-meta"><span>共 <b>{filtered.length}</b> 张标准化卡片</span><small>排序：最新成交样本 ↓ · 在售标价不计入收益 · <MetricHelp label="流动性评分" description="结合成交频率、在售深度与样本稳定性的观察指标，不代表价格回报。" /></small></div>
-    <div className="market-reading-guide" role="note"><b>读表顺序</b><span>① 先确认“演示/核验”标签</span><span>② 用成交量判断样本是否足够</span><span>③ Heat/流动性是活跃度，不是收益率</span><Link href="/methodology#metrics">查看指标口径 →</Link></div>
-    <section className="market-table terminal-market-table data-panel">
-      <div className="table-wrap"><table><thead><tr><th aria-label="关注" /><th>卡片名称</th><th>最新成交价</th><th>7D%</th><th>30D%</th><th>90D%</th><th>成交量</th><th>流动性评分</th></tr></thead>
-      <tbody>{filtered.map((row)=><tr className={selected === row.id ? "selected" : ""} onClick={()=>setSelected(row.id)} key={row.id}>
-        <td><button data-analytics-event="watchlist_toggled" data-analytics-label={row.player.name} className={watched.has(row.id) ? "watch active" : "watch"} aria-label={watched.has(row.id) ? "取消关注" : "加入关注"} onClick={(event)=>{event.stopPropagation();toggleWatch(row.id);}}><Star size={14} fill={watched.has(row.id) ? "currentColor" : "none"} /></button></td>
-        <td><Link data-analytics-event="card_viewed" data-analytics-label={row.player.name} className="market-card-link" href={`/cards/${row.id}`}><CardIdentity card={row} player={row.player} /></Link></td>
-        <td data-label="最新成交价">{row.latestSaleCny ? <><b className="mono">¥{row.latestSaleCny.toLocaleString()}</b><small>{row.demo ? "演示成交样本" : "已核验成交"}</small></> : <span className="no-data">暂无成交</span>}</td>
-        {[row.change7d,row.change30d,row.change90d].map((value,index)=><td data-label={["7D","30D","90D"][index]} className={(value ?? 0) >= 0 ? "up mono" : "down mono"} key={index}>{value == null ? "—" : `${value > 0 ? "+" : ""}${value}%`}</td>)}
-        <td data-label="成交量"><b className="mono">{row.sales30d}</b><small>近 30 日</small></td>
-        <td data-label="流动性"><b className="mono">{row.liquidity}</b><span className="liquidity-meter" title="观察指标，不代表价格回报"><i style={{width:`${row.liquidity}%`}} /></span></td>
-      </tr>)}{!filtered.length && <tr><td colSpan={8}><div className="empty-state"><b>暂无成交数据</b><span>调整筛选条件或刷新后重试。</span><button onClick={()=>{setQuery("");setBrand("all");setDraftYear("all");}}>刷新</button></div></td></tr>}</tbody></table></div>
-    </section>
-  </>;
+      <button className={advancedOpen ? styles.utilityActive : styles.utility} onClick={() => setAdvancedOpen((open) => !open)}><SlidersHorizontal size={15} /> 筛选</button>
+    </div>
+    <div className={styles.chips} aria-label="快速筛选">
+      <button className={!onlySales ? styles.selected : ""} onClick={() => setOnlySales(false)}>全部卡片</button>
+      <button className={onlySales ? styles.selected : ""} onClick={() => setOnlySales((value) => !value)}>有成交样本</button>
+      <button className={highLiquidity ? styles.selected : ""} onClick={() => setHighLiquidity((value) => !value)}>高流动性</button>
+      <button className={risk === "high" ? styles.danger : ""} onClick={() => setRisk((value) => value === "high" ? "all" : "high")}>高风险</button>
+    </div>
+    {advancedOpen && <div className={styles.advanced}><label><span>风险等级</span><select value={risk} onChange={(event) => setRisk(event.target.value)}><option value="all">全部</option><option value="low">低</option><option value="medium">中</option><option value="high">高</option></select></label><p>筛选只影响当前浏览；收益率、流动性和热度均为辅助研究指标，不构成投资建议。</p></div>}
+    <div className={styles.resultsBar}>
+      <div><span>发现</span><strong>{filtered.length}</strong><small> 张标准化卡片</small></div>
+      <p>按最近成交价排序 · <MetricHelp label="流动性评分" description="结合成交频率、在售深度与样本稳定性的观察指标，不代表价格回报。" /></p>
+      <div className={styles.viewSwitch} aria-label="显示方式"><button className={view === "gallery" ? styles.selected : ""} onClick={() => setView("gallery")} aria-label="卡片视图"><Grid2X2 size={16} /></button><button className={view === "table" ? styles.selected : ""} onClick={() => setView("table")} aria-label="表格视图"><List size={17} /></button></div>
+    </div>
+    {!filtered.length ? <div className={styles.empty}><b>没有匹配的标准化卡片</b><span>换个关键词或清除筛选条件后再试。</span><button onClick={reset}>清除筛选</button></div> : view === "gallery" ? <div className={styles.gallery}>{filtered.map((row) => <article className={styles.product} key={row.id}><Link aria-label={`${row.player.name} ${row.releaseYear} ${row.productLine}`} href={`/cards/${row.id}`} data-analytics-event="card_viewed" data-analytics-label={row.player.name}><CardVisual card={row} player={row.player} density="compact" /></Link><footer><span>{row.demo ? "演示成交样本" : "已核验成交"}</span><button className={watched.has(row.id) ? styles.watching : ""} onClick={() => toggleWatch(row.id)} aria-label={watched.has(row.id) ? "取消关注" : "加入关注"}><Star size={14} fill={watched.has(row.id) ? "currentColor" : "none"} /></button></footer></article>)}</div> : <div className={styles.tableWrap}><table><thead><tr><th>卡片</th><th>最新成交</th><th>30D</th><th>样本</th><th>流动性</th><th aria-label="关注" /></tr></thead><tbody>{filtered.map((row) => <tr key={row.id}><td><Link aria-label={`${row.player.name} ${row.releaseYear} ${row.productLine}`} href={`/cards/${row.id}`}><b>{row.player.displayNameZh}</b><small>{row.releaseYear} {row.brand} · {row.parallel} · #{row.cardNumber}</small></Link></td><td><b>{row.latestSaleCny ? `¥${row.latestSaleCny.toLocaleString()}` : "暂无成交"}</b><small>{row.demo ? "演示样本" : "核验样本"}</small></td><td className={(row.change30d ?? 0) >= 0 ? styles.up : styles.down}>{row.change30d == null ? "—" : `${row.change30d > 0 ? "+" : ""}${row.change30d}%`}</td><td>{row.sales30d} 笔 / 30D</td><td>{row.liquidity}/100</td><td><button className={watched.has(row.id) ? styles.watching : ""} onClick={() => toggleWatch(row.id)} aria-label={watched.has(row.id) ? "取消关注" : "加入关注"}><Star size={14} fill={watched.has(row.id) ? "currentColor" : "none"} /></button></td></tr>)}</tbody></table></div>}
+    <p className={styles.methodology}>来源、成交与样本状态均在详情页保留；在售标价不会被写成真实成交。<Link href="/methodology#metrics">阅读指标口径 →</Link></p>
+  </section>;
 }

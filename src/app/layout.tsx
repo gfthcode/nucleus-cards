@@ -1,16 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import { Activity, ShieldCheck } from "lucide-react";
-import {
-  MobileNavigation,
-  SidebarNavigation,
-} from "@/components/app-navigation";
-import { HeaderControls } from "@/components/header-controls";
-import { PwaRegister } from "@/components/pwa-register";
-import { Analytics } from "@/components/analytics";
-import { DataTrustBar } from "@/components/data-provenance";
-import { GlobalSearch } from "@/components/global-search";
+import { AppShell } from "@/components/shell/app-shell";
 import { productConfig } from "@/config/product";
 import "./globals.css";
 
@@ -115,64 +104,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Analytics />
-        <a className="skip-link" href="#main-content">
-          跳至主要内容
-        </a>
-        <aside className="terminal-sidebar">
-          <Link
-            className="terminal-brand"
-            href="/"
-            aria-label={`${productConfig.name} 首页`}
-          >
-            <span className="brand-mark" aria-hidden><Image src="/icon.svg" alt="" width={40} height={40} priority /></span>
-            <span>
-              <b>{productConfig.name}</b>
-              <small>CARDS INTELLIGENCE</small>
-            </span>
-          </Link>
-          <div className="system-state">
-            <Activity size={14} aria-hidden />
-            <span>市场数据服务正常</span>
-            <i />
-          </div>
-          <SidebarNavigation />
-          <div className="sidebar-foot">
-            <span>数据更新时间</span>
-            <strong>09:30:12 CST</strong>
-          </div>
-        </aside>
-        <div className="terminal-main">
-          <header className="terminal-topbar">
-            <Link className="mobile-brand" href="/">
-              <span className="brand-mark"><Image src="/icon.svg" alt="" width={40} height={40} priority /></span>
-              <b>{productConfig.name}</b>
-            </Link>
-            <GlobalSearch />
-            <div className="market-session">
-              <i /> 美东市场 · 盘后
-            </div>
-            <HeaderControls />
-          </header>
-          <div className="advice-disclaimer">
-            <ShieldCheck size={13} aria-hidden />
-            <span>数据仅供参考，不构成投资建议。</span>
-            <Link href="/methodology">数据与免责声明</Link>
-          </div>
-          <DataTrustBar />
-          <div id="main-content" className="terminal-content">
-            {children}
-          </div>
-          <footer className="terminal-footer">
-            <p>{productConfig.disclaimer}</p>
-            <nav>
-              <Link href="/methodology">数据方法</Link>
-              <Link href="/settings">隐私</Link>
-            </nav>
-          </footer>
-        </div>
-        <MobileNavigation />
-        <PwaRegister />
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

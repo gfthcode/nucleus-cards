@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Flame, MapPin, TrendingUp } from "lucide-react";
-import { PlayerCohortBadges } from "@/components/player-cohort-badges";
 import { PlayerTerminalTabs } from "@/components/player-terminal-tabs";
+import { PlayerProfileHero } from "@/components/player-profile-hero";
 import { productConfig } from "@/config/product";
 import { getPlayer, getPlayerCards, getTeam, players } from "@/lib/demo-data";
 
@@ -34,67 +33,13 @@ export default async function PlayerPage({
   const lead = related[0];
   return (
     <main className="page-shell inner-page player-terminal-page">
-      <section className="player-terminal-overview data-panel">
-        <div className="player-identity">
-          <span className="player-large-avatar">
-            {player.name
-              .split(" ")
-              .map((p) => p[0])
-              .join("")
-              .slice(0, 2)}
-          </span>
-          <div>
-            <span className="section-kicker">PLAYER OVERVIEW</span>
-            <h1>
-              {player.displayNameZh}
-              <small>{player.name}</small>
-            </h1>
-            <p>
-              <MapPin size={13} />
-              {team?.name ?? "退役 / 未披露"} · {player.position} ·{" "}
-              {player.draftYear} 年第 {player.draftPick ?? "—"} 顺位
-            </p>
-            <PlayerCohortBadges player={player} />
-          </div>
-        </div>
-        <div className="player-market-kpis">
-          <article>
-            <span>最新关联卡价</span>
-            <strong>
-              {lead?.latestSaleCny
-                ? `¥${lead.latestSaleCny.toLocaleString()}`
-                : "—"}
-            </strong>
-            <small>真实成交中位价</small>
-          </article>
-          <article>
-            <span>7 日变化</span>
-            <strong className={(lead?.change7d ?? 0) >= 0 ? "up" : "down"}>
-              <TrendingUp size={16} />
-              {lead?.change7d == null
-                ? "—"
-                : `${lead.change7d > 0 ? "+" : ""}${lead.change7d}%`}
-            </strong>
-            <small>同卡种口径</small>
-          </article>
-          <article>
-            <span>市场热度指数</span>
-            <strong>
-              <Flame size={16} />
-              {player.marketHeat}
-            </strong>
-            <small>/ 100 · 观察值</small>
-          </article>
-        </div>
-      </section>
+      <PlayerProfileHero player={player} team={team} lead={lead} />
       <section className="player-market-conclusion data-panel">
         <div>
           <span className="section-kicker">MARKET STATE SUMMARY</span>
           <h2>当前市场状态总结</h2>
           <p>
-            {(lead?.change30d ?? 0) >= 0
-              ? "近 30 日价格上涨"
-              : "近 30 日价格回落"}
+            {(lead?.change30d ?? 0) >= 0 ? "近 30 日价格上涨" : "近 30 日价格回落"}
             ，成交活跃度{(lead?.sales30d ?? 0) >= 10 ? "较高" : "有限"}
             ；部分卡片成交样本仍需继续观察。
           </p>

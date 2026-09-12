@@ -26,7 +26,7 @@ export function FeatureRail() {
       <div className={styles.featureRailViewport}>
         <div className={styles.featureRailTrack}>
           {items.map((feature, index) => (
-            <span className={styles.featurePill} key={`${feature}-${index}`}>
+            <span className={styles.featurePill} key={`${feature}-${index}`} aria-hidden={index >= features.length}>
               <i aria-hidden />
               {feature}
             </span>

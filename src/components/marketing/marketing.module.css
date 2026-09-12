@@ -7,4 +7,5 @@
 @media(max-width:620px){.collectionPreviewGrid a>div{height:88px}.homeTrust{align-items:flex-start;flex-wrap:wrap;font-size:.67rem}.homeTrust a{margin-left:28px}.splitSection>.heroActions{margin-top:18px}}
 .marketingMobileNav{display:none}@media(max-width:620px){.marketingMobileNav{align-items:center;background:rgba(19,11,18,.96);border:1px solid rgba(255,255,255,.14);border-radius:16px;bottom:12px;box-shadow:0 15px 35px rgba(0,0,0,.35);display:flex;gap:4px;justify-content:space-around;left:16px;padding:8px;position:fixed;right:16px;z-index:5}.marketingMobileNav a{border-radius:10px;color:#c7bac6;flex:1;font-size:.68rem;padding:9px 6px;text-align:center;text-decoration:none}.marketingMobileNav a:hover,.marketingMobileNav a:focus-visible{background:#3a202e;color:#fff}}
 .marketingHome .heroCopy{align-self:start;padding-top:76px}.marketingHome .heroCopy h1 span{color:#f8f5f7}
-@media(max-width:620px){.marketingHome .heroCopy{padding-top:38px}}
+.marketingHome .heroCopy{padding-top:0}
+@media(max-width:620px){.marketingHome .heroCopy{padding-top:0}}

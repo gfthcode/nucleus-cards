@@ -9,3 +9,53 @@
 .marketingHome .heroCopy{align-self:start;padding-top:76px}.marketingHome .heroCopy h1 span{color:#f8f5f7}
 .marketingHome .heroCopy{padding-top:0}
 @media(max-width:620px){.marketingHome .heroCopy{padding-top:0}}
+
+/* Final polish: motion, depth, and interaction language for the public homepage. */
+.marketingShell :where(a,button){-webkit-tap-highlight-color:transparent}
+.marketingShell :where(a,button):focus-visible{outline:2px solid rgba(243,126,111,.9);outline-offset:3px}
+.marketingNav a,.marketingActions a,.marketingActions button,.heroActions a,.previewGreeting a,.previewCollectionHeader a,.previewLink,.marketingFooter nav a,.homeTrust a{transition:background .2s ease,color .2s ease,border-color .2s ease,transform .2s ease,box-shadow .2s ease}
+.marketingNav a:hover,.marketingNav a:focus-visible{transform:translateY(-1px)}
+.marketingActions a:hover,.marketingActions button:hover,.marketingActions a:focus-visible,.marketingActions button:focus-visible{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);transform:translateY(-1px) scale(1.015)}
+.marketingActions a:last-child:hover,.marketingActions a:last-child:focus-visible{background:#f0695e;border-color:#ff9b8f;box-shadow:0 8px 24px rgba(223,81,75,.22)}
+.heroActions a:hover,.heroActions a:focus-visible{border-color:rgba(255,255,255,.42);transform:translateY(-2px);box-shadow:0 9px 24px rgba(0,0,0,.22)}
+.heroActions a:first-child:hover,.heroActions a:first-child:focus-visible{background:#f06a61;border-color:#ff9b8f;box-shadow:0 11px 28px rgba(223,81,75,.26)}
+.marketingShell:before{animation:atmosphereDrift 24s ease-in-out infinite alternate}
+.marketingShell:after{animation:gridBreath 18s ease-in-out infinite alternate}
+@keyframes atmosphereDrift{from{transform:translate3d(-1.5%,0,0) scale(1)}to{transform:translate3d(1.5%,-1%,0) scale(1.04)}}
+@keyframes gridBreath{from{opacity:.16}to{opacity:.27}}
+
+.featureRail{border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);margin:4px calc(clamp(24px,4.5vw,64px) * -1);overflow:hidden;padding:14px 0;position:relative}
+.featureRail:before,.featureRail:after{content:"";inset:0;pointer-events:none;position:absolute;z-index:2}
+.featureRail:before{background:linear-gradient(90deg,var(--m-bg),transparent 10%,transparent 90%,var(--m-bg))}
+.featureRailViewport{overflow:hidden}
+.featureRailTrack{align-items:center;animation:featureMarquee 34s linear infinite;display:flex;gap:10px;width:max-content}
+.featureRail:hover .featureRailTrack{animation-play-state:paused}
+.featurePill{align-items:center;background:rgba(21,13,20,.66);border:1px solid rgba(255,255,255,.13);border-radius:999px;color:#c5bac5;display:inline-flex;font-family:var(--font-mono);font-size:.57rem;gap:8px;letter-spacing:.1em;padding:9px 14px;transition:background .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease,transform .2s ease}
+.featurePill i{background:#df6a63;border-radius:50%;box-shadow:0 0 0 3px rgba(223,106,99,.11);height:5px;width:5px}
+.featurePill:hover{background:rgba(57,30,46,.9);border-color:rgba(243,126,111,.55);box-shadow:0 7px 22px rgba(0,0,0,.18);color:#fff;transform:translateY(-2px)}
+.featurePill:hover i{background:#ff9b8f;box-shadow:0 0 0 4px rgba(243,126,111,.16)}
+@keyframes featureMarquee{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+
+.reveal{opacity:0;transform:translate3d(0,24px,0);transition:opacity .65s ease,transform .65s cubic-bezier(.22,.8,.25,1)}
+.revealVisible{opacity:1;transform:translate3d(0,0,0)}
+.revealVisible .featureCard,.revealVisible .faqItem{animation:staggerIn .58s both}
+.revealVisible .featureCard:nth-child(2),.revealVisible .faqItem:nth-child(2){animation-delay:60ms}
+.revealVisible .featureCard:nth-child(3),.revealVisible .faqItem:nth-child(3){animation-delay:120ms}
+.revealVisible .faqItem:nth-child(4){animation-delay:180ms}
+@keyframes staggerIn{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+
+.previewStage{perspective:1200px}
+.previewWindow{transform:rotate(1deg) rotateX(var(--preview-tilt-x,0deg)) rotateY(var(--preview-tilt-y,0deg));transition:transform .45s cubic-bezier(.22,.8,.25,1),box-shadow .3s ease}
+.previewStage:hover .previewWindow{box-shadow:0 46px 100px rgba(0,0,0,.54),0 0 0 9px rgba(255,255,255,.045)}
+.callout{animation:calloutFloat 7s ease-in-out infinite}
+.calloutBottom{animation-delay:-3.2s}
+.callout:hover{animation-play-state:paused;border-color:rgba(243,126,111,.56);transform:translateY(-3px)}
+@keyframes calloutFloat{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-6px,0)}}
+.previewStats>div,.metricRow div,.featureCard,.collectionPreviewGrid a,.faqItem{transition:background .2s ease,border-color .2s ease,transform .2s ease,box-shadow .2s ease}
+.previewStats>div:hover,.metricRow div:hover,.featureCard:hover,.collectionPreviewGrid a:hover{background:rgba(53,30,47,.78);border-color:rgba(243,126,111,.42);box-shadow:0 10px 26px rgba(0,0,0,.2);transform:translateY(-3px)}
+.previewChart svg path:first-child{stroke-dasharray:900;stroke-dashoffset:900}
+.revealVisible .previewChart svg path:first-child{animation:chartDraw 1.2s .25s ease-out forwards}
+@keyframes chartDraw{to{stroke-dashoffset:0}}
+
+@media(max-width:620px){.featureRail{margin:4px -16px;padding:12px 0}.featureRailTrack{animation-duration:40s;gap:8px}.featurePill{font-size:.49rem;padding:8px 11px}.featureRailViewport{overflow-x:auto;scrollbar-width:none}.featureRailViewport::-webkit-scrollbar{display:none}.previewWindow{transform:none}.calloutTop{animation-delay:-1.4s}.calloutBottom{animation-delay:-4.2s}.marketingShell:before{animation-duration:30s}}
+@media(prefers-reduced-motion:reduce){.marketingShell:before,.marketingShell:after,.featureRailTrack,.callout{animation:none}.reveal{opacity:1;transform:none;transition:none}.revealVisible .featureCard,.revealVisible .faqItem,.revealVisible .previewChart svg path:first-child{animation:none}.previewWindow{transform:rotate(1deg);transition:none}.featurePill,.previewStats>div,.metricRow div,.featureCard,.collectionPreviewGrid a{transition:none}}

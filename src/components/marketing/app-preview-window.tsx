@@ -1,3 +1,6 @@
+"use client";
+
+import { PointerEvent, useRef } from "react";
 import Link from "next/link";
 import { ArrowUpRight, BarChart3, BookOpen, Search, Sparkles, WalletCards } from "lucide-react";
 import { CardVisual } from "@/components/card-visual";
@@ -8,7 +11,21 @@ type PreviewRow = { card: Card; player: Player };
 
 export function AppPreviewWindow({ rows }: { rows: PreviewRow[] }) {
   const featured = rows.slice(0, 3);
-  return <div className={styles.previewStage} aria-label="Nucleus Cards 应用预览">
+  const stageRef = useRef<HTMLDivElement>(null);
+  const resetTilt = () => {
+    stageRef.current?.style.setProperty("--preview-tilt-x", "0deg");
+    stageRef.current?.style.setProperty("--preview-tilt-y", "0deg");
+  };
+  const moveTilt = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "touch" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - 0.5;
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+    stageRef.current?.style.setProperty("--preview-tilt-x", `${(-y * 1.5).toFixed(2)}deg`);
+    stageRef.current?.style.setProperty("--preview-tilt-y", `${(x * 1.8).toFixed(2)}deg`);
+  };
+
+  return <div ref={stageRef} className={styles.previewStage} aria-label="Nucleus Cards 应用预览" onPointerMove={moveTilt} onPointerLeave={resetTilt}>
     <div className={styles.previewWindow}>
       <div className={styles.windowChrome}><span className={styles.windowDots}><i /><i /><i /></span><span>nucleus-cards / collection</span><span className={styles.windowStatus}>LIVE DEMO</span></div>
       <div className={styles.previewBody}>

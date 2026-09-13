@@ -60,3 +60,11 @@
 @media(max-width:620px){.featureRail{margin:4px -16px;padding:12px 0}.featureRailTrack{animation-duration:40s;gap:8px}.featurePill{font-size:.49rem;padding:8px 11px}.featureRailViewport{overflow-x:auto;scrollbar-width:none}.featureRailViewport::-webkit-scrollbar{display:none}.previewWindow{transform:none}.calloutTop{animation-delay:-1.4s}.calloutBottom{animation-delay:-4.2s}.marketingShell:before{animation-duration:30s}}
 @media(prefers-reduced-motion:reduce){.marketingShell:before,.marketingShell:after,.featureRailTrack,.callout{animation:none}.reveal{opacity:1;transform:none;transition:none}.revealVisible .featureCard,.revealVisible .faqItem,.revealVisible .previewChart svg path:first-child{animation:none}.previewWindow{transform:rotate(1deg);transition:none}.featurePill,.previewStats>div,.metricRow div,.featureCard,.collectionPreviewGrid a{transition:none}}
 .featuredImage{background:#0d0c12;display:flex!important;align-items:center;justify-content:center;overflow:hidden;position:relative}.featuredImage img{height:100%;object-fit:contain;object-position:center;width:100%}
+
+/* Persistent public-page navigation and stable anchor activation zone. */
+.marketingShell{overflow:clip}
+.marketingHeader{background:rgba(13,7,11,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--m-border);position:sticky;top:0;z-index:100}
+.marketingContent [id]{scroll-margin-top:calc(var(--marketing-header-height, 82px) + 18px)}
+.marketingNav a.marketingNavActive{background:rgba(255,255,255,.12);box-shadow:inset 0 -2px 0 #e9796c;color:#fff}
+.marketingCurrent{align-items:flex-end;display:flex;flex-direction:column;gap:2px;margin-right:4px;min-width:72px}.marketingCurrent small{color:#a996a5;font-family:var(--font-mono);font-size:.5rem;letter-spacing:.12em}.marketingCurrent b{color:#f3eaf0;font-size:.68rem;transition:opacity .2s,transform .2s}
+@media(max-width:620px){.marketingCurrent{align-items:flex-start;min-width:0;margin-right:auto}.marketingCurrent b{font-size:.62rem}.marketingCurrent small{font-size:.44rem}.marketingContent [id]{scroll-margin-top:calc(var(--marketing-header-height, 60px) + 14px)}}

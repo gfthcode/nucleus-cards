@@ -13,7 +13,26 @@ function joinedCard(id: string) {
 }
 
 export default function Home() {
-  const previewRows = ["2", "19", "21", "20"].map(joinedCard).filter((row): row is NonNullable<typeof row> => Boolean(row));
+  const previewRows = [
+    {
+      label: "谢伊·吉尔杰斯-亚历山大",
+      imageUrl: "/card-images/featured/sga-hoops-highlights.png",
+      imageAlt: "Shai Gilgeous-Alexander NBA Hoops Highlights 球星卡",
+      href: "/market?q=Shai%20Gilgeous-Alexander",
+    },
+    {
+      label: "维克托·文班亚马",
+      imageUrl: "/card-images/featured/wembanyama-chrome-1of1.png",
+      imageAlt: "Victor Wembanyama Chrome 1/1 球星卡",
+      href: "/market?q=Victor%20Wembanyama",
+    },
+    {
+      label: "Jordan · Kobe · LeBron 三人签字球衣卡",
+      imageUrl: "/card-images/featured/triple-autograph-jordan-kobe-lebron.png",
+      imageAlt: "Michael Jordan Kobe Bryant LeBron James 三人签字球衣卡",
+      href: "/market?q=Exquisite%20Collection",
+    },
+  ];
   const collection = demoPortfolio.slice(0, 3).map((item) => joinedCard(item.cardId)).filter((row): row is NonNullable<typeof row> => Boolean(row));
 
   return <main className={`${styles.home} ${styles.marketingHome}`}>

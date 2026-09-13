@@ -4,38 +4,12 @@ import { AppPreviewWindow } from "@/components/marketing/app-preview-window";
 import { FeatureRail, Reveal } from "@/components/marketing/homepage-motion";
 import { CardVisual } from "@/components/card-visual";
 import styles from "@/components/marketing/marketing.module.css";
-import { cards, demoPortfolio, getPlayer } from "@/lib/demo-data";
-
-function joinedCard(id: string) {
-  const card = cards.find((item) => item.id === id);
-  const player = card ? getPlayer(card.playerId) : undefined;
-  return card && player ? { card, player } : undefined;
-}
+import { getFeaturedCards } from "@/lib/featured-cards";
 
 export default function Home() {
-  const previewRows = [
-    {
-      label: "谢伊·吉尔杰斯-亚历山大",
-      imageUrl: "/card-images/featured/sga-hoops-highlights.png",
-      imageAlt: "Shai Gilgeous-Alexander NBA Hoops Highlights 球星卡",
-      href: "/market?q=Shai%20Gilgeous-Alexander",
-    },
-    {
-      label: "维克托·文班亚马",
-      imageUrl: "/card-images/featured/wembanyama-chrome-1of1.png",
-      imageAlt: "Victor Wembanyama Chrome 1/1 球星卡",
-      href: "/market?q=Victor%20Wembanyama",
-    },
-    {
-      label: "Jordan · Kobe · LeBron 三人签字球衣卡",
-      imageUrl: "/card-images/featured/triple-autograph-jordan-kobe-lebron.png",
-      imageAlt: "Michael Jordan Kobe Bryant LeBron James 三人签字球衣卡",
-      href: "/market?q=Exquisite%20Collection",
-    },
-  ];
-  const collection = demoPortfolio.slice(0, 3).map((item) => joinedCard(item.cardId)).filter((row): row is NonNullable<typeof row> => Boolean(row));
+  const featuredCards = getFeaturedCards();
 
-  return <main className={`${styles.home} ${styles.marketingHome}`}>
+  return <main id="home" className={`${styles.home} ${styles.marketingHome}`}>
     <section className={styles.homeHero} aria-labelledby="home-title">
       <div className={styles.heroCopy}>
         <span>NBA SPORTS CARD COLLECTION MANAGER</span>
@@ -44,7 +18,7 @@ export default function Home() {
         <div className={styles.heroActions}><Link href="/market">探索市场 <ArrowRight size={16} /></Link><Link href="/collections/demo">浏览公开收藏 <WalletCards size={15} /></Link></div>
         <div className={styles.heroMeta}><span>免费使用</span><span>·</span><span>演示数据清晰标注</span><span>·</span><span>NBA / CNY</span></div>
       </div>
-      <AppPreviewWindow rows={previewRows} />
+      <AppPreviewWindow rows={featuredCards} />
     </section>
 
     <FeatureRail />
@@ -64,7 +38,7 @@ export default function Home() {
     </section></Reveal>
 
     <Reveal><section id="collection" className={`${styles.splitSection} ${styles.reverse}`} aria-labelledby="collection-title">
-      <div className={styles.splitVisual}><div className={styles.collectionPreviewHeader}><span>MY COLLECTION</span><strong>公开收藏预览</strong></div><div className={styles.collectionPreviewGrid}>{collection.map(({ card, player }) => <Link href={`/cards/${card.id}`} key={card.id}><CardVisual card={card} player={player} density="compact" /><span>{player.displayNameZh}</span></Link>)}</div><Link className={styles.previewLink} href="/portfolio">管理我的持仓 <ArrowRight size={14} /></Link></div>
+      <div className={styles.splitVisual}><div className={styles.collectionPreviewHeader}><span>MY COLLECTION</span><strong>公开收藏预览</strong></div><div className={styles.collectionPreviewGrid}>{featuredCards.map(({ card, player }) => <Link href={`/cards/${card.id}`} key={card.id}><CardVisual card={card} player={player} density="compact" /><span>{player.displayNameZh}</span></Link>)}</div><Link className={styles.previewLink} href="/portfolio">管理我的持仓 <ArrowRight size={14} /></Link></div>
       <div><span className={styles.featureKicker}>COLLECTION + PORTFOLIO</span><h2 id="collection-title">你的收藏，应该始终属于你。</h2><p>把公开收藏、个人持仓、关注列表和价格提醒放在同一套清晰的入口下。成本与盈亏默认私密，公开什么由你决定。</p><ul className={styles.checkList}><li><Check size={15} />收藏与持仓分开管理</li><li><Check size={15} />从卡片详情一键加入关注</li><li><Check size={15} />隐私状态清楚可见</li></ul></div>
     </section></Reveal>
 

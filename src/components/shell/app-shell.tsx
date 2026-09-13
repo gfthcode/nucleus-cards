@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import { Activity, ShieldCheck } from "lucide-react";
 import { Analytics } from "@/components/analytics";
 import { DataTrustBar } from "@/components/data-provenance";
@@ -13,6 +14,7 @@ import { productConfig } from "@/config/product";
 import { ShellFooterNavigation, ShellMobileNavigation, ShellNavigation } from "./shell-navigation";
 import styles from "./app-shell.module.css";
 import marketingStyles from "@/components/marketing/marketing.module.css";
+import { HOMEPAGE_SECTIONS, useHomepageScrollSpy } from "@/components/marketing/homepage-scrollspy";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -55,21 +57,31 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 }
 
 function MarketingChrome({ children }: { children: React.ReactNode }) {
+  const { activeId, scrollToSection } = useHomepageScrollSpy();
+  const activeSection = HOMEPAGE_SECTIONS.find((section) => section.id === activeId) ?? HOMEPAGE_SECTIONS[0];
+
+  useEffect(() => {
+    const header = document.querySelector<HTMLElement>(`.${marketingStyles.marketingHeader}`);
+    if (!header) return undefined;
+    const updateHeight = () => document.documentElement.style.setProperty("--marketing-header-height", `${header.offsetHeight}px`);
+    updateHeight();
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
+
   return <div className={marketingStyles.marketingShell}>
     <a className={marketingStyles.marketingSkip} href="#main-content">跳至主要内容</a>
     <header className={marketingStyles.marketingHeader}>
-      <Link className={marketingStyles.marketingBrand} href="/" aria-label="Nucleus Cards 首页">
+      <Link className={marketingStyles.marketingBrand} href="#home" aria-current={activeId === "home" ? "page" : undefined} onClick={(event) => scrollToSection(event, "home")} aria-label="Nucleus Cards 首页">
         <Image src="/icon.svg" alt="" width={38} height={38} priority />
         <span><b>Nucleus Cards</b><small>SPORTS CARD INTELLIGENCE</small></span>
       </Link>
       <nav className={marketingStyles.marketingNav} aria-label="公开页面导航">
-        <a href="#features">功能</a>
-        <a href="#market">行情</a>
-        <a href="#scanner">识别器</a>
-        <a href="#collection">收藏</a>
-        <a href="#faq">FAQ</a>
+        {HOMEPAGE_SECTIONS.slice(1).map((section) => <a href={`#${section.id}`} key={section.id} aria-current={activeId === section.id ? "page" : undefined} className={activeId === section.id ? marketingStyles.marketingNavActive : undefined} onClick={(event) => scrollToSection(event, section.id)}>{section.shortLabel}</a>)}
       </nav>
       <div className={marketingStyles.marketingActions}>
+        <span className={marketingStyles.marketingCurrent} aria-live="polite"><small>当前</small><b>{activeSection.label}</b></span>
         <button type="button" aria-label="切换语言">中 / EN</button>
         <a href="https://github.com/gfthcode/nucleus-cards" target="_blank" rel="noreferrer">GitHub</a>
         <Link href="/market">进入应用</Link>

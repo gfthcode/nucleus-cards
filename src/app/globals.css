@@ -1,6 +1,29 @@
 @import "tailwindcss";
 
 :root {
+  /* Nucleus design tokens are additive; homepage marketing styles keep their own locked overrides. */
+  --nucleus-bg: #0d070b;
+  --nucleus-bg-deep: #090509;
+  --nucleus-surface: #171017;
+  --nucleus-surface-raised: #211820;
+  --nucleus-surface-hover: #351e2f;
+  --nucleus-border: rgba(255, 255, 255, 0.12);
+  --nucleus-border-hover: rgba(243, 126, 111, 0.5);
+  --nucleus-text: #f8f5f7;
+  --nucleus-text-muted: #b3aab4;
+  --nucleus-accent: #e65a50;
+  --nucleus-accent-soft: rgba(230, 90, 80, 0.16);
+  --nucleus-positive: #76ca8b;
+  --nucleus-negative: #ff7c85;
+  --nucleus-warning: #e5ab5b;
+  --nucleus-radius-sm: 10px;
+  --nucleus-radius-md: 14px;
+  --nucleus-radius-lg: 18px;
+  --nucleus-radius-xl: 22px;
+  --nucleus-shadow-soft: 0 16px 38px rgba(0, 0, 0, 0.2);
+  --nucleus-shadow-float: 0 24px 48px rgba(0, 0, 0, 0.32);
+  --nucleus-transition-fast: 180ms ease;
+  --nucleus-transition-normal: 240ms cubic-bezier(0.22, 0.8, 0.25, 1);
   --bg: #07101d;
   --panel: #0d1929;
   --panel2: #101f31;

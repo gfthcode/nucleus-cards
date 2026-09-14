@@ -160,6 +160,10 @@ a {
   align-items: center;
   gap: 8px;
 }
+.language-switcher { align-items: center; display: inline-flex; gap: 2px; border: 1px solid var(--line); border-radius: 999px; padding: 2px; background: rgba(16,29,45,.72); }
+.language-switcher button { background: transparent; border: 0; border-radius: 999px; color: var(--muted); cursor: pointer; font: inherit; font-size: 10px; min-height: 26px; padding: 0 8px; }
+.language-switcher button.active { background: var(--blue); color: #fff; }
+.language-switcher button:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
 .top-actions button,
 .profile-button {
   background: #101d2d;
@@ -2891,6 +2895,13 @@ footer nav {
 .auth-page button:disabled {
   opacity: 0.5;
 }
+.auth-form { display: grid; gap: 12px; margin-top: 20px; }
+.auth-form label { display: grid; gap: 6px; color: var(--terminal-muted, #a9b8c9); font-size: 12px; }
+.auth-form input { min-height: 42px; padding: 10px 12px; }
+.auth-error { color: #ff9c94 !important; font-size: 12px !important; margin: 0 !important; }
+.auth-code-sent { color: var(--terminal-muted, #a9b8c9); font-size: 12px; }
+.auth-code-sent b { color: var(--terminal-text, #f7f8fb); }
+.auth-text-button { background: none; border: 0; color: #f08a7e; cursor: pointer; font-size: 12px; justify-self: center; }
 
 /* Theme and secondary responsive rules */
 html[data-theme="light"] {
@@ -3659,3 +3670,20 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .immersive-copy-intro { z-index: 6; }
 .immersive-copy-intro h2 { max-width: 510px; }
 @media (max-width: 767px) { .immersive-card-product { left: 50%; top: 30%; transform: translate(-50%, -50%) rotate(1deg); width: min(55vw, 230px); } .immersive-card-product .card-visual { border-radius: 10px; } .immersive-player-photo, .immersive-player-photo.is-lead { opacity: .1; transform: translate(-50%, -50%) rotate(-3deg) scale(1.05); } .immersive-copy-intro { top: 69%; } }
+
+/* Authenticated personal workspace surfaces. These rules are intentionally scoped
+   so the approved homepage remains visually unchanged. */
+.personal-workspace { display: grid; gap: 18px; }
+.workspace-note { color: var(--nucleus-text-muted); font-size: .78rem; line-height: 1.6; margin: 0; }
+.workspace-form { align-items: end; display: grid; gap: 12px; grid-template-columns: minmax(220px, 2fr) repeat(2, minmax(130px, 1fr)) auto; }
+.workspace-form label { color: var(--nucleus-text-muted); display: grid; font-size: .7rem; gap: 6px; }
+.workspace-form input, .workspace-form select { background: var(--nucleus-surface-2); border: 1px solid var(--nucleus-border); border-radius: var(--nucleus-radius-sm); color: var(--nucleus-text); min-height: 38px; padding: 0 10px; }
+.workspace-list { border-top: 1px solid var(--nucleus-border); display: grid; }
+.workspace-list article { align-items: center; border-bottom: 1px solid var(--nucleus-border); display: flex; gap: 12px; justify-content: space-between; padding: 13px 0; }
+.workspace-list article > div { display: grid; gap: 4px; min-width: 0; }
+.workspace-list b { color: var(--nucleus-text); font-size: .82rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.workspace-list small { color: var(--nucleus-text-muted); font-size: .7rem; }
+.workspace-empty { border: 1px dashed var(--nucleus-border); color: var(--nucleus-text-muted); display: grid; gap: 6px; padding: 28px; text-align: center; }
+.workspace-empty b { color: var(--nucleus-text); font-size: .9rem; }
+.workspace-link { color: var(--nucleus-accent); font-size: .74rem; text-decoration: none; }
+@media (max-width: 760px) { .workspace-form { grid-template-columns: 1fr 1fr; } .workspace-form label:first-child { grid-column: 1 / -1; } .workspace-form button { width: 100%; } }

@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 
 export const HOMEPAGE_SECTIONS = [
-  { id: "home", label: "首页", shortLabel: "首页" },
-  { id: "features", label: "功能总览", shortLabel: "功能" },
-  { id: "market", label: "市场行情", shortLabel: "行情" },
-  { id: "collection", label: "收藏与持仓", shortLabel: "收藏" },
-  { id: "scanner", label: "卡片识别", shortLabel: "识别" },
-  { id: "faq", label: "FAQ", shortLabel: "FAQ" },
+  { id: "home", labelKey: "homepage.section.home", shortLabelKey: "homepage.section.home" },
+  { id: "features", labelKey: "homepage.section.features", shortLabelKey: "homepage.section.featuresShort" },
+  { id: "market", labelKey: "homepage.section.market", shortLabelKey: "homepage.section.marketShort" },
+  { id: "collection", labelKey: "homepage.section.collection", shortLabelKey: "homepage.section.collectionShort" },
+  { id: "scanner", labelKey: "homepage.section.scanner", shortLabelKey: "homepage.section.scannerShort" },
+  { id: "faq", labelKey: "homepage.section.faq", shortLabelKey: "homepage.section.faq" },
 ] as const;
 
 export function useHomepageScrollSpy() {

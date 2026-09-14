@@ -1,12 +1,18 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PortfolioManager } from "@/components/portfolio-manager";
+import { PersonalWorkspace } from "@/components/personal-workspace";
 import { cards, demoPortfolio, getPlayer } from "@/lib/demo-data";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 import styles from "./portfolio.module.css";
 
 export const metadata: Metadata = { title: "我的持仓" };
 
-export default function PortfolioPage() {
+export default async function PortfolioPage() {
+  const { supabase, user } = await getAuthenticatedUser();
+  if (supabase && user) {
+    return <main className={`${styles.page} page-shell inner-page`}><header className={styles.masthead}><div><span>PRIVATE COLLECTION</span><h1>收藏，<br />但不必公开。</h1><p>持仓、成本与估值只对你的账号可见。你可以随时删除或修改记录。</p></div><aside><span>ACCOUNT</span><b>LIVE</b><small>{user.email ?? "已登录"}</small><Link href="/collections">管理个人收藏 →</Link></aside></header><div className={styles.manager}><PersonalWorkspace mode="portfolio" /></div></main>;
+  }
   const joined = cards.map((card) => ({
     ...card,
     player: getPlayer(card.playerId)!,

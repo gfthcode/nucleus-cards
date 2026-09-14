@@ -26,9 +26,16 @@ export default function Home() {
     <Reveal><section id="features" className={styles.sectionBand} aria-labelledby="features-title">
       <header><span className={styles.featureKicker}>FOR THE WAY YOU COLLECT</span><h2 id="features-title">让每一次收藏，都更有把握。</h2><p>从发现下一张卡到追踪长期持仓，Nucleus Cards 把复杂信息整理成收藏者真正需要的几个动作。</p></header>
       <div className={styles.featureGrid}>
-        <article className={styles.featureCard}><Search size={22} /><h3>卡片与球员搜索</h3><p>按球员、球队、年份、系列和卡号快速找到正确身份，避免把相似卡混在一起。</p></article>
-        <article className={styles.featureCard}><BarChart3 size={22} /><h3>行情与成交</h3><p>把在售标价与历史成交分开呈现，样本不足时明确显示“未知”，不制造虚假的精确感。</p></article>
-        <article className={styles.featureCard}><Sparkles size={22} /><h3>AI 收藏研究</h3><p>用可解释的规则阅读热度、流动性、数据完整度和风险，帮助你先比较再决定。</p></article>
+        {[
+          { title: "卡片与球员搜索", description: "按球员、球队、年份、系列和卡号快速找到正确身份，避免把相似卡混在一起。", href: "/market#market-search", icon: Search },
+          { title: "行情与成交", description: "把在售标价与历史成交分开呈现，样本不足时明确显示“未知”，不制造虚假的精确感。", href: "/market#recent-sales", icon: BarChart3 },
+          { title: "AI 收藏研究", description: "用可解释的规则阅读热度、流动性、数据完整度和风险，帮助你先比较再决定。", href: "/analysis", icon: Sparkles },
+        ].map(({ title, description, href, icon: Icon }) => <Link className={styles.featureCard} href={href} key={title} aria-label={title}>
+          <Icon size={22} aria-hidden />
+          <h3>{title}</h3>
+          <p>{description}</p>
+          <ArrowRight className={styles.featureCardArrow} size={16} aria-hidden />
+        </Link>)}
       </div>
     </section></Reveal>
 

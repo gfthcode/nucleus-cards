@@ -68,3 +68,9 @@
 .marketingNav a.marketingNavActive{background:rgba(255,255,255,.12);box-shadow:inset 0 -2px 0 #e9796c;color:#fff}
 .marketingCurrent{align-items:flex-end;display:flex;flex-direction:column;gap:2px;margin-right:4px;min-width:72px}.marketingCurrent small{color:#a996a5;font-family:var(--font-mono);font-size:.5rem;letter-spacing:.12em}.marketingCurrent b{color:#f3eaf0;font-size:.68rem;transition:opacity .2s,transform .2s}
 @media(max-width:620px){.marketingCurrent{align-items:flex-start;min-width:0;margin-right:auto}.marketingCurrent b{font-size:.62rem}.marketingCurrent small{font-size:.44rem}.marketingContent [id]{scroll-margin-top:calc(var(--marketing-header-height, 60px) + 14px)}}
+
+/* Feature cards are native links: preserve the locked layout while making the whole surface actionable. */
+.featureCard{color:#f8f5f7;cursor:pointer;position:relative;text-decoration:none}
+.featureCardArrow{align-self:end;color:#b3aab4;justify-self:end;transition:color .2s ease,transform .2s ease}
+.featureCard:hover .featureCardArrow,.featureCard:focus-visible .featureCardArrow{color:#ff9b8f;transform:translateX(3px)}
+.featureCard:active{transform:translateY(-1px) scale(.99)}

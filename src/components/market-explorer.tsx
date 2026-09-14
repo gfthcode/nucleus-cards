@@ -42,7 +42,7 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
   function reset() { setQuery(""); setBrand("all"); setDraftYear("all"); setPrice("all"); setRisk("all"); setCohort("all"); setOnlySales(false); setHighLiquidity(false); }
   function toggleWatch(id: string) { setWatched((current) => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; }); }
 
-  return <section className={styles.explorer} aria-label="球星卡市场浏览器">
+  return <section id="market-search" className={`${styles.explorer} ${styles.anchorTarget}`} aria-label="球星卡市场浏览器">
     <div className={styles.controls}>
       <label className={styles.search}><Search size={17} aria-hidden /><input data-analytics-event="search_used" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="球员、球队、品牌或系列" /></label>
       <div className={styles.selects}>
@@ -60,7 +60,7 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
       <button className={risk === "high" ? styles.danger : ""} onClick={() => setRisk((value) => value === "high" ? "all" : "high")}>高风险</button>
     </div>
     {advancedOpen && <div className={styles.advanced}><label><span>风险等级</span><select value={risk} onChange={(event) => setRisk(event.target.value)}><option value="all">全部</option><option value="low">低</option><option value="medium">中</option><option value="high">高</option></select></label><p>筛选只影响当前浏览；收益率、流动性和热度均为辅助研究指标，不构成投资建议。</p></div>}
-    <div className={styles.resultsBar}>
+    <div id="recent-sales" className={`${styles.resultsBar} ${styles.salesAnchor}`}>
       <div><span>发现</span><strong>{filtered.length}</strong><small> 张标准化卡片</small></div>
       <p>按最近成交价排序 · <MetricHelp label="流动性评分" description="结合成交频率、在售深度与样本稳定性的观察指标，不代表价格回报。" /></p>
       <div className={styles.viewSwitch} aria-label="显示方式"><button className={view === "gallery" ? styles.selected : ""} onClick={() => setView("gallery")} aria-label="卡片视图"><Grid2X2 size={16} /></button><button className={view === "table" ? styles.selected : ""} onClick={() => setView("table")} aria-label="表格视图"><List size={17} /></button></div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { PointerEvent, useRef } from "react";
+import { PointerEvent, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowUpRight, BarChart3, BookOpen, Search, Sparkles, WalletCards } from "lucide-react";
 import { CardVisual } from "@/components/card-visual";
@@ -12,17 +12,32 @@ type PreviewRow = { card: Card; player: Player };
 export function AppPreviewWindow({ rows }: { rows: PreviewRow[] }) {
   const featured = rows.slice(0, 3);
   const stageRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<number | null>(null);
+  const pointerRef = useRef({ x: 0, y: 0 });
+  useEffect(() => () => {
+    if (frameRef.current !== null) window.cancelAnimationFrame(frameRef.current);
+  }, []);
   const resetTilt = () => {
-    stageRef.current?.style.setProperty("--preview-tilt-x", "0deg");
-    stageRef.current?.style.setProperty("--preview-tilt-y", "0deg");
+    pointerRef.current = { x: 0, y: 0 };
+    if (frameRef.current === null) frameRef.current = window.requestAnimationFrame(applyPointer);
+  };
+  const applyPointer = () => {
+    frameRef.current = null;
+    const node = stageRef.current;
+    if (!node) return;
+    const { x, y } = pointerRef.current;
+    node.style.setProperty("--preview-tilt-x", `${(-y * 1.5).toFixed(2)}deg`);
+    node.style.setProperty("--preview-tilt-y", `${(x * 1.8).toFixed(2)}deg`);
+    node.style.setProperty("--preview-shift-x", `${(x * 8).toFixed(1)}px`);
+    node.style.setProperty("--preview-shift-y", `${(y * 6).toFixed(1)}px`);
+    node.style.setProperty("--preview-glow-x", `${(50 + x * 70).toFixed(1)}%`);
+    node.style.setProperty("--preview-glow-y", `${(50 + y * 70).toFixed(1)}%`);
   };
   const moveTilt = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === "touch" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const rect = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-    stageRef.current?.style.setProperty("--preview-tilt-x", `${(-y * 1.5).toFixed(2)}deg`);
-    stageRef.current?.style.setProperty("--preview-tilt-y", `${(x * 1.8).toFixed(2)}deg`);
+    pointerRef.current = { x: (event.clientX - rect.left) / rect.width - 0.5, y: (event.clientY - rect.top) / rect.height - 0.5 };
+    if (frameRef.current === null) frameRef.current = window.requestAnimationFrame(applyPointer);
   };
 
   return <div ref={stageRef} className={styles.previewStage} aria-label="Nucleus Cards 应用预览" onPointerMove={moveTilt} onPointerLeave={resetTilt}>

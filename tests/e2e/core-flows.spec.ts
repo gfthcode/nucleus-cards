@@ -11,14 +11,14 @@ test("critical market, rookie, portfolio, and mobile flows", async ({
     await page
       .getByRole("combobox", { name: "球员代际", exact: true })
       .selectOption("retired_legend");
-    await expect(page.getByText("Michael Jordan").first()).toBeVisible();
+    await expect(page.getByText("迈克尔·乔丹").first()).toBeVisible();
     await page
       .getByRole("combobox", { name: "球员代际", exact: true })
       .selectOption("all");
     await page.getByPlaceholder("球员、球队、品牌或系列").fill("Flagg");
-    await expect(page.getByText("Cooper Flagg").first()).toBeVisible();
+    await expect(page.getByText("库珀·弗拉格").first()).toBeVisible();
     await page
-      .getByRole("link", { name: /Cooper Flagg/ })
+      .getByRole("link", { name: /库珀·弗拉格/ })
       .first()
       .click();
     await expect(page.getByText("最新真实成交")).toBeVisible();
@@ -87,3 +87,4 @@ test("critical market, rookie, portfolio, and mobile flows", async ({
     await expect(page).toHaveURL(/\/market/);
   });
 });
+

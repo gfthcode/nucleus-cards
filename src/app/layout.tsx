@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { AppShell } from "@/components/shell/app-shell";
 import { productConfig } from "@/config/product";
 import { LocaleProvider } from "@/i18n/client";
+import { EnglishModeGuard } from "@/components/i18n/english-mode-guard";
 import { getLocale } from "@/i18n/server";
 import "./globals.css";
 
@@ -44,6 +45,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       }) }} />
       <script dangerouslySetInnerHTML={{ __html: `try{document.documentElement.dataset.theme=localStorage.getItem('nucleus-theme')||'dark'}catch(e){}` }} />
     </head>
-    <body><LocaleProvider initialLocale={locale}><AppShell>{children}</AppShell></LocaleProvider></body>
+    <body><LocaleProvider initialLocale={locale}><EnglishModeGuard /><AppShell>{children}</AppShell></LocaleProvider></body>
   </html>;
 }
+

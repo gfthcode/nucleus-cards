@@ -44,8 +44,12 @@
 .revealVisible .faqItem:nth-child(4){animation-delay:180ms}
 @keyframes staggerIn{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
 
-.previewStage{perspective:1200px}
-.previewWindow{transform:rotate(1deg) rotateX(var(--preview-tilt-x,0deg)) rotateY(var(--preview-tilt-y,0deg));transition:transform .45s cubic-bezier(.22,.8,.25,1),box-shadow .3s ease}
+.previewStage{--preview-glow-x:50%;--preview-glow-y:50%;--preview-shift-x:0px;--preview-shift-y:0px;perspective:1200px}
+.previewStage:before{background:radial-gradient(circle at var(--preview-glow-x) var(--preview-glow-y),rgba(255,155,143,.13),transparent 28%);content:"";inset:5% 0;pointer-events:none;position:absolute;transform:translate3d(calc(var(--preview-shift-x) * .35),calc(var(--preview-shift-y) * .35),0);transition:opacity .4s ease}
+.previewWindow{animation:previewEnter .9s cubic-bezier(.22,.8,.25,1) both;position:relative;transform:translate3d(var(--preview-shift-x),var(--preview-shift-y),0) rotate(1deg) rotateX(var(--preview-tilt-x,0deg)) rotateY(var(--preview-tilt-y,0deg));transition:transform .45s cubic-bezier(.22,.8,.25,1),box-shadow .3s ease}
+.previewWindow:after{background:linear-gradient(112deg,transparent 30%,rgba(255,212,202,.12) 47%,transparent 62%);content:"";inset:0;mix-blend-mode:screen;opacity:0;pointer-events:none;position:absolute;transform:translateX(-120%);transition:opacity .2s ease,transform .8s cubic-bezier(.22,.8,.25,1);z-index:3}
+.previewStage:hover .previewWindow:after{opacity:.55;transform:translateX(120%)}
+@keyframes previewEnter{from{opacity:0;transform:translate3d(calc(var(--preview-shift-x) + 24px),calc(var(--preview-shift-y) + 16px),0) rotate(3deg) rotateX(2deg)}to{opacity:1;transform:translate3d(var(--preview-shift-x),var(--preview-shift-y),0) rotate(1deg) rotateX(var(--preview-tilt-x,0deg)) rotateY(var(--preview-tilt-y,0deg))}}
 .previewStage:hover .previewWindow{box-shadow:0 46px 100px rgba(0,0,0,.54),0 0 0 9px rgba(255,255,255,.045)}
 .callout{animation:calloutFloat 7s ease-in-out infinite}
 .calloutBottom{animation-delay:-3.2s}
@@ -58,7 +62,7 @@
 @keyframes chartDraw{to{stroke-dashoffset:0}}
 
 @media(max-width:620px){.featureRail{margin:4px -16px;padding:12px 0}.featureRailTrack{animation-duration:40s;gap:8px}.featurePill{font-size:.49rem;padding:8px 11px}.featureRailViewport{overflow-x:auto;scrollbar-width:none}.featureRailViewport::-webkit-scrollbar{display:none}.previewWindow{transform:none}.calloutTop{animation-delay:-1.4s}.calloutBottom{animation-delay:-4.2s}.marketingShell:before{animation-duration:30s}}
-@media(prefers-reduced-motion:reduce){.marketingShell:before,.marketingShell:after,.featureRailTrack,.callout{animation:none}.reveal{opacity:1;transform:none;transition:none}.revealVisible .featureCard,.revealVisible .faqItem,.revealVisible .previewChart svg path:first-child{animation:none}.previewWindow{transform:rotate(1deg);transition:none}.featurePill,.previewStats>div,.metricRow div,.featureCard,.collectionPreviewGrid a{transition:none}}
+@media(prefers-reduced-motion:reduce){.marketingShell:before,.marketingShell:after,.featureRailTrack,.callout,.previewWindow{animation:none}.reveal{opacity:1;transform:none;transition:none}.revealVisible .featureCard,.revealVisible .faqItem,.revealVisible .previewChart svg path:first-child{animation:none}.previewWindow{transform:rotate(1deg);transition:none}.previewWindow:after{display:none}.featurePill,.previewStats>div,.metricRow div,.featureCard,.collectionPreviewGrid a{transition:none}}
 .featuredImage{background:#0d0c12;display:flex!important;align-items:center;justify-content:center;overflow:hidden;position:relative}.featuredImage img{height:100%;object-fit:contain;object-position:center;width:100%}
 
 /* Persistent public-page navigation and stable anchor activation zone. */

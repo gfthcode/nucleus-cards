@@ -1,40 +1,35 @@
 import type { Locale } from "@/config/product";
 
-export const messages = {
-  "zh-CN": {
-    nav: {
-      home: "首页",
-      market: "行情",
-      teams: "球队",
-      rookies: "新秀",
-      portfolio: "持仓",
-      alerts: "提醒",
-    },
-    common: {
-      demo: "演示数据",
-      updatedAt: "更新时间",
-      noTrustedSales: "暂无可信成交数据",
-      samples: "成交样本",
-    },
-  },
-  "zh-HK": {
-    nav: {
-      home: "首頁",
-      market: "行情",
-      teams: "球隊",
-      rookies: "新秀",
-      portfolio: "持倉",
-      alerts: "提醒",
-    },
-    common: {
-      demo: "示範數據",
-      updatedAt: "更新時間",
-      noTrustedSales: "暫無可信成交數據",
-      samples: "成交樣本",
-    },
-  },
+const zh = {
+  "common.loading": "加载中", "common.updated": "已更新", "common.back": "返回", "common.save": "保存", "common.cancel": "取消", "common.delete": "删除", "common.edit": "编辑", "common.unknown": "未知", "common.demo": "演示数据", "common.dataMethodology": "数据口径",
+  "navigation.home": "首页", "navigation.market": "行情", "navigation.cards": "卡片", "navigation.players": "球员", "navigation.teams": "球队", "navigation.rookies": "新秀", "navigation.auctions": "拍卖", "navigation.sales": "最近成交", "navigation.portfolio": "持仓", "navigation.collection": "收藏", "navigation.watchlist": "关注列表", "navigation.alerts": "提醒", "navigation.ai": "AI 研究", "navigation.settings": "设置", "navigation.methodology": "数据方法", "navigation.admin": "管理后台", "navigation.discover": "发现", "navigation.collect": "收藏", "navigation.intelligence": "研究",
+  "shell.skipToContent": "跳至主要内容", "shell.mainNavigation": "主要导航", "shell.mobileNavigation": "手机导航", "shell.dataService": "数据服务", "shell.marketStatus": "美东市场 · 盘后", "shell.disclaimer": "数据仅供收藏研究参考，不构成交易建议。", "shell.privacy": "隐私", "shell.current": "当前", "shell.enterApp": "进入应用", "shell.footerSummary": "NBA 球星卡收藏、行情与研究工具。", "shell.snapshot": "演示快照 · 真实成交需接入授权来源核验",
+  "search.label": "全局搜索", "search.placeholder": "搜索球员、卡片或球队", "search.submit": "执行搜索", "language.label": "切换语言", "language.zh": "中", "language.en": "EN",
+  "homepage.eyebrow": "NBA SPORTS CARD COLLECTION MANAGER", "homepage.title.1": "一个更聪明的", "homepage.title.2": "球星卡", "homepage.title.3": "收藏家。", "homepage.description": "把卡片、球员、球队、成交和收藏进度放在一起。先找到正确的卡，再用清晰的市场证据决定下一步。", "homepage.exploreMarket": "探索市场", "homepage.publicCollection": "浏览公开收藏", "homepage.free": "免费使用", "homepage.demoLabel": "演示数据清晰标注", "homepage.featureKicker": "FOR THE WAY YOU COLLECT", "homepage.featureTitle": "让每一次收藏，都更有把握。", "homepage.featureDescription": "从发现下一张卡到追踪长期持仓，Nucleus Cards 把复杂信息整理成收藏者真正需要的几个动作。",
+  "homepage.feature.search.title": "卡片与球员搜索", "homepage.feature.search.description": "按球员、球队、年份、系列和卡号快速找到正确身份，避免把相似卡混在一起。", "homepage.feature.market.title": "行情与成交", "homepage.feature.market.description": "把在售标价与历史成交分开呈现，样本不足时明确显示“未知”，不制造虚假的精确感。", "homepage.feature.ai.title": "AI 收藏研究", "homepage.feature.ai.description": "用可解释的规则阅读热度、流动性、数据完整度和风险，帮助你先比较再决定。",
+  "homepage.section.home": "首页", "homepage.section.features": "功能总览", "homepage.section.featuresShort": "功能", "homepage.section.market": "市场行情", "homepage.section.marketShort": "行情", "homepage.section.collection": "收藏与持仓", "homepage.section.collectionShort": "收藏", "homepage.section.scanner": "卡片识别", "homepage.section.scannerShort": "识别", "homepage.section.faq": "FAQ",
+  "market.title": "球星卡行情市场", "market.search": "搜索", "market.recentSales": "最近成交", "market.activeListings": "在售标价", "market.sampleCount": "样本数", "market.confidence": "可信度", "market.empty": "暂无符合条件的卡片",
+  "portfolio.title": "我的持仓", "portfolio.collection": "我的收藏", "portfolio.value": "持仓估值", "portfolio.cost": "成本基础", "portfolio.profitLoss": "未实现盈亏", "portfolio.cardsOwned": "持有卡片",
+  "settings.title": "隐私与数据设置", "settings.language": "语言", "settings.languageDescription": "此设置与顶部语言切换共用，并会在设备间同步。",
+  "auth.title": "登录你的收藏空间", "auth.description": "使用邮箱登录，在不同设备同步收藏、持仓、关注列表和价格提醒。", "auth.email": "邮箱地址", "auth.emailPlaceholder": "collector@example.com", "auth.sendCode": "发送验证码", "auth.codeSent": "验证码已发送至", "auth.code": "6 位验证码", "auth.verify": "验证并登录", "auth.resend": "重新发送", "auth.changeEmail": "修改邮箱", "auth.demo": "体验演示模式", "auth.privacy": "不会公开你的邮箱地址。", "auth.signIn": "登录", "auth.signOut": "退出登录", "auth.account": "我的账户", "auth.configMissing": "邮箱登录尚未完成服务端配置。你仍可使用演示模式浏览公开功能。"
 } as const;
 
-export function getMessages(locale: Locale = "zh-CN") {
-  return messages[locale];
-}
+const en: Record<keyof typeof zh, string> = {
+  "common.loading": "Loading", "common.updated": "Updated", "common.back": "Back", "common.save": "Save", "common.cancel": "Cancel", "common.delete": "Delete", "common.edit": "Edit", "common.unknown": "Unknown", "common.demo": "Demo data", "common.dataMethodology": "Data methodology",
+  "navigation.home": "Home", "navigation.market": "Market", "navigation.cards": "Cards", "navigation.players": "Players", "navigation.teams": "Teams", "navigation.rookies": "Rookies", "navigation.auctions": "Auctions", "navigation.sales": "Recent sales", "navigation.portfolio": "Portfolio", "navigation.collection": "Collection", "navigation.watchlist": "Watchlist", "navigation.alerts": "Alerts", "navigation.ai": "AI research", "navigation.settings": "Settings", "navigation.methodology": "Methodology", "navigation.admin": "Admin", "navigation.discover": "DISCOVER", "navigation.collect": "COLLECT", "navigation.intelligence": "INTELLIGENCE",
+  "shell.skipToContent": "Skip to main content", "shell.mainNavigation": "Main navigation", "shell.mobileNavigation": "Mobile navigation", "shell.dataService": "Data service", "shell.marketStatus": "US market · After hours", "shell.disclaimer": "Data is for collecting research only and is not trading advice.", "shell.privacy": "Privacy", "shell.current": "CURRENT", "shell.enterApp": "Open app", "shell.footerSummary": "NBA card collection, market and research tools.", "shell.snapshot": "Demo snapshot · verified sales require an authorized source",
+  "search.label": "Global search", "search.placeholder": "Search players, cards or teams", "search.submit": "Run search", "language.label": "Switch language", "language.zh": "中", "language.en": "EN",
+  "homepage.eyebrow": "NBA SPORTS CARD COLLECTION MANAGER", "homepage.title.1": "A smarter home", "homepage.title.2": "for your sports", "homepage.title.3": "card collection.", "homepage.description": "Bring cards, players, teams, sales and collection progress into one place. Find the right card first, then decide with clear market evidence.", "homepage.exploreMarket": "Explore market", "homepage.publicCollection": "View public collection", "homepage.free": "Free to use", "homepage.demoLabel": "Demo data clearly labeled", "homepage.featureKicker": "FOR THE WAY YOU COLLECT", "homepage.featureTitle": "Collect with more confidence.", "homepage.featureDescription": "From finding your next card to tracking long-term holdings, Nucleus Cards turns complex information into the actions collectors need.",
+  "homepage.feature.search.title": "Cards & player search", "homepage.feature.search.description": "Find the correct identity by player, team, year, product line and card number—without mixing up near-matches.", "homepage.feature.market.title": "Market & sales", "homepage.feature.market.description": "Keep asking prices and historical sales separate. When samples are thin, we show uncertainty instead of invented precision.", "homepage.feature.ai.title": "AI collecting research", "homepage.feature.ai.description": "Read heat, liquidity, data completeness and risk through explainable signals before you decide.",
+  "homepage.section.home": "Home", "homepage.section.features": "Features", "homepage.section.featuresShort": "Features", "homepage.section.market": "Market", "homepage.section.marketShort": "Market", "homepage.section.collection": "Collection & portfolio", "homepage.section.collectionShort": "Collection", "homepage.section.scanner": "Card scanner", "homepage.section.scannerShort": "Scanner", "homepage.section.faq": "FAQ",
+  "market.title": "Sports card market", "market.search": "Search", "market.recentSales": "Recent sales", "market.activeListings": "Active listings", "market.sampleCount": "Samples", "market.confidence": "Confidence", "market.empty": "No matching cards",
+  "portfolio.title": "My portfolio", "portfolio.collection": "My collection", "portfolio.value": "Portfolio value", "portfolio.cost": "Cost basis", "portfolio.profitLoss": "Unrealized P/L", "portfolio.cardsOwned": "Cards owned",
+  "settings.title": "Privacy & data settings", "settings.language": "Language", "settings.languageDescription": "Uses the same preference as the header and syncs between devices.",
+  "auth.title": "Sign in to your collection space", "auth.description": "Use email to sync your collection, portfolio, watchlist and price alerts across devices.", "auth.email": "Email address", "auth.emailPlaceholder": "collector@example.com", "auth.sendCode": "Send verification code", "auth.codeSent": "A verification code was sent to", "auth.code": "6-digit verification code", "auth.verify": "Verify & sign in", "auth.resend": "Resend code", "auth.changeEmail": "Change email", "auth.demo": "Try demo mode", "auth.privacy": "Your email address is never public.", "auth.signIn": "Sign in", "auth.signOut": "Sign out", "auth.account": "My account", "auth.configMissing": "Email sign-in is not configured yet. You can still explore public features in demo mode."
+};
+
+export type TranslationKey = keyof typeof zh;
+export type Messages = Record<TranslationKey, string>;
+export const dictionaries: Record<Locale, Messages> = { "zh-CN": zh, en };
+export function getMessages(locale: Locale = "zh-CN") { return dictionaries[locale]; }
+export function translate(locale: Locale, key: TranslationKey) { return dictionaries[locale][key]; }

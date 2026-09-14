@@ -23,7 +23,7 @@ export function CardDetailHero({ card, player, currentTeam, printedTeam, referen
         <h2>{card.releaseYear} {card.brand} {card.productLine} <span>#{card.cardNumber}</span></h2>
         <p className={styles.specLine}>{card.parallel}{card.printRun ? ` · /${card.printRun}` : ""} · {card.autograph ? (card.autographType ?? "签字") : "非签字"} · {card.condition === "graded" ? `${card.gradingCompany} ${card.grade}` : "裸卡"}</p>
         <div className={styles.teamLine}><span>现属 {currentTeam?.name ?? "退役 / 未披露"}</span><i /> <span>印刷球队 {printedTeam?.name ?? "未披露"}</span></div>
-        <div className={styles.actionRow}><CardActions /><Link href={`/analysis?card=${card.id}`}><ShieldCheck size={14} />查看 AI 研究</Link></div>
+        <div className={styles.actionRow}><CardActions cardId={card.id} /><Link href={`/analysis?card=${card.id}`}><ShieldCheck size={14} />查看 AI 研究</Link></div>
         <div className={styles.identityKey}><Layers3 size={14} /><span>身份键</span><code>{card.identityKey}</code><small>匹配度 {card.matchConfidence}%</small></div>
       </div>
       <aside className={styles.market}>

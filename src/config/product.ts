@@ -5,8 +5,8 @@ export const productConfig = {
     process.env.NEXT_PUBLIC_APP_URL?.replace(/\/+$/, "") ||
     "https://nucleus-cards.vercel.app",
   repositoryUrl: "https://github.com/gfthcode/nucleus-cards",
-  defaultLocale: "zh-CN",
-  supportedLocales: ["zh-CN", "zh-HK"] as const,
+  defaultLocale: "zh-CN" as const,
+  supportedLocales: ["zh-CN", "en"] as const,
   defaultCurrency: "CNY" as const,
   supportedCurrencies: ["CNY", "HKD", "USD"] as const,
   supportedTimezones: ["Asia/Shanghai", "Asia/Hong_Kong"] as const,

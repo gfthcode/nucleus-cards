@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { AlertManager } from "@/components/alert-manager";
+import { PersonalWorkspace } from "@/components/personal-workspace";
 import { PageHeader } from "@/components/page-header";
 import { cards, demoAlerts, getPlayer } from "@/lib/demo-data";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "关注与提醒" };
-export default function AlertsPage() {
+export default async function AlertsPage() {
+  const { supabase, user } = await getAuthenticatedUser();
+  if (supabase && user) return <main className="page-shell inner-page"><PageHeader eyebrow="PRIVATE ALERTS" title="我的价格提醒" description="提醒规则只对当前登录账号生效，服务端通过行级权限隔离。" /><PersonalWorkspace mode="alerts" /></main>;
   const joined = cards.map((card) => ({
     ...card,
     player: getPlayer(card.playerId)!,

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary", images: [] },
 };
 
-export default function PublicCollectionPage() {
+function PublicCollectionPage() {
   const publicItems = demoPortfolio
     .filter((item) => item.isPublic)
     .map((item) => ({
@@ -49,3 +49,5 @@ export default function PublicCollectionPage() {
     </main>
   );
 }
+
+export default PublicCollectionPage;

@@ -1,15 +1,22 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { updateAuthSession } from "@/lib/supabase/proxy";
 
-export function proxy(request: NextRequest) {
-  const demoMode =
-    process.env.NEXT_PUBLIC_DEMO_MODE !== "false" ||
-    !process.env.NEXT_PUBLIC_SUPABASE_URL;
-  if (request.nextUrl.pathname.startsWith("/admin") && !demoMode) {
-    const role = request.cookies.get("nucleus-role")?.value;
-    if (role !== "admin")
-      return NextResponse.redirect(new URL("/login?next=/admin", request.url));
+const protectedPrefixes = ["/portfolio", "/collections", "/watchlist", "/alerts", "/settings"];
+
+export async function proxy(request: NextRequest) {
+  const { response, userId, configured } = await updateAuthSession(request);
+  const needsLogin = protectedPrefixes.some((prefix) => request.nextUrl.pathname === prefix || request.nextUrl.pathname.startsWith(`${prefix}/`));
+  if (configured && needsLogin && !userId) {
+    const returnTo = `${request.nextUrl.pathname}${request.nextUrl.search}${request.nextUrl.hash}`;
+    const url = new URL("/login", request.url);
+    url.searchParams.set("returnTo", returnTo);
+    return NextResponse.redirect(url);
   }
-  return NextResponse.next();
+  if (configured && request.nextUrl.pathname.startsWith("/admin")) {
+    // Admin authorization is intentionally not inferred from a browser cookie.
+    return NextResponse.redirect(new URL("/login?returnTo=/admin", request.url));
+  }
+  return response;
 }
 
-export const config = { matcher: ["/admin/:path*"] };
+export const config = { matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"] };

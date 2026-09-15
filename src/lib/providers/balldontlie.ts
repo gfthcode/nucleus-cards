@@ -71,7 +71,7 @@ export async function fetchPlayerRecentPerformance(player: Player): Promise<Play
   const normalized = player.name.toLowerCase().replace(/[^a-z0-9]/g, "");
   const match = identity.data.find((item) => `${item.first_name}${item.last_name}`.toLowerCase().replace(/[^a-z0-9]/g, "") === normalized);
   if (!match) return null;
-  const stats = await request<{ data: BdlStat[] }>(`/stats?player_ids[]=${match.id}&seasons[]=2025&per_page=100`);
+  const stats = await request<{ data: BdlStat[] }>(`/stats?player_ids[]=${match.id}&seasons[]=2024&per_page=100`);
   const games = stats.data.filter((stat) => stat.game?.date).sort((a, b) => String(b.game?.date).localeCompare(String(a.game?.date))).map((stat) => {
     const home = stat.game?.home_team?.abbreviation ?? "";
     const visitor = stat.game?.visitor_team?.abbreviation ?? "";

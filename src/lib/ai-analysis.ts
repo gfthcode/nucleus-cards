@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { productConfig } from "@/config/product";
 import type { Card, Player } from "@/types/domain";
+import type { PlayerRecentPerformance } from "@/lib/providers/balldontlie";
 
 export const aiAnalysisSchema = z.object({
   analysisPeriod: z.enum(["7-30d", "1-3m"]),
@@ -40,6 +41,7 @@ export const aiAnalysisSchema = z.object({
   disclaimer: z.string(),
   generatedAt: z.string(),
   modelVersion: z.string(),
+  recentPerformance: z.object({ last5: z.array(z.object({ date: z.string(), opponent: z.string(), minutes: z.number(), points: z.number(), rebounds: z.number(), assists: z.number(), steals: z.number(), blocks: z.number(), turnovers: z.number(), fgPct: z.number(), threePct: z.number(), ftPct: z.number() })), last10: z.array(z.object({ date: z.string(), opponent: z.string(), minutes: z.number(), points: z.number(), rebounds: z.number(), assists: z.number(), steals: z.number(), blocks: z.number(), turnovers: z.number(), fgPct: z.number(), threePct: z.number(), ftPct: z.number() })), fetchedAt: z.string(), source: z.literal("BallDontLie") }).optional(),
 });
 
 export type AIAnalysis = z.infer<typeof aiAnalysisSchema>;
@@ -60,6 +62,7 @@ export class DeterministicDemoAI implements AIProvider {
     card: Card,
     player: Player,
     period: "7-30d" | "1-3m",
+    performance?: PlayerRecentPerformance | null,
   ): Promise<AIAnalysis> {
     const momentum =
       period === "7-30d"
@@ -104,6 +107,8 @@ export class DeterministicDemoAI implements AIProvider {
           ? "medium"
           : "low";
 
+    const recent = performance?.last5 ?? [];
+    const avg = (field: "points" | "rebounds" | "assists" | "minutes") => recent.length ? recent.reduce((sum, game) => sum + game[field], 0) / recent.length : 0;
     return aiAnalysisSchema.parse({
       analysisPeriod: period,
       playerCohort: player.cohort,
@@ -123,6 +128,7 @@ export class DeterministicDemoAI implements AIProvider {
       confidenceLevel,
       dataCompleteness: card.dataCompleteness,
       keyPositiveFactors: [
+        ...(performance ? [`BallDontLie 近 ${recent.length} 场：${avg("points").toFixed(1)} PTS / ${avg("rebounds").toFixed(1)} REB / ${avg("assists").toFixed(1)} AST`, `近 ${recent.length} 场场均出场 ${avg("minutes").toFixed(1)} 分钟`] : []),
         card.change30d && card.change30d > 0
           ? `30 日成交中位价变化 +${card.change30d}%`
           : "当前无明确价格动量",
@@ -156,6 +162,7 @@ export class DeterministicDemoAI implements AIProvider {
         "球队交易或角色变化",
       ],
       evidence: [
+        ...(performance ? [{ label: "近期比赛统计", source: "BallDontLie", updatedAt: performance.fetchedAt }] : []),
         {
           label: "演示成交指标",
           source: "Nucleus 演示源",
@@ -170,6 +177,8 @@ export class DeterministicDemoAI implements AIProvider {
       disclaimer: productConfig.disclaimer,
       generatedAt: "2026-08-31T01:30:00Z",
       modelVersion: this.name,
+      recentPerformance: performance ? { last5: performance.last5, last10: performance.last10, fetchedAt: performance.fetchedAt, source: "BallDontLie" } : undefined,
     });
   }
 }
+

@@ -1,6 +1,7 @@
 import { DeterministicDemoAI } from "@/lib/ai-analysis";
 import { getCard, getPlayer } from "@/lib/demo-data";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { fetchPlayerRecentPerformance } from "@/lib/providers/balldontlie";
 
 export async function GET(
   request: Request,
@@ -20,13 +21,20 @@ export async function GET(
   const player = card ? getPlayer(card.playerId) : undefined;
   if (!card || !player)
     return Response.json({ error: "卡片不存在" }, { status: 404 });
-  const analysis = await new DeterministicDemoAI().analyze(
-    card,
-    player,
-    "7-30d",
-  );
+  const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+  let performance = null;
+  if (!demoMode) {
+    try {
+      performance = await fetchPlayerRecentPerformance(player);
+    } catch {
+      return Response.json({ error: "No verified sports data available", source: "BallDontLie" }, { status: 503 });
+    }
+    if (!performance) return Response.json({ error: "No verified sports data available", source: "BallDontLie" }, { status: 404 });
+  }
+  const analysis = await new DeterministicDemoAI().analyze(card, player, "7-30d", performance);
   return Response.json(
-    { data: analysis, mode: "deterministic-demo" },
+    { data: analysis, mode: demoMode ? "deterministic-demo" : "balldontlie" },
     { headers: { "X-RateLimit-Remaining": String(rate.remaining) } },
   );
 }
+

@@ -10,6 +10,7 @@ import { useI18n } from "@/i18n/client";
 const emailSchema = z.string().trim().email();
 const otpSchema = z.string().regex(/^\d{6}$/);
 const AUTH_COOLDOWN_SECONDS = 60;
+const cooldownKey = (value: string) => `nucleus-auth-cooldown:${value.trim().toLowerCase()}`;
 
 function maskEmail(email: string) {
   const [name, domain] = email.split("@");
@@ -42,6 +43,12 @@ export function EmailLoginForm({ returnTo }: { returnTo: string }) {
     return () => window.clearInterval(timer);
   }, [seconds]);
 
+  function handleEmailChange(value: string) {
+    setEmail(value);
+    const until = Number(window.localStorage.getItem(cooldownKey(value)) ?? 0);
+    setSeconds(Math.max(0, Math.ceil((until - Date.now()) / 1000)));
+  }
+
   async function sendCode(event?: React.FormEvent) {
     event?.preventDefault();
     if (requestInFlight.current || seconds > 0) return;
@@ -56,10 +63,13 @@ export function EmailLoginForm({ returnTo }: { returnTo: string }) {
       if (requestError) {
         setError(authError(requestError.message));
         if (requestError.message.toLowerCase().includes("rate") || requestError.message.toLowerCase().includes("too many")) {
+          const until = Date.now() + AUTH_COOLDOWN_SECONDS * 1000;
+          window.localStorage.setItem(cooldownKey(email), String(until));
           setSeconds(AUTH_COOLDOWN_SECONDS);
         }
         return;
       }
+      window.localStorage.setItem(cooldownKey(email), String(Date.now() + AUTH_COOLDOWN_SECONDS * 1000));
       setStep("code"); setSeconds(AUTH_COOLDOWN_SECONDS); setToken("");
     } finally {
       requestInFlight.current = false;
@@ -81,7 +91,7 @@ export function EmailLoginForm({ returnTo }: { returnTo: string }) {
 
   if (!configured) return <div className="auth-form"><p className="auth-error" role="status">{t("auth.configMissing")}</p><Link className="button button-secondary" href="/portfolio">{t("auth.demo")}</Link></div>;
   if (step === "email") return <form className="auth-form" onSubmit={sendCode} noValidate>
-    <label><span>{t("auth.email")}</span><input autoComplete="email" autoFocus inputMode="email" type="email" value={email} placeholder={t("auth.emailPlaceholder")} onChange={(event) => setEmail(event.target.value)} /></label>
+    <label><span>{t("auth.email")}</span><input autoComplete="email" autoFocus inputMode="email" type="email" value={email} placeholder={t("auth.emailPlaceholder")} onChange={(event) => handleEmailChange(event.target.value)} /></label>
     {error && <p className="auth-error" role="alert">{error}</p>}
     <button className="button button-primary" type="submit" disabled={pending || seconds > 0}>{pending ? (locale === "en" ? "Sending…" : "发送中…") : seconds ? `${locale === "en" ? "Try again in" : "请等待"} ${seconds}s` : t("auth.sendCode")}</button>
     <Link className="button button-secondary" href="/portfolio">{t("auth.demo")}</Link>

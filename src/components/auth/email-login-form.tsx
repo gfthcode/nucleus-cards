@@ -17,12 +17,12 @@ function maskEmail(email: string) {
   return `${name.slice(0, 1)}${"*".repeat(Math.max(2, name.length - 1))}@${domain}`;
 }
 
-function authError(message: string) {
+function authError(message: string, translate: (key: "auth.errorRate" | "auth.errorToken" | "auth.errorNetwork" | "auth.errorGeneric") => string) {
   const value = message.toLowerCase();
-  if (value.includes("rate") || value.includes("too many")) return "请求过于频繁，请稍后再试。";
-  if (value.includes("token") || value.includes("otp")) return "验证码无效或已过期，请重新发送。";
-  if (value.includes("network") || value.includes("fetch")) return "网络连接失败，请检查网络后重试。";
-  return "暂时无法完成登录，请稍后重试。";
+  if (value.includes("rate") || value.includes("too many")) return translate("auth.errorRate");
+  if (value.includes("token") || value.includes("otp")) return translate("auth.errorToken");
+  if (value.includes("network") || value.includes("fetch")) return translate("auth.errorNetwork");
+  return translate("auth.errorGeneric");
 }
 
 export function EmailLoginForm({ returnTo }: { returnTo: string }) {
@@ -59,9 +59,9 @@ export function EmailLoginForm({ returnTo }: { returnTo: string }) {
     requestInFlight.current = true;
     setPending(true);
     try {
-      const { error: requestError } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+      const callback = new URL("/auth/callback", window.location.origin);\n      callback.searchParams.set("next", returnTo);\n      const { error: requestError } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: callback.toString() } });
       if (requestError) {
-        setError(authError(requestError.message));
+        setError(authError(requestError.message, t));
         if (requestError.message.toLowerCase().includes("rate") || requestError.message.toLowerCase().includes("too many")) {
           const until = Date.now() + AUTH_COOLDOWN_SECONDS * 1000;
           window.localStorage.setItem(cooldownKey(email), String(until));
@@ -85,7 +85,7 @@ export function EmailLoginForm({ returnTo }: { returnTo: string }) {
     setPending(true);
     const { error: verifyError } = await supabase.auth.verifyOtp({ email, token, type: "email" });
     setPending(false);
-    if (verifyError) { setError(authError(verifyError.message)); return; }
+    if (verifyError) { setError(authError(verifyError.message, t)); return; }
     router.replace(returnTo); router.refresh();
   }
 

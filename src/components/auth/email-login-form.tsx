@@ -83,7 +83,7 @@ export function EmailLoginForm({ returnTo }: { returnTo: string }) {
   if (step === "email") return <form className="auth-form" onSubmit={sendCode} noValidate>
     <label><span>{t("auth.email")}</span><input autoComplete="email" autoFocus inputMode="email" type="email" value={email} placeholder={t("auth.emailPlaceholder")} onChange={(event) => setEmail(event.target.value)} /></label>
     {error && <p className="auth-error" role="alert">{error}</p>}
-    <button className="button button-primary" type="submit" disabled={pending}>{pending ? (locale === "en" ? "Sending…" : "发送中…") : t("auth.sendCode")}</button>
+    <button className="button button-primary" type="submit" disabled={pending || seconds > 0}>{pending ? (locale === "en" ? "Sending…" : "发送中…") : seconds ? `${locale === "en" ? "Try again in" : "请等待"} ${seconds}s` : t("auth.sendCode")}</button>
     <Link className="button button-secondary" href="/portfolio">{t("auth.demo")}</Link>
     <small className="auth-note">{t("auth.privacy")}</small>
   </form>;

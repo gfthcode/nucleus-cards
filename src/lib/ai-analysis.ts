@@ -41,7 +41,7 @@ export const aiAnalysisSchema = z.object({
   disclaimer: z.string(),
   generatedAt: z.string(),
   modelVersion: z.string(),
-  recentPerformance: z.object({ last5: z.array(z.object({ date: z.string(), opponent: z.string(), minutes: z.number(), points: z.number(), rebounds: z.number(), assists: z.number(), steals: z.number(), blocks: z.number(), turnovers: z.number(), fgPct: z.number(), threePct: z.number(), ftPct: z.number() })), last10: z.array(z.object({ date: z.string(), opponent: z.string(), minutes: z.number(), points: z.number(), rebounds: z.number(), assists: z.number(), steals: z.number(), blocks: z.number(), turnovers: z.number(), fgPct: z.number(), threePct: z.number(), ftPct: z.number() })), fetchedAt: z.string(), source: z.literal("BallDontLie") }).optional(),
+  recentPerformance: z.object({ last5: z.array(z.object({ date: z.string(), opponent: z.string(), minutes: z.number(), points: z.number(), rebounds: z.number(), assists: z.number(), steals: z.number(), blocks: z.number(), turnovers: z.number(), fgPct: z.number(), threePct: z.number(), ftPct: z.number() })), last10: z.array(z.object({ date: z.string(), opponent: z.string(), minutes: z.number(), points: z.number(), rebounds: z.number(), assists: z.number(), steals: z.number(), blocks: z.number(), turnovers: z.number(), fgPct: z.number(), threePct: z.number(), ftPct: z.number() })), fetchedAt: z.string(), source: z.enum(["BallDontLie", "SportsDataIO"]) }).optional(),
 });
 
 export type AIAnalysis = z.infer<typeof aiAnalysisSchema>;
@@ -128,7 +128,7 @@ export class DeterministicDemoAI implements AIProvider {
       confidenceLevel,
       dataCompleteness: card.dataCompleteness,
       keyPositiveFactors: [
-        ...(performance ? [`BallDontLie 近 ${recent.length} 场：${avg("points").toFixed(1)} PTS / ${avg("rebounds").toFixed(1)} REB / ${avg("assists").toFixed(1)} AST`, `近 ${recent.length} 场场均出场 ${avg("minutes").toFixed(1)} 分钟`] : []),
+        ...(performance ? [`${performance.source} 近 ${recent.length} 场：${avg("points").toFixed(1)} PTS / ${avg("rebounds").toFixed(1)} REB / ${avg("assists").toFixed(1)} AST`, `近 ${recent.length} 场场均出场 ${avg("minutes").toFixed(1)} 分钟`] : []),
         card.change30d && card.change30d > 0
           ? `30 日成交中位价变化 +${card.change30d}%`
           : "当前无明确价格动量",
@@ -162,7 +162,7 @@ export class DeterministicDemoAI implements AIProvider {
         "球队交易或角色变化",
       ],
       evidence: [
-        ...(performance ? [{ label: "近期比赛统计", source: "BallDontLie", updatedAt: performance.fetchedAt }] : []),
+        ...(performance ? [{ label: "近期比赛统计", source: performance.source, updatedAt: performance.fetchedAt }] : []),
         {
           label: "演示成交指标",
           source: "Nucleus 演示源",
@@ -177,8 +177,7 @@ export class DeterministicDemoAI implements AIProvider {
       disclaimer: productConfig.disclaimer,
       generatedAt: "2026-08-31T01:30:00Z",
       modelVersion: this.name,
-      recentPerformance: performance ? { last5: performance.last5, last10: performance.last10, fetchedAt: performance.fetchedAt, source: "BallDontLie" } : undefined,
+      recentPerformance: performance ? { last5: performance.last5, last10: performance.last10, fetchedAt: performance.fetchedAt, source: performance.source } : undefined,
     });
   }
 }
-

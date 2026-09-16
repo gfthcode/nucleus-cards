@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { createSupabaseBrowserClient, hasSupabaseConfig } from "@/lib/supabase/browser";
 import { useI18n } from "@/i18n/client";
 
 const emailSchema = z.string().trim().email();
 const otpSchema = z.string().regex(/^\d{6}$/);
+const AUTH_COOLDOWN_SECONDS = 60;
 
 function maskEmail(email: string) {
   const [name, domain] = email.split("@");
@@ -33,6 +34,7 @@ export function EmailLoginForm({ returnTo }: { returnTo: string }) {
   const [error, setError] = useState("");
   const [seconds, setSeconds] = useState(0);
   const configured = hasSupabaseConfig();
+  const requestInFlight = useRef(false);
 
   useEffect(() => {
     if (!seconds) return undefined;
@@ -42,15 +44,27 @@ export function EmailLoginForm({ returnTo }: { returnTo: string }) {
 
   async function sendCode(event?: React.FormEvent) {
     event?.preventDefault();
+    if (requestInFlight.current || seconds > 0) return;
     setError("");
     if (!emailSchema.safeParse(email).success) { setError(locale === "en" ? "Enter a valid email address." : "请输入有效的邮箱地址。 "); return; }
     const supabase = createSupabaseBrowserClient();
     if (!supabase) { setError(t("auth.configMissing")); return; }
+    requestInFlight.current = true;
     setPending(true);
-    const { error: requestError } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
-    setPending(false);
-    if (requestError) { setError(authError(requestError.message)); return; }
-    setStep("code"); setSeconds(60); setToken("");
+    try {
+      const { error: requestError } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+      if (requestError) {
+        setError(authError(requestError.message));
+        if (requestError.message.toLowerCase().includes("rate") || requestError.message.toLowerCase().includes("too many")) {
+          setSeconds(AUTH_COOLDOWN_SECONDS);
+        }
+        return;
+      }
+      setStep("code"); setSeconds(AUTH_COOLDOWN_SECONDS); setToken("");
+    } finally {
+      requestInFlight.current = false;
+      setPending(false);
+    }
   }
 
   async function verifyCode(event: React.FormEvent) {

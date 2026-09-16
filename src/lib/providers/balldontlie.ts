@@ -22,7 +22,7 @@ export type PlayerRecentPerformance = {
   last5: RecentGame[];
   last10: RecentGame[];
   fetchedAt: string;
-  source: "BallDontLie";
+  source: "BallDontLie" | "SportsDataIO";
 };
 
 type BdlPlayer = { id: number; first_name: string; last_name: string; team?: { abbreviation?: string } };
@@ -81,4 +81,3 @@ export async function fetchPlayerRecentPerformance(player: Player): Promise<Play
   if (!games.length) return null;
   return { playerId: player.id, externalPlayerId: match.id, games, last5: games.slice(0, 5), last10: games.slice(0, 10), fetchedAt: new Date().toISOString(), source: "BallDontLie" };
 }
-

@@ -182,12 +182,20 @@ export async function searchEbayMarket(playerName: string, limit = 50, tier: Mar
 
 export async function getEbayHealth() {
   const configured = Boolean(process.env.EBAY_CLIENT_ID && process.env.EBAY_CLIENT_SECRET);
-  if (!configured) return { configured: false, tokenWorking: false, browseApiWorking: false, marketplace: MARKETPLACE };
+  if (!configured) return { configured: false, tokenWorking: false, browseApiWorking: false, marketplace: MARKETPLACE, lastSuccessfulFetch: null, lastErrorType: "CREDENTIALS_NOT_CONFIGURED" as const };
   try {
-    await getApplicationToken();
-    return { configured: true, tokenWorking: true, browseApiWorking: null, marketplace: MARKETPLACE };
-  } catch {
-    return { configured: true, tokenWorking: false, browseApiWorking: false, marketplace: MARKETPLACE };
+    const token = await getApplicationToken();
+    const params = new URLSearchParams({ q: "Victor Wembanyama basketball card", limit: "1", fieldgroups: "EXTENDED" });
+    const response = await fetch(`${API}/buy/browse/v1/item_summary/search?${params}`, { headers: { Authorization: `Bearer ${token}`, "X-EBAY-C-MARKETPLACE-ID": MARKETPLACE }, cache: "no-store" });
+    if (!response.ok) throw new Error(`EBAY_BROWSE_${response.status}`);
+    const json = await response.json() as { itemSummaries?: EbayItem[] };
+    const item = json.itemSummaries?.[0];
+    if (!item?.itemId || !item.title || !item.itemWebUrl) throw new Error("EMPTY_RESULTS");
+    return { configured: true, tokenWorking: true, browseApiWorking: true, marketplace: MARKETPLACE, lastSuccessfulFetch: new Date().toISOString(), lastErrorType: null };
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : "OTHER";
+    const lastErrorType = reason === "EMPTY_RESULTS" ? "EMPTY_RESULTS" : reason.includes("TOKEN_401") ? "TOKEN_401" : reason.includes("TOKEN_403") ? "TOKEN_403" : reason.includes("BROWSE_401") ? "BROWSE_401" : reason.includes("BROWSE_403") ? "BROWSE_403" : reason.includes("429") ? "RATE_LIMIT_429" : reason.includes("fetch") ? "NETWORK_ERROR" : "OTHER";
+    return { configured: true, tokenWorking: !reason.startsWith("EBAY_TOKEN_"), browseApiWorking: false, marketplace: MARKETPLACE, lastSuccessfulFetch: null, lastErrorType };
   }
 }
 

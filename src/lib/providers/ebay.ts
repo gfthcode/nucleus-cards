@@ -16,6 +16,10 @@ export type TradingCardIdentity = {
   gradingCompany: string | null;
   grade: number | null;
   identityConfidence: "HIGH" | "MEDIUM" | "LOW";
+  season: string | null;
+  brand: string | null;
+  printRun: number | null;
+  rawOrGraded: "RAW" | "GRADED";
 };
 
 export type MarketObservation = {
@@ -78,26 +82,48 @@ function numberOrNull(value?: string) {
   return Number.isFinite(number) ? number : null;
 }
 
-function identityFromTitle(title: string): TradingCardIdentity {
+const BRANDS = ["Prizm", "Select", "Donruss", "Optic", "Mosaic", "Hoops", "Chronicles", "Contenders", "Origins", "Recon", "Obsidian", "Revolution", "Court Kings", "National Treasures", "Immaculate", "Flawless", "Topps Chrome", "Topps", "Bowman Chrome", "Bowman", "Fleer", "SkyBox", "SP Authentic", "Exquisite"];
+const PARALLELS = ["Cracked Ice", "Fast Break", "Tie-Dye", "Refractor", "Genesis", "Velocity", "Disco", "Silver", "Holo", "Green", "Red", "Blue", "Purple", "Orange", "Gold", "Black", "White", "Ice", "Wave", "Pulsar", "Scope", "Zebra", "Elephant", "Base"];
+
+export function parseTradingCardTitle(title: string, targetPlayerName?: string): TradingCardIdentity {
   const year = title.match(/\b(19\d{2}|20\d{2})(?:[-/](?:\d{2,4}))?\b/)?.[1];
-  const number = title.match(/(?:#|card\s*#?)\s*([A-Za-z0-9-]+)/i)?.[1] ?? null;
+  const season = title.match(/\b((?:19|20)\d{2}\s*[-/]\s*(?:\d{2}|(?:19|20)\d{2}))\b/)?.[1]?.replace(/\s+/g, "") ?? null;
+  const number = title.match(/(?:#|no\.?|card\s*#?)\s*([A-Za-z0-9-]+)/i)?.[1] ?? null;
   const gradeMatch = title.match(/\b(PSA|BGS|SGC|CGC)\s*([0-9]+(?:\.5)?)\b/i);
-  const confidence = year && number ? "MEDIUM" : "LOW";
+  const brand = BRANDS.find((value) => new RegExp(`\\b${value.replace(/ /g, "\\s+")}\\b`, "i").test(title)) ?? null;
+  const parallel = PARALLELS.find((value) => new RegExp(`\\b${value.replace(/ /g, "\\s+")}\\b`, "i").test(title)) ?? null;
+  const exactPlayer = targetPlayerName ? normalizeName(title).includes(normalizeName(targetPlayerName)) : true;
+  const confidence = exactPlayer && year && number && brand ? "HIGH" : exactPlayer && (year || number || brand) ? "MEDIUM" : "LOW";
+  const printRun = title.match(/\/(\d{1,4})\b/)?.[1];
   return {
-    playerName: title,
+    playerName: targetPlayerName ?? title,
     year: year ? Number(year) : null,
-    manufacturer: /panini/i.test(title) ? "Panini" : /topps/i.test(title) ? "Topps" : null,
-    setName: /prizm/i.test(title) ? "Prizm" : /chrome/i.test(title) ? "Chrome" : null,
+    manufacturer: /panini/i.test(title) ? "Panini" : /topps/i.test(title) ? "Topps" : /upper\s*deck|fleer|skybox|sp authentic|exquisite/i.test(title) ? "Upper Deck" : null,
+    setName: brand,
     cardNumber: number,
-    parallel: /silver/i.test(title) ? "Silver" : /refractor/i.test(title) ? "Refractor" : null,
+    parallel,
     rookieDesignation: /\b(RC|rookie)\b/i.test(title) ? true : null,
     autograph: /\b(auto|autograph)\b/i.test(title) ? true : null,
     memorabilia: /\b(patch|relic|memorabilia)\b/i.test(title) ? true : null,
     serialNumber: title.match(/\/(\d{1,4})\b/)?.[1] ?? null,
     gradingCompany: gradeMatch?.[1]?.toUpperCase() ?? null,
     grade: gradeMatch ? Number(gradeMatch[2]) : null,
+    season,
+    brand,
+    printRun: printRun ? Number(printRun) : null,
+    rawOrGraded: gradeMatch ? "GRADED" : "RAW",
     identityConfidence: confidence,
   };
+}
+
+function normalizeName(value: string) {
+  return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
+}
+
+export function matchesTargetPlayer(title: string, playerName: string) {
+  const listing = normalizeName(title);
+  const target = normalizeName(playerName);
+  return Boolean(target) && listing.includes(target);
 }
 
 function normalizeItem(item: EbayItem, retrievedAt: string): MarketObservation | null {
@@ -109,7 +135,7 @@ function normalizeItem(item: EbayItem, retrievedAt: string): MarketObservation |
     sourceItemId: item.itemId,
     sourceUrl: item.itemWebUrl,
     title: item.title,
-    cardIdentity: identityFromTitle(item.title),
+    cardIdentity: parseTradingCardTitle(item.title),
     observationType: auction ? "LIVE_AUCTION_CURRENT_BID" : "ACTIVE_FIXED_PRICE",
     currency: price?.currency ?? null,
     askingPrice: auction ? null : numberOrNull(price?.value),
@@ -122,15 +148,23 @@ function normalizeItem(item: EbayItem, retrievedAt: string): MarketObservation |
   };
 }
 
-export function generateEbayCardQueries(playerName: string) {
-  return [`${playerName} rookie card`, `${playerName} Prizm`, `${playerName} PSA 10`, `${playerName} autograph`, `${playerName} numbered`];
+export type MarketTier = "S" | "A" | "B" | "C";
+
+export function generateEbayCardQueries(playerName: string, tier: MarketTier = "S") {
+  const base = [
+    `${playerName} basketball card`, `${playerName} rookie card`, `${playerName} Panini`, `${playerName} Prizm`,
+    `${playerName} Select`, `${playerName} Optic`, `${playerName} Mosaic`, `${playerName} PSA 10`,
+    `${playerName} autograph`, `${playerName} numbered`, `${playerName} rookie PSA 10`,
+  ];
+  const budget: Record<MarketTier, number> = { S: 8, A: 6, B: 4, C: 3 };
+  return base.slice(0, budget[tier]);
 }
 
-export async function searchEbayMarket(playerName: string, limit = 50) {
+export async function searchEbayMarket(playerName: string, limit = 50, tier: MarketTier = "S") {
   const token = await getApplicationToken();
   const retrievedAt = new Date().toISOString();
   const unique = new Map<string, MarketObservation>();
-  for (const query of generateEbayCardQueries(playerName)) {
+  for (const query of generateEbayCardQueries(playerName, tier)) {
     const params = new URLSearchParams({ q: query, limit: String(Math.min(limit, 200)), fieldgroups: "EXTENDED" });
     const response = await fetch(`${API}/buy/browse/v1/item_summary/search?${params}`, {
       headers: { Authorization: `Bearer ${token}`, "X-EBAY-C-MARKETPLACE-ID": MARKETPLACE },
@@ -156,3 +190,4 @@ export async function getEbayHealth() {
     return { configured: true, tokenWorking: false, browseApiWorking: false, marketplace: MARKETPLACE };
   }
 }
+

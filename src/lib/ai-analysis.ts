@@ -166,16 +166,16 @@ export class DeterministicDemoAI implements AIProvider {
         {
           label: "演示成交指标",
           source: "Nucleus 演示源",
-          updatedAt: "2026-08-31T01:30:00Z",
+          updatedAt: new Date().toISOString(),
         },
         {
           label: "球员状态",
           source: "Nucleus 演示资料",
-          updatedAt: "2026-08-31T01:30:00Z",
+          updatedAt: new Date().toISOString(),
         },
       ],
       disclaimer: productConfig.disclaimer,
-      generatedAt: "2026-08-31T01:30:00Z",
+      generatedAt: new Date().toISOString(),
       modelVersion: this.name,
       recentPerformance: performance ? { last5: performance.last5, last10: performance.last10, fetchedAt: performance.fetchedAt, source: performance.source } : undefined,
     });

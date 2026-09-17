@@ -59,7 +59,9 @@ export function EmailLoginForm({ returnTo }: { returnTo: string }) {
     requestInFlight.current = true;
     setPending(true);
     try {
-      const callback = new URL("/auth/callback", window.location.origin);\n      callback.searchParams.set("next", returnTo);\n      const { error: requestError } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: callback.toString() } });
+      const callback = new URL("/auth/callback", window.location.origin);
+      callback.searchParams.set("next", returnTo);
+      const { error: requestError } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: callback.toString() } });
       if (requestError) {
         setError(authError(requestError.message, t));
         if (requestError.message.toLowerCase().includes("rate") || requestError.message.toLowerCase().includes("too many")) {

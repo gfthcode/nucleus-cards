@@ -1,14 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { createSupabaseBrowserClient, hasSupabaseConfig } from "@/lib/supabase/browser";
 import { useI18n } from "@/i18n/client";
 
 const emailSchema = z.string().trim().email();
-const otpSchema = z.string().regex(/^\d{6}$/);
 const AUTH_COOLDOWN_SECONDS = 60;
 const cooldownKey = (value: string) => `nucleus-auth-cooldown:${value.trim().toLowerCase()}`;
 
@@ -17,20 +15,17 @@ function maskEmail(email: string) {
   return `${name.slice(0, 1)}${"*".repeat(Math.max(2, name.length - 1))}@${domain}`;
 }
 
-function authError(message: string, translate: (key: "auth.errorRate" | "auth.errorToken" | "auth.errorNetwork" | "auth.errorGeneric") => string) {
+function authError(message: string, translate: (key: "auth.errorRate" | "auth.errorNetwork" | "auth.errorGeneric") => string) {
   const value = message.toLowerCase();
   if (value.includes("rate") || value.includes("too many")) return translate("auth.errorRate");
-  if (value.includes("token") || value.includes("otp")) return translate("auth.errorToken");
   if (value.includes("network") || value.includes("fetch")) return translate("auth.errorNetwork");
   return translate("auth.errorGeneric");
 }
 
 export function EmailLoginForm({ returnTo }: { returnTo: string }) {
-  const router = useRouter();
-  const { locale, t } = useI18n();
+  const { t } = useI18n();
   const [email, setEmail] = useState("");
-  const [token, setToken] = useState("");
-  const [step, setStep] = useState<"email" | "code">("email");
+  const [step, setStep] = useState<"email" | "sent">("email");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [seconds, setSeconds] = useState(0);
@@ -49,19 +44,28 @@ export function EmailLoginForm({ returnTo }: { returnTo: string }) {
     setSeconds(Math.max(0, Math.ceil((until - Date.now()) / 1000)));
   }
 
-  async function sendCode(event?: React.FormEvent) {
+  async function sendLink(event?: React.FormEvent) {
     event?.preventDefault();
     if (requestInFlight.current || seconds > 0) return;
     setError("");
-    if (!emailSchema.safeParse(email).success) { setError(locale === "en" ? "Enter a valid email address." : "请输入有效的邮箱地址。 "); return; }
+    if (!emailSchema.safeParse(email).success) {
+      setError(t("auth.errorEmail"));
+      return;
+    }
     const supabase = createSupabaseBrowserClient();
-    if (!supabase) { setError(t("auth.configMissing")); return; }
+    if (!supabase) {
+      setError(t("auth.configMissing"));
+      return;
+    }
     requestInFlight.current = true;
     setPending(true);
     try {
-      const callback = new URL("/auth/callback", window.location.origin);
+      const callback = new URL("/auth/confirm", window.location.origin);
       callback.searchParams.set("next", returnTo);
-      const { error: requestError } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: callback.toString() } });
+      const { error: requestError } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: { shouldCreateUser: true, emailRedirectTo: callback.toString() },
+      });
       if (requestError) {
         setError(authError(requestError.message, t));
         if (requestError.message.toLowerCase().includes("rate") || requestError.message.toLowerCase().includes("too many")) {
@@ -72,39 +76,29 @@ export function EmailLoginForm({ returnTo }: { returnTo: string }) {
         return;
       }
       window.localStorage.setItem(cooldownKey(email), String(Date.now() + AUTH_COOLDOWN_SECONDS * 1000));
-      setStep("code"); setSeconds(AUTH_COOLDOWN_SECONDS); setToken("");
+      setStep("sent");
+      setSeconds(AUTH_COOLDOWN_SECONDS);
     } finally {
       requestInFlight.current = false;
       setPending(false);
     }
   }
 
-  async function verifyCode(event: React.FormEvent) {
-    event.preventDefault(); setError("");
-    if (!otpSchema.safeParse(token).success) { setError(locale === "en" ? "Enter the 6-digit code from your email." : "请输入邮件中的 6 位验证码。 "); return; }
-    const supabase = createSupabaseBrowserClient();
-    if (!supabase) { setError(t("auth.configMissing")); return; }
-    setPending(true);
-    const { error: verifyError } = await supabase.auth.verifyOtp({ email, token, type: "email" });
-    setPending(false);
-    if (verifyError) { setError(authError(verifyError.message, t)); return; }
-    router.replace(returnTo); router.refresh();
-  }
-
   if (!configured) return <div className="auth-form"><p className="auth-error" role="status">{t("auth.configMissing")}</p><Link className="button button-secondary" href="/portfolio">{t("auth.demo")}</Link></div>;
-  if (step === "email") return <form className="auth-form" onSubmit={sendCode} noValidate>
+  if (step === "sent") return <section className="auth-form" aria-live="polite">
+    <h2>{t("auth.linkSentTitle")}</h2>
+    <p className="auth-code-sent">{t("auth.linkSentDescription")} <b>{maskEmail(email)}</b></p>
+    <p className="auth-note">{t("auth.linkSentInstruction")}</p>
+    {error && <p className="auth-error" role="alert">{error}</p>}
+    <button className="button button-primary" type="button" disabled={pending || seconds > 0} onClick={() => void sendLink()}>{pending ? t("auth.sending") : seconds ? `${t("auth.resendLinkIn")} ${seconds}s` : t("auth.resendLink")}</button>
+    <button className="button button-secondary" type="button" disabled={pending} onClick={() => { setStep("email"); setError(""); }}>{t("auth.useAnotherEmail")}</button>
+    <Link className="auth-text-button" href="/">{t("auth.backHome")}</Link>
+  </section>;
+  return <form className="auth-form" onSubmit={sendLink} noValidate>
     <label><span>{t("auth.email")}</span><input autoComplete="email" autoFocus inputMode="email" type="email" value={email} placeholder={t("auth.emailPlaceholder")} onChange={(event) => handleEmailChange(event.target.value)} /></label>
     {error && <p className="auth-error" role="alert">{error}</p>}
-    <button className="button button-primary" type="submit" disabled={pending || seconds > 0}>{pending ? (locale === "en" ? "Sending…" : "发送中…") : seconds ? `${locale === "en" ? "Try again in" : "请等待"} ${seconds}s` : t("auth.sendCode")}</button>
+    <button className="button button-primary" type="submit" disabled={pending || seconds > 0}>{pending ? t("auth.sending") : seconds ? `${t("auth.tryAgainIn")} ${seconds}s` : t("auth.sendLink")}</button>
     <Link className="button button-secondary" href="/portfolio">{t("auth.demo")}</Link>
     <small className="auth-note">{t("auth.privacy")}</small>
-  </form>;
-  return <form className="auth-form" onSubmit={verifyCode} noValidate>
-    <p className="auth-code-sent">{t("auth.codeSent")} <b>{maskEmail(email)}</b></p>
-    <label><span>{t("auth.code")}</span><input autoComplete="one-time-code" autoFocus inputMode="numeric" maxLength={6} pattern="[0-9]*" value={token} onChange={(event) => setToken(event.target.value.replace(/\D/g, "").slice(0, 6))} /></label>
-    {error && <p className="auth-error" role="alert">{error}</p>}
-    <button className="button button-primary" type="submit" disabled={pending}>{pending ? (locale === "en" ? "Verifying…" : "验证中…") : t("auth.verify")}</button>
-    <button className="button button-secondary" type="button" disabled={pending || seconds > 0} onClick={() => void sendCode()}>{seconds ? `${t("auth.resend")} (${seconds}s)` : t("auth.resend")}</button>
-    <button className="auth-text-button" type="button" onClick={() => { setStep("email"); setError(""); }}>{t("auth.changeEmail")}</button>
   </form>;
 }

@@ -16,4 +16,8 @@ export const demoAuctions: AuctionEvent[] = [
   { id: "auction-6", sourceId: "xianyu-demo", sourceName: "闲鱼（非拍卖演示）", sourceRegion: "CN", auctionUrl: "https://www.goofish.com/", playerId: "p-harper", cardId: "card-6", playerName: "Dylan Harper", cardYear: 2025, manufacturer: "Topps", setName: "Basketball", parallel: "RC", cardNumber: "12", rookieDesignation: true, currency: "CNY", startingBid: 1800, currentBid: 1800, bidCount: 0, watcherCount: 18, viewCount: 220, startTime: "2026-09-03T10:00:00Z", endTime: "2026-09-10T10:00:00Z", auctionStatus: "live", lastUpdatedAt: "2026-09-03T12:20:00Z", sourceVerified: false, saleType: "fixed_price", heatScore: 0, heatChange24h: 0 },
 ];
 
-const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE !== "false";\n/** Production never presents sample rows as live auctions. A real adapter can replace this gate. */\nexport const activeAuctions = demoMode\n  ? demoAuctions.filter((auction) => auction.saleType === "auction" && ["live", "ending_soon"].includes(auction.auctionStatus))\n  : [];
+const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE !== "false";
+/** Production never presents sample rows as live auctions. A real adapter can replace this gate. */
+export const activeAuctions = demoMode
+  ? demoAuctions.filter((auction) => auction.saleType === "auction" && ["live", "ending_soon"].includes(auction.auctionStatus))
+  : [];

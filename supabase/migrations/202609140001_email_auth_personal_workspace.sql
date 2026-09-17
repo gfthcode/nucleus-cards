@@ -108,11 +108,19 @@ $$;
 create or replace function public.handle_new_user() returns trigger language plpgsql security definer set search_path = public as $$
 begin
   insert into public.profiles (id, display_name) values (new.id, coalesce(nullif(split_part(new.email, '@', 1), ''), 'Collector')) on conflict (id) do nothing;
-  insert into public.collections (user_id, name) values (new.id, 'My Collection') on conflict do nothing;
+  insert into public.collections (user_id, name)
+  select new.id, 'My Collection'
+  where not exists (
+    select 1 from public.collections where user_id = new.id and name = 'My Collection'
+  );
   insert into public.user_preferences (user_id) values (new.id) on conflict (user_id) do nothing;
   return new;
 end;
 $$;
+
+-- These helpers are only invoked by internal triggers, never by client RPC calls.
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
+revoke execute on function public.ensure_owned_collection_item() from public, anon, authenticated;
 
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created after insert on auth.users for each row execute procedure public.handle_new_user();
@@ -123,13 +131,21 @@ do $$ declare tab text; begin
   foreach tab in array array['profiles','collections','collection_items','portfolio_positions','watchlist_items','price_alerts','user_preferences'] loop execute format('alter table public.%I enable row level security', tab); end loop;
 end $$;
 
-create policy "profile owner" on public.profiles for all using (id = auth.uid()) with check (id = auth.uid());
-create policy "collection owner" on public.collections for all using (user_id = auth.uid()) with check (user_id = auth.uid());
-create policy "collection item owner" on public.collection_items for all using (user_id = auth.uid()) with check (user_id = auth.uid());
-create policy "position owner" on public.portfolio_positions for all using (user_id = auth.uid()) with check (user_id = auth.uid());
-create policy "watchlist owner" on public.watchlist_items for all using (user_id = auth.uid()) with check (user_id = auth.uid());
-create policy "alert owner" on public.price_alerts for all using (user_id = auth.uid()) with check (user_id = auth.uid());
-create policy "preference owner" on public.user_preferences for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+drop policy if exists "profile owner" on public.profiles;
+drop policy if exists "collection owner" on public.collections;
+drop policy if exists "collection item owner" on public.collection_items;
+drop policy if exists "position owner" on public.portfolio_positions;
+drop policy if exists "watchlist owner" on public.watchlist_items;
+drop policy if exists "alert owner" on public.price_alerts;
+drop policy if exists "preference owner" on public.user_preferences;
+
+create policy "profile owner" on public.profiles for all to authenticated using (id = (select auth.uid())) with check (id = (select auth.uid()));
+create policy "collection owner" on public.collections for all to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+create policy "collection item owner" on public.collection_items for all to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+create policy "position owner" on public.portfolio_positions for all to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+create policy "watchlist owner" on public.watchlist_items for all to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+create policy "alert owner" on public.price_alerts for all to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+create policy "preference owner" on public.user_preferences for all to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
 
 create index if not exists collections_user_id_idx on public.collections(user_id);
 create index if not exists collection_items_user_id_idx on public.collection_items(user_id);

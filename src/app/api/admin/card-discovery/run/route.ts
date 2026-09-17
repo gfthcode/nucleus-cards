@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { discoverPlayerCards } from "@/lib/card-discovery";
 import type { MarketTier } from "@/lib/providers/ebay";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
 
 const tiers = new Set<MarketTier>(["S", "A", "B", "C"]);
 
 export async function POST(request: Request) {
+  const { user } = await getAuthenticatedUser();
+  if (!user) return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });
   const body = await request.json().catch(() => ({})) as { playerId?: string; playerName?: string; marketTier?: MarketTier; limit?: number; dryRun?: boolean };
   if (!body.playerId || !body.playerName) return NextResponse.json({ error: "playerId and playerName are required" }, { status: 400 });
   if (body.marketTier && !tiers.has(body.marketTier)) return NextResponse.json({ error: "invalid marketTier" }, { status: 400 });

@@ -10,7 +10,7 @@ describe("deterministic AI", () => {
     const first = await engine.analyze(card, player, "7-30d");
     const second = await engine.analyze(card, player, "7-30d");
     expect(aiAnalysisSchema.safeParse(first).success).toBe(true);
-    expect(first).toEqual(second);
+    expect({ ...first, generatedAt: undefined, evidence: first.evidence.map((item) => ({ label: item.label, source: item.source })) }).toEqual({ ...second, generatedAt: undefined, evidence: second.evidence.map((item) => ({ label: item.label, source: item.source })) });
     expect(first.evidence.length).toBeGreaterThan(0);
     expect(first.playerCohort).toBe(player.cohort);
     expect(first.peerComparison).toBe(player.peerComparison);

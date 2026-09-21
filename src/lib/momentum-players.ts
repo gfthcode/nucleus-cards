@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import roster from "@/data/nba-official-roster.json";
 
 export type MomentumPlayerInput = {
   id: string;
@@ -42,9 +43,9 @@ async function fromSportsDataIO(): Promise<MomentumPlayerInput[]> {
   const rows = (await response.json()) as ProviderPlayer[];
   const unique = new Map<string, MomentumPlayerInput>();
   for (const row of rows) {
-    if (!row.PlayerID || !row.Name || !row.Team || row.Active === false || row.Status === "Inactive") continue;
+    if (!row.PlayerID || !row.Name || row.Active === false || row.Status === "Inactive") continue;
     const name = row.Name.trim();
-    unique.set(String(row.PlayerID), { id: `nba:sportsdataio:${row.PlayerID}`, name, displayNameZh: zhName(name), currentTeamId: `nba-team:${row.Team}`, teamAbbreviation: row.Team, source: "SportsDataIO NBA Players" });
+    unique.set(String(row.PlayerID), { id: `nba:sportsdataio:${row.PlayerID}`, name, displayNameZh: zhName(name), currentTeamId: row.Team ? `nba-team:${row.Team}` : undefined, teamAbbreviation: row.Team ?? undefined, source: "SportsDataIO NBA Players" });
   }
   return [...unique.values()];
 }
@@ -62,12 +63,17 @@ async function fromBallDontLie(): Promise<MomentumPlayerInput[]> {
 }
 
 export async function getMomentumPlayers(): Promise<MomentumPlayerInput[]> {
-  const databasePlayers = await fromProductionDatabase();
+  let databasePlayers: MomentumPlayerInput[] = [];
+  try { databasePlayers = await fromProductionDatabase(); } catch { /* provider fallback below */ }
   if (databasePlayers.length) return databasePlayers;
-  const providerPlayers = await fromSportsDataIO();
+  let providerPlayers: MomentumPlayerInput[] = [];
+  try { providerPlayers = await fromSportsDataIO(); } catch { /* provider fallback below */ }
   if (providerPlayers.length) return providerPlayers;
-  const fallbackPlayers = await fromBallDontLie();
+  let fallbackPlayers: MomentumPlayerInput[] = [];
+  try { fallbackPlayers = await fromBallDontLie(); } catch { /* provider fallback below */ }
   if (fallbackPlayers.length) return fallbackPlayers;
+  const snapshotPlayers = (roster.records as Array<{ personId: string; name: string; teamAbbreviation?: string }>).filter((row) => row.personId && row.name).map((row) => ({ id: `nba:nba-com:${row.personId}`, name: row.name, displayNameZh: row.name, currentTeamId: row.teamAbbreviation ? `nba-team:${row.teamAbbreviation}` : undefined, teamAbbreviation: row.teamAbbreviation, source: "NBA.com League Roster snapshot" }));
+  if (snapshotPlayers.length) return snapshotPlayers;
   if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") throw new Error("Demo mode is explicit, but Momentum demo adapter is not enabled in this production build");
   throw new Error("No real NBA player source is available. Configure a production NBA provider and retry.");
 }

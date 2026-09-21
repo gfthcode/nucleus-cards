@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { PlayerTerminalTabs } from "@/components/player-terminal-tabs";
 import { PlayerProfileHero } from "@/components/player-profile-hero";
 import { productConfig } from "@/config/product";
 import { getPlayer, getPlayerCards, getTeam, players } from "@/lib/demo-data";
+import { buildPlayerMomentum } from "@/lib/player-momentum";
 
 export function generateStaticParams() {
   return players.map((player) => ({ id: player.id }));
@@ -31,6 +33,7 @@ export default async function PlayerPage({
   const team = player.currentTeamId ? getTeam(player.currentTeamId) : undefined;
   const related = getPlayerCards(player.id);
   const lead = related[0];
+  const momentum = await buildPlayerMomentum(player);
   return (
     <main className="page-shell inner-page player-terminal-page">
       <PlayerProfileHero player={player} team={team} lead={lead} />
@@ -75,6 +78,20 @@ export default async function PlayerPage({
         </small>
       </section>
       <PlayerTerminalTabs player={player} cards={related} />
+      <section className="data-panel" style={{ marginTop: 20, padding: 20 }}>
+        <span className="section-kicker">MOMENTUM RADAR</span>
+        <h2>球员关注度动量：{momentum.momentumScore}</h2>
+        <p>{momentum.summary}</p>
+        <p className="source-note">
+          短期展望：{momentum.shortTermOutlook} · 中期展望：{momentum.mediumTermOutlook} · 置信度：{momentum.confidence} · 数据质量：{momentum.dataQualityScore} · {momentum.momentumChange7d == null ? "7D 暂无历史快照" : `7D ${momentum.momentumChange7d >= 0 ? "+" : ""}${momentum.momentumChange7d}`} · <Link href="/momentum">查看完整动量雷达 →</Link>
+        </p>
+        <div style={{ display: "grid", gap: 8, marginTop: 14 }}>
+          <strong>为什么动量变化</strong>
+          <span>推动因素：{momentum.catalysts.join("；")}</span>
+          <span>风险因素：{momentum.risks.join("；")}</span>
+          {momentum.events.length ? <div><strong>最新公开报道</strong>{momentum.events.map((event) => <div key={event.id}><a href={event.sourceUrl} target="_blank" rel="noreferrer">{event.headline}</a><small className="source-note"> · {event.source}</small></div>)}</div> : null}
+        </div>
+      </section>
     </main>
   );
 }

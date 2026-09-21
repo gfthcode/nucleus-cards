@@ -53,10 +53,15 @@ async function fromSportsDataIO(): Promise<MomentumPlayerInput[]> {
 async function fromBallDontLie(): Promise<MomentumPlayerInput[]> {
   const key = process.env.BALLDONTLIE_API_KEY;
   if (!key) return [];
-  const response = await fetch("https://api.balldontlie.io/v1/players?per_page=100", { headers: { Authorization: key }, next: { revalidate: 1800 } });
-  if (!response.ok) throw new Error(`BallDontLie roster request failed (${response.status})`);
-  const body = (await response.json()) as { data?: Array<{ id: number; first_name: string; last_name: string; team?: { abbreviation?: string } }> };
-  return (body.data ?? []).filter((row) => row.team?.abbreviation).map((row) => {
+  const rows: Array<{ id: number; first_name: string; last_name: string; team?: { abbreviation?: string } }> = [];
+  for (let page = 1; page <= 10; page += 1) {
+    const response = await fetch(`https://api.balldontlie.io/v1/players?per_page=100&page=${page}`, { headers: { Authorization: key }, next: { revalidate: 1800 } });
+    if (!response.ok) throw new Error(`BallDontLie roster request failed (${response.status})`);
+    const body = (await response.json()) as { data?: Array<{ id: number; first_name: string; last_name: string; team?: { abbreviation?: string } }>; meta?: { next_page?: number | null } };
+    rows.push(...(body.data ?? []));
+    if (!body.meta?.next_page) break;
+  }
+  return rows.filter((row) => row.team?.abbreviation).map((row) => {
     const name = `${row.first_name} ${row.last_name}`;
     return { id: `nba:balldontlie:${row.id}`, name, displayNameZh: zhName(name), currentTeamId: `nba-team:${row.team?.abbreviation}`, teamAbbreviation: row.team?.abbreviation, source: "BallDontLie NBA Players" };
   });

@@ -1,4 +1,4 @@
-import type { Player } from "@/types/domain";
+import type { MomentumPlayerInput } from "@/lib/momentum-players";
 import type { PlayerRecentPerformance, RecentGame } from "./balldontlie";
 
 const API = "https://api.sportsdata.io/v3/nba";
@@ -65,7 +65,7 @@ function mapGame(game: SportsDataGame): RecentGame {
 }
 
 /** Fetches the latest verified final game logs from the licensed SportsDataIO feed. */
-export async function fetchSportsDataIORecentPerformance(player: Player): Promise<PlayerRecentPerformance | null> {
+export async function fetchSportsDataIORecentPerformance(player: MomentumPlayerInput): Promise<PlayerRecentPerformance | null> {
   const players = await request<SportsDataPlayer[]>("/scores/json/Players");
   const target = normalize(player.name);
   const match = players.find((item) => item.Name && normalize(item.Name) === target);

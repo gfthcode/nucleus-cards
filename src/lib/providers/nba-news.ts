@@ -1,9 +1,9 @@
-import type { Player } from "@/types/domain";
+import type { MomentumPlayerInput } from "@/lib/momentum-players";
 
 export type NBAEvent = { id: string; playerId: string; teamId?: string; type: "MEDIA"; headline: string; summary: string; source: "ESPN NBA"; sourceUrl: string; publishedAt: string | null; retrievedAt: string; reliabilityTier: 1; confidence: "REPORTED"; impactDirection: "NEUTRAL"; impactMagnitude: 0 };
 const FEED = "https://www.espn.com/espn/rss/nba/news";
 function clean(value: string) { return value.replace(/<!\[CDATA\[|\]\]>/g, "").replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").trim(); }
-export async function fetchNBANews(player: Player): Promise<NBAEvent[]> {
+export async function fetchNBANews(player: MomentumPlayerInput): Promise<NBAEvent[]> {
   try {
     const response = await fetch(FEED, { next: { revalidate: 1800 }, headers: { "User-Agent": "Nucleus-Cards/1.0" } });
     if (!response.ok) return [];

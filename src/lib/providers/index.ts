@@ -1,10 +1,10 @@
-import type { Player } from "@/types/domain";
+import type { MomentumPlayerInput } from "@/lib/momentum-players";
 import { fetchPlayerRecentPerformance as fetchBallDontLie } from "./balldontlie";
 import { fetchSportsDataIORecentPerformance } from "./sportsdataio";
 import type { PlayerRecentPerformance } from "./balldontlie";
 
 /** Primary licensed feed with an explicit, failure-tolerant fallback chain. */
-export async function fetchPlayerRecentPerformance(player: Player): Promise<PlayerRecentPerformance | null> {
+export async function fetchPlayerRecentPerformance(player: MomentumPlayerInput): Promise<PlayerRecentPerformance | null> {
   if (process.env.SPORTSDATAIO_API_KEY) {
     try {
       const performance = await fetchSportsDataIORecentPerformance(player);

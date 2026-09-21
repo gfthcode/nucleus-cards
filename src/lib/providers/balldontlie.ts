@@ -1,4 +1,4 @@
-import type { Player } from "@/types/domain";
+import type { MomentumPlayerInput } from "@/lib/momentum-players";
 
 export type RecentGame = {
   date: string;
@@ -65,7 +65,7 @@ async function request<T>(path: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export async function fetchPlayerRecentPerformance(player: Player): Promise<PlayerRecentPerformance | null> {
+export async function fetchPlayerRecentPerformance(player: MomentumPlayerInput): Promise<PlayerRecentPerformance | null> {
   const search = encodeURIComponent(player.name);
   const identity = await request<{ data: BdlPlayer[] }>(`/players?search=${search}`);
   const normalized = player.name.toLowerCase().replace(/[^a-z0-9]/g, "");

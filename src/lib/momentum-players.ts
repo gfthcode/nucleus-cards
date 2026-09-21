@@ -8,7 +8,7 @@ export type MomentumPlayerInput = {
   teamAbbreviation?: string;
   age?: number;
   injuryStatus?: "healthy" | "monitor" | "out";
-  source: string;
+  source?: string;
 };
 
 type DatabasePlayer = {

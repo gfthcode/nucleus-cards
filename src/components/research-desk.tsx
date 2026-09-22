@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import {
   ArrowUpRight,
   CircleAlert,
+  FileText,
   LoaderCircle,
   Send,
   ShieldCheck,
@@ -26,6 +27,17 @@ type Message = {
   tool_trace?: ResearchResponse["toolTrace"];
   created_at: string;
 };
+type ResearchDocument = {
+  id: string;
+  source_filename: string;
+  byte_size: number;
+  status: "uploaded" | "ready_for_review" | "approved" | "rejected" | "failed";
+  extracted_fields?: {
+    summary?: string;
+    candidates?: Array<{ playerName?: string; confidence?: "high" | "medium" | "low" }>;
+    warnings?: string[];
+  };
+};
 
 const questionSuggestions = [
   "这张卡的成交证据够不够？",
@@ -40,6 +52,8 @@ export function ResearchDesk({ targets }: { targets: ResearchTarget[] }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [question, setQuestion] = useState("这张卡的成交证据够不够？");
   const [busy, setBusy] = useState(false);
+  const [documents, setDocuments] = useState<ResearchDocument[]>([]);
+  const [documentBusy, setDocumentBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState(
     "登录后，研究记录只保存到你的私有空间。",
   );
@@ -59,6 +73,68 @@ export function ResearchDesk({ targets }: { targets: ResearchTarget[] }) {
       })
       .catch(() => setNotice("暂时无法连接研究记录。"));
   }, []);
+
+  useEffect(() => {
+    void fetch("/api/research/documents")
+      .then(async (response) => ({ ok: response.ok, payload: await response.json() }))
+      .then(({ ok, payload }) => {
+        if (ok) setDocuments(payload.data ?? []);
+      })
+      .catch(() => undefined);
+  }, []);
+
+  async function uploadDocument(file: File | undefined) {
+    if (!file || documentBusy) return;
+    setDocumentBusy("upload");
+    try {
+      const form = new FormData();
+      form.set("file", file);
+      const response = await fetch("/api/research/documents", { method: "POST", body: form });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error ?? "PDF 上传失败。");
+      setDocuments((current) => [payload.data, ...current]);
+      setNotice("PDF 已进入你的私有审核区；请先提取草稿并核对，不会自动导入收藏。");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "PDF 上传失败。");
+    } finally {
+      setDocumentBusy(null);
+    }
+  }
+
+  async function extractDocument(id: string) {
+    setDocumentBusy(id);
+    try {
+      const response = await fetch(`/api/research/documents/${id}/extract`, { method: "POST" });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error ?? "PDF 草稿提取失败。");
+      setDocuments((current) => current.map((document) => document.id === id ? payload.data : document));
+      setNotice("PDF 已生成待审核草稿。请核对候选卡片与字段；确认并不会自动写入收藏。 ");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "PDF 草稿提取失败。");
+    } finally {
+      setDocumentBusy(null);
+    }
+  }
+
+  async function approveDocument(id: string) {
+    if (!window.confirm("确认该草稿只保存为已审核记录？它不会自动新增收藏或持仓。")) return;
+    setDocumentBusy(id);
+    try {
+      const response = await fetch(`/api/research/documents/${id}/approve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirmed: true }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error ?? "保存审核决定失败。");
+      setDocuments((current) => current.map((document) => document.id === id ? payload.data : document));
+      setNotice("审核决定已保存。下一步必须显式匹配到已核验卡片后，才可创建收藏记录。");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "保存审核决定失败。");
+    } finally {
+      setDocumentBusy(null);
+    }
+  }
 
   async function loadMessages(id: string) {
     setBusy(true);
@@ -278,6 +354,46 @@ export function ResearchDesk({ targets }: { targets: ResearchTarget[] }) {
             </div>
           </form>
           <p className={styles.notice}>{notice}</p>
+          <section className={styles.documents} aria-label="私有 PDF 审核导入">
+            <div className={styles.documentHeading}>
+              <div>
+                <FileText size={16} />
+                <b>PDF 审核导入</b>
+              </div>
+              <label>
+                <span>{documentBusy === "upload" ? "上传中" : "上传 PDF"}</span>
+                <input
+                  type="file"
+                  accept="application/pdf,.pdf"
+                  disabled={Boolean(documentBusy)}
+                  onChange={(event) => void uploadDocument(event.target.files?.[0])}
+                />
+              </label>
+            </div>
+            <p>仅存入当前登录用户的私有空间。提取结果永远是待审核草稿，文档里的文字不能调用工具、修改权限或自动新增收藏。</p>
+            {documents.length > 0 && (
+              <div className={styles.documentList}>
+                {documents.map((document) => (
+                  <article key={document.id}>
+                    <div>
+                      <strong>{document.source_filename}</strong>
+                      <small>{Math.ceil(document.byte_size / 1024)} KB · {document.status === "uploaded" ? "待提取" : document.status === "ready_for_review" ? "待审核" : "已确认"}</small>
+                    </div>
+                    {document.status === "uploaded" && (
+                      <button type="button" disabled={Boolean(documentBusy)} onClick={() => void extractDocument(document.id)}>提取草稿</button>
+                    )}
+                    {document.status === "ready_for_review" && (
+                      <button type="button" disabled={Boolean(documentBusy)} onClick={() => void approveDocument(document.id)}>确认审核</button>
+                    )}
+                    {document.extracted_fields?.summary && (
+                      <p>{document.extracted_fields.summary}</p>
+                    )}
+                    {document.extracted_fields?.warnings?.map((warning) => <small className={styles.warning} key={warning}>{warning}</small>)}
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
         </div>
       </div>
       <footer>

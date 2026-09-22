@@ -1,8 +1,12 @@
 import { z } from "zod";
 import {
-  researchCard,
   researchQuestionSchema,
 } from "@/lib/card-research-agent";
+import {
+  ResearchProviderUnavailableError,
+  researchWithLLM,
+} from "@/lib/research-llm-agent";
+import type { ResearchResponse } from "@/lib/card-research-agent";
 import { getAuthenticatedUser } from "@/lib/supabase/server";
 
 const messageSchema = z.object({ question: researchQuestionSchema });
@@ -57,7 +61,7 @@ export async function POST(
       { status: 404 },
     );
 
-  const [collectionItems, positions] = await Promise.all([
+  const [collectionItems, positions, history] = await Promise.all([
     supabase
       .from("collection_items")
       .select("quantity")
@@ -66,6 +70,12 @@ export async function POST(
       .from("portfolio_positions")
       .select("quantity")
       .eq("card_id", session.card_id),
+    supabase
+      .from("research_messages")
+      .select("role, content")
+      .eq("session_id", session.id)
+      .order("created_at", { ascending: false })
+      .limit(12),
   ]);
   const collectionQuantity = (collectionItems.data ?? []).reduce(
     (sum, item) => sum + Number(item.quantity ?? 0),
@@ -75,12 +85,21 @@ export async function POST(
     (sum, item) => sum + Number(item.quantity ?? 0),
     0,
   );
-  const response = researchCard(session.card_id, body.data.question, {
-    collectionQuantity,
-    positionQuantity,
-  });
-  if (!response)
+  let response: ResearchResponse;
+  try {
+    response = await researchWithLLM(session.card_id, body.data.question, {
+      collectionQuantity,
+      positionQuantity,
+    }, (history.data ?? [])
+      .reverse()
+      .filter((message) => message.role === "user" || message.role === "assistant")
+      .map((message) => ({ role: message.role, content: message.content })));
+  } catch (error) {
+    if (error instanceof ResearchProviderUnavailableError) {
+      return Response.json({ error: error.message }, { status: 503 });
+    }
     return Response.json({ error: "研究对象不存在" }, { status: 404 });
+  }
 
   const { error: writeError } = await supabase
     .from("research_messages")
@@ -92,6 +111,8 @@ export async function POST(
         content: response.answer,
         evidence: response.evidence,
         tool_trace: response.toolTrace,
+        model: response.modelVersion,
+        token_usage: response.tokenUsage ?? {},
       },
     ]);
   if (writeError)

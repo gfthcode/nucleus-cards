@@ -61,7 +61,9 @@ pnpm exec playwright install chromium
 | `NEXT_PUBLIC_SUPABASE_URL`              | 生产       | Supabase 项目 URL                      |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY`         | 生产       | 浏览器端匿名 Key，配合 RLS             |
 | `SUPABASE_SERVICE_ROLE_KEY`             | 服务端任务 | 仅服务端使用，禁止 `NEXT_PUBLIC_` 前缀 |
-| `AI_PROVIDER` / `OPENAI_API_KEY`        | 可选       | 切换真实 AI Provider；默认 `demo`      |
+| `AI_PROVIDER`                            | 生产建议   | `vercel_gateway` 启用真实研究 Agent；本地可设为 `demo` |
+| `AI_GATEWAY_API_KEY`                     | 仅本地开发 | Vercel 部署使用 OIDC；本地调用真实模型才需要该 Key |
+| `AI_RESEARCH_MODEL`                      | 否         | Gateway 模型标识；默认 `openai/gpt-5.4-mini` |
 | `EBAY_CLIENT_ID` / `EBAY_CLIENT_SECRET` | 可选       | 官方 eBay Browse API 凭据              |
 
 ## Supabase 初始化
@@ -72,7 +74,7 @@ pnpm exec playwright install chromium
 4. 将项目 URL 与 anon key 填入 `.env.local`。
 5. 服务端导入任务才可使用 service role key；不要将它暴露到浏览器或提交到 Git。
 
-迁移包含规范化实体、常用查询索引与用户私有表的 Row Level Security。演示前端目前由本地适配器驱动，后续只需实现同一数据接口的 Supabase Adapter 即可切换。
+迁移包含规范化实体、常用查询索引与用户私有表的 Row Level Security。`202609220003_research_documents_and_generation_metadata.sql` 会创建私有研究偏好、PDF 审核记录和非公开 Storage bucket；PDF 只会生成待审核草稿，不会自动新增收藏或持仓。
 
 ## CSV 导入
 

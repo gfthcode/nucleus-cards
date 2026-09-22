@@ -34,7 +34,9 @@ export const researchResponseSchema = z.object({
   ),
   disclaimer: z.string(),
   generatedAt: z.string(),
-  modelVersion: z.literal("nucleus-research-agent-v1"),
+  modelVersion: z.string().min(1).max(160),
+  // Kept server-side in the message row; never render provider usage to users.
+  tokenUsage: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type ResearchResponse = z.infer<typeof researchResponseSchema>;

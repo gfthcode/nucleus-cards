@@ -146,6 +146,33 @@
   line-height: 1.65;
   margin: 0;
 }
+.questionSuggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.questionSuggestions button {
+  background: rgba(240, 116, 104, 0.08);
+  border: 1px solid rgba(240, 116, 104, 0.34);
+  border-radius: 10px;
+  color: #e9dce5;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.65rem;
+  line-height: 1.35;
+  padding: 7px 9px;
+  text-align: left;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+.questionSuggestions button:hover,
+.questionSuggestions button:focus-visible {
+  background: rgba(240, 116, 104, 0.16);
+  border-color: rgba(240, 116, 104, 0.7);
+}
+.questionSuggestions button:active {
+  transform: translateY(1px) scale(0.985);
+}
 .userMessage,
 .agentMessage {
   border-left: 2px solid var(--nucleus-border);
@@ -255,6 +282,13 @@
   cursor: wait;
   opacity: 0.65;
 }
+.chat form button:not(:disabled):hover,
+.chat form button:not(:disabled):focus-visible {
+  background: #f18a80;
+}
+.chat form button:not(:disabled):active {
+  transform: translateY(1px) scale(0.985);
+}
 .notice {
   color: #9c8794;
   font-size: 0.66rem;
@@ -305,5 +339,9 @@
   }
   .chat form button {
     min-height: 40px;
+  }
+  .questionSuggestions {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 }

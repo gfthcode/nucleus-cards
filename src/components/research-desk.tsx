@@ -27,6 +27,12 @@ type Message = {
   created_at: string;
 };
 
+const questionSuggestions = [
+  "这张卡的成交证据够不够？",
+  "和我的收藏重复吗？",
+  "哪些信息会推翻当前判断？",
+];
+
 export function ResearchDesk({ targets }: { targets: ResearchTarget[] }) {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -126,7 +132,7 @@ export function ResearchDesk({ targets }: { targets: ResearchTarget[] }) {
     <section className={styles.desk} aria-label="球星卡研究助理">
       <header>
         <div>
-          <span>RESEARCH AGENT / BETA</span>
+          <span>收藏研究助理</span>
           <h2>带证据的收藏研究助理</h2>
           <p>先核对身份与样本，再解释结论；没有可靠证据时会明确说明。</p>
         </div>
@@ -194,9 +200,16 @@ export function ResearchDesk({ targets }: { targets: ResearchTarget[] }) {
             {messages.length === 0 ? (
               <div className={styles.empty}>
                 <CircleAlert size={18} />
-                <p>
-                  可以问：“这张卡的成交证据够不够？”、“和我的收藏重复吗？”或“哪些信息会推翻当前判断？”
-                </p>
+                <div>
+                  <p>从一个具体问题开始。助理会先检查卡片身份、站内证据和个人收藏边界。</p>
+                  <div className={styles.questionSuggestions} aria-label="常用研究问题">
+                    {questionSuggestions.map((suggestion) => (
+                      <button type="button" key={suggestion} onClick={() => setQuestion(suggestion)}>
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             ) : (
               messages.map((message) => (
@@ -236,7 +249,7 @@ export function ResearchDesk({ targets }: { targets: ResearchTarget[] }) {
                   )}
                   {message.tool_trace && (
                     <small className={styles.tools}>
-                      已调用：
+                      研究路径：
                       {message.tool_trace.map((tool) => tool.name).join(" · ")}
                     </small>
                   )}

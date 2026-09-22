@@ -3677,7 +3677,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .workspace-note { color: var(--nucleus-text-muted); font-size: .78rem; line-height: 1.6; margin: 0; }
 .workspace-form { align-items: end; display: grid; gap: 12px; grid-template-columns: minmax(220px, 2fr) repeat(2, minmax(130px, 1fr)) auto; }
 .workspace-form label { color: var(--nucleus-text-muted); display: grid; font-size: .7rem; gap: 6px; }
-.workspace-form input, .workspace-form select { background: var(--nucleus-surface-2); border: 1px solid var(--nucleus-border); border-radius: var(--nucleus-radius-sm); color: var(--nucleus-text); min-height: 38px; padding: 0 10px; }
+.workspace-form input, .workspace-form select { background: var(--nucleus-surface-raised); border: 1px solid var(--nucleus-border); border-radius: var(--nucleus-radius-sm); color: var(--nucleus-text); min-height: 38px; padding: 0 10px; }
 .workspace-list { border-top: 1px solid var(--nucleus-border); display: grid; }
 .workspace-list article { align-items: center; border-bottom: 1px solid var(--nucleus-border); display: flex; gap: 12px; justify-content: space-between; padding: 13px 0; }
 .workspace-list article > div { display: grid; gap: 4px; min-width: 0; }

@@ -1,6 +1,8 @@
 import "server-only";
+import type { MarketObservationType } from "@/lib/market-observation";
 
-export type EbayObservationType = "ACTIVE_FIXED_PRICE" | "LIVE_AUCTION_CURRENT_BID";
+export type EbayObservationType = Extract<MarketObservationType, "ACTIVE_FIXED_PRICE" | "LIVE_AUCTION_CURRENT_BID">;
+export type EbayErrorCategory = "EBAY_CREDENTIALS_NOT_CONFIGURED" | "EBAY_TOKEN_401" | "EBAY_TOKEN_403" | "EBAY_BROWSE_401" | "EBAY_BROWSE_403" | "EBAY_RATE_LIMIT_429" | "EBAY_EMPTY_RESULTS" | "EBAY_TIMEOUT" | "EBAY_NETWORK_ERROR" | "EBAY_SCHEMA_ERROR";
 
 export type TradingCardIdentity = {
   playerName: string;
@@ -48,11 +50,14 @@ type EbayItem = {
   currentBidPrice?: { value?: string; currency?: string };
   itemEndDate?: string;
   itemCreationDate?: string;
+  image?: { imageUrl?: string };
+  condition?: string;
 };
 
 const API = "https://api.ebay.com";
 const MARKETPLACE = process.env.EBAY_MARKETPLACE_ID || "EBAY_US";
 
+const tokenCache = new Map<string, { value: string; expiresAt: number }>();
 function credentials() {
   const id = process.env.EBAY_CLIENT_ID;
   const secret = process.env.EBAY_CLIENT_SECRET;
@@ -62,7 +67,9 @@ function credentials() {
 
 async function getApplicationToken(): Promise<string> {
   const { id, secret } = credentials();
-  const response = await fetch(`${API}/identity/v1/oauth2/token`, {
+  const cached = tokenCache.get(id);
+  if (cached && cached.expiresAt > Date.now() + 60_000) return cached.value;
+  const response = await fetchWithTimeout(`${API}/identity/v1/oauth2/token`, {
     method: "POST",
     headers: {
       Authorization: `Basic ${Buffer.from(`${id}:${secret}`).toString("base64")}`,
@@ -71,10 +78,32 @@ async function getApplicationToken(): Promise<string> {
     body: "grant_type=client_credentials&scope=https%3A%2F%2Fapi.ebay.com%2Foauth%2Fapi_scope",
     cache: "no-store",
   });
-  if (!response.ok) throw new Error(`EBAY_TOKEN_${response.status}`);
-  const json = await response.json() as { access_token?: string };
-  if (!json.access_token) throw new Error("EBAY_TOKEN_EMPTY");
+  if (!response.ok) throw new Error(response.status === 401 ? "EBAY_TOKEN_401" : response.status === 403 ? "EBAY_TOKEN_403" : `EBAY_TOKEN_${response.status}`);
+  const json = await response.json() as { access_token?: string; expires_in?: number };
+  if (!json.access_token) throw new Error("EBAY_SCHEMA_ERROR");
+  tokenCache.set(id, { value: json.access_token, expiresAt: Date.now() + Math.max(60, json.expires_in ?? 7200) * 1000 });
   return json.access_token;
+}
+
+async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs = 9_000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try { return await fetch(url, { ...init, signal: controller.signal }); }
+  catch (error) { if (error instanceof DOMException && error.name === "AbortError") throw new Error("EBAY_TIMEOUT"); throw new Error("EBAY_NETWORK_ERROR"); }
+  finally { clearTimeout(timer); }
+}
+
+async function browseFetch(path: string, token: string) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const response = await fetchWithTimeout(`${API}${path}`, { headers: { Authorization: `Bearer ${token}`, "X-EBAY-C-MARKETPLACE-ID": MARKETPLACE }, cache: "no-store" });
+    if (response.status !== 429) {
+      if (!response.ok) throw new Error(response.status === 401 ? "EBAY_BROWSE_401" : response.status === 403 ? "EBAY_BROWSE_403" : `EBAY_BROWSE_${response.status}`);
+      return response;
+    }
+    const retryAfter = Math.min(2_000, Math.max(250, Number(response.headers.get("retry-after") ?? 0) * 1000 || 500));
+    await new Promise((resolve) => setTimeout(resolve, retryAfter));
+  }
+  throw new Error("EBAY_RATE_LIMIT_429");
 }
 
 function numberOrNull(value?: string) {
@@ -166,11 +195,7 @@ export async function searchEbayMarket(playerName: string, limit = 50, tier: Mar
   const unique = new Map<string, MarketObservation>();
   for (const query of generateEbayCardQueries(playerName, tier)) {
     const params = new URLSearchParams({ q: query, limit: String(Math.min(limit, 200)), fieldgroups: "EXTENDED" });
-    const response = await fetch(`${API}/buy/browse/v1/item_summary/search?${params}`, {
-      headers: { Authorization: `Bearer ${token}`, "X-EBAY-C-MARKETPLACE-ID": MARKETPLACE },
-      cache: "no-store",
-    });
-    if (!response.ok) throw new Error(`EBAY_BROWSE_${response.status}`);
+    const response = await browseFetch(`/buy/browse/v1/item_summary/search?${params}`, token);
     const json = await response.json() as { itemSummaries?: EbayItem[] };
     for (const item of json.itemSummaries ?? []) {
       const observation = normalizeItem(item, retrievedAt);
@@ -180,22 +205,42 @@ export async function searchEbayMarket(playerName: string, limit = 50, tier: Mar
   return [...unique.values()];
 }
 
+export type SearchActiveEbayListingsInput = { playerName: string; year?: number; brand?: string; setName?: string; cardNumber?: string; parallel?: string; gradingCompany?: string; grade?: number; limit?: number; marketplace?: string };
+export async function searchActiveEbayListings(input: SearchActiveEbayListingsInput) {
+  const terms = [input.playerName, input.year, input.brand, input.setName, input.cardNumber && `#${input.cardNumber}`, input.parallel, input.gradingCompany, input.grade].filter(Boolean).join(" ");
+  const token = await getApplicationToken();
+  const params = new URLSearchParams({ q: terms, limit: String(Math.min(Math.max(input.limit ?? 50, 1), 200)), fieldgroups: "EXTENDED" });
+  const response = await browseFetch(`/buy/browse/v1/item_summary/search?${params}`, token);
+  const json = await response.json() as { itemSummaries?: EbayItem[] };
+  const rows = (json.itemSummaries ?? []).map((item) => normalizeItem(item, new Date().toISOString())).filter((item): item is MarketObservation => Boolean(item));
+  if (!rows.length) throw new Error("EBAY_EMPTY_RESULTS");
+  return rows;
+}
+
+export async function inspectEbayItem(sourceItemId: string) {
+  if (!sourceItemId) throw new Error("EBAY_SCHEMA_ERROR");
+  const token = await getApplicationToken();
+  const response = await browseFetch(`/buy/browse/v1/item/${encodeURIComponent(sourceItemId)}`, token);
+  const item = await response.json() as EbayItem;
+  const normalized = normalizeItem(item, new Date().toISOString());
+  if (!normalized) throw new Error("EBAY_SCHEMA_ERROR");
+  return { ...normalized, marketplace: MARKETPLACE, imageUrl: item.image?.imageUrl ?? null, condition: item.condition ?? null, listingStatus: "active" as const };
+}
+
 export async function getEbayHealth() {
   const configured = Boolean(process.env.EBAY_CLIENT_ID && process.env.EBAY_CLIENT_SECRET);
   if (!configured) return { configured: false, tokenWorking: false, browseApiWorking: false, marketplace: MARKETPLACE, lastSuccessfulFetch: null, lastErrorType: "CREDENTIALS_NOT_CONFIGURED" as const };
   try {
     const token = await getApplicationToken();
     const params = new URLSearchParams({ q: "Victor Wembanyama basketball card", limit: "1", fieldgroups: "EXTENDED" });
-    const response = await fetch(`${API}/buy/browse/v1/item_summary/search?${params}`, { headers: { Authorization: `Bearer ${token}`, "X-EBAY-C-MARKETPLACE-ID": MARKETPLACE }, cache: "no-store" });
-    if (!response.ok) throw new Error(`EBAY_BROWSE_${response.status}`);
+    const response = await browseFetch(`/buy/browse/v1/item_summary/search?${params}`, token);
     const json = await response.json() as { itemSummaries?: EbayItem[] };
     const item = json.itemSummaries?.[0];
     if (!item?.itemId || !item.title || !item.itemWebUrl) throw new Error("EMPTY_RESULTS");
     return { configured: true, tokenWorking: true, browseApiWorking: true, marketplace: MARKETPLACE, lastSuccessfulFetch: new Date().toISOString(), lastErrorType: null };
   } catch (error) {
     const reason = error instanceof Error ? error.message : "OTHER";
-    const lastErrorType = reason === "EMPTY_RESULTS" ? "EMPTY_RESULTS" : reason.includes("TOKEN_401") ? "TOKEN_401" : reason.includes("TOKEN_403") ? "TOKEN_403" : reason.includes("BROWSE_401") ? "BROWSE_401" : reason.includes("BROWSE_403") ? "BROWSE_403" : reason.includes("429") ? "RATE_LIMIT_429" : reason.includes("fetch") ? "NETWORK_ERROR" : "OTHER";
+    const lastErrorType: EbayErrorCategory = reason === "EBAY_CREDENTIALS_NOT_CONFIGURED" ? "EBAY_CREDENTIALS_NOT_CONFIGURED" : reason.includes("TOKEN_401") ? "EBAY_TOKEN_401" : reason.includes("TOKEN_403") ? "EBAY_TOKEN_403" : reason.includes("BROWSE_401") ? "EBAY_BROWSE_401" : reason.includes("BROWSE_403") ? "EBAY_BROWSE_403" : reason.includes("429") ? "EBAY_RATE_LIMIT_429" : reason.includes("TIMEOUT") ? "EBAY_TIMEOUT" : reason.includes("SCHEMA") || reason.includes("EMPTY") ? "EBAY_SCHEMA_ERROR" : "EBAY_NETWORK_ERROR";
     return { configured: true, tokenWorking: !reason.startsWith("EBAY_TOKEN_"), browseApiWorking: false, marketplace: MARKETPLACE, lastSuccessfulFetch: null, lastErrorType };
   }
 }
-

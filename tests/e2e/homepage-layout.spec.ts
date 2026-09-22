@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("homepage capability hierarchy adapts to mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/");
 
   const grid = page.locator("#features [class*='featureGrid']");

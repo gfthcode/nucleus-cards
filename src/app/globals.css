@@ -3644,6 +3644,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .team-tile, .mini-card, .collection-grid a { transition: border-color .15s, background .15s, transform .15s; }
 .team-tile:hover, .mini-card:hover, .collection-grid a:hover { border-color: rgba(96,165,250,.48); transform: translateY(-2px); }
 .card-detail-page, .player-terminal-page, .team-detail-grid, .portfolio-layout, .alerts-layout, .settings-grid, .admin-page { gap: 18px; }
+.hud-grid{display:grid;gap:12px;grid-template-columns:repeat(4,minmax(0,1fr))}.provider-grid{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:900px){.hud-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.provider-grid{grid-template-columns:1fr}}@media(max-width:560px){.hud-grid{grid-template-columns:1fr}}
 .card-hero-grid, .profile-hero, .player-terminal-overview, .team-intelligence-panel { border-radius: 12px; }
 .card-info-grid, .player-stat-grid, .portfolio-metrics, .market-stat-grid { gap: 1px; }
 .card-info-grid > *, .player-stat-grid > *, .portfolio-metrics > *, .market-stat-grid > * { background: var(--terminal-panel); border: 1px solid var(--terminal-line); }

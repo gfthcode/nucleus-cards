@@ -1,0 +1,16 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { EmptyDataState, MetricCard, ProviderStatusCard } from "@/components/hud/hud";
+import { getDataHealth } from "@/lib/data-health";
+import { getAuthenticatedUser } from "@/lib/supabase/server";
+
+export const metadata: Metadata = { title: "数据健康中心" };
+export default async function DataHealthPage() {
+  const { user } = await getAuthenticatedUser();
+  if (!user) return <main className="page-shell inner-page"><EmptyDataState title="需要登录" description="数据健康中心仅向已登录用户开放；管理员角色控制将在后续权限模型中增加。" /><Link className="button button-primary" href="/login?returnTo=%2Fadmin%2Fdata-health">登录查看</Link></main>;
+  const health = await getDataHealth(); const counts = health.counts;
+  const providerState = health.ebay.browseApiWorking ? "PASS" : health.ebay.configured ? "FAIL" : "UNAVAILABLE";
+  return <main className="page-shell inner-page"><header className="terminal-page-heading"><div><span className="section-kicker">DATA HEALTH · AUTHENTICATED</span><h1>数据服务命令中心</h1><p>仅显示健康状态、样本量和错误类别；不会显示密钥、token 或服务端凭据。</p></div></header>
+    <section className="hud-grid"><MetricCard label="DATA SERVICES" value={health.supabase === "CONFIGURED" ? "01" : "00"} detail={health.supabase === "CONFIGURED" ? "Supabase market store" : "Supabase unavailable"} state={health.supabase === "CONFIGURED" ? "PASS" : "UNAVAILABLE"}/><MetricCard label="ACTIVE OBSERVATIONS" value={counts?.market_price_observations ?? "—"} detail="eBay active evidence only" state={counts?.market_price_observations ? "PASS" : "EMPTY"}/><MetricCard label="LAST SNAPSHOT" value={counts?.market_price_snapshots ?? "—"} detail="Fixed-price median snapshots" state={counts?.market_price_snapshots ? "PASS" : "EMPTY"}/><MetricCard label="VERIFIED SALES" value={counts?.verified_sales ?? "—"} detail="Authorized sales only" state={health.verifiedSales === "PASS" ? "PASS" : "UNAVAILABLE"}/></section>
+    <section className="data-panel" style={{marginTop:18,padding:18}}><div className="section-heading"><div><span className="section-kicker">PROVIDERS</span><h2>来源状态</h2></div><small>实时状态不会暴露凭据</small></div><div className="provider-grid"><ProviderStatusCard name="eBay Browse API" state={providerState} detail={health.ebay.lastErrorType ?? `Last successful fetch: ${health.ebay.lastSuccessfulFetch ?? "not yet"}`}/><ProviderStatusCard name="NBA Provider" state={health.momentum === "PASS" ? "PASS" : health.momentum === "COLLECTING" ? "COLLECTING" : "UNAVAILABLE"} detail={health.momentum === "PASS" ? "Momentum snapshots available" : "Collecting data or provider unavailable"}/><ProviderStatusCard name="Supabase market store" state={health.supabase === "CONFIGURED" ? "PASS" : "UNAVAILABLE"} detail={health.supabase === "CONFIGURED" ? "Table count access available" : "Server admin key not configured"} icon="database"/><ProviderStatusCard name="Momentum cron" state={health.momentum === "PASS" ? "PASS" : "COLLECTING"} detail={counts?.player_momentum_snapshots ? `${counts.player_momentum_snapshots} snapshots` : "No rows yet"}/><ProviderStatusCard name="Xianyu Authorized Provider" state="DISABLED" detail="Authorized source not configured. Scraping is disabled." icon="shield"/></div></section></main>;
+}

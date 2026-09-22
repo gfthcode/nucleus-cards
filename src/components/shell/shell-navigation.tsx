@@ -11,7 +11,7 @@ const groups: Array<{ labelKey: TranslationKey; items: Array<[string, string, ty
   { labelKey: "navigation.discover", items: [["navigation.players", "/teams#players", UserRoundSearch], ["navigation.teams", "/teams", UsersRound], ["navigation.cards", "/market", LayoutDashboard], ["navigation.rookies", "/rookies/2025", Sparkles]] },
   { labelKey: "navigation.market", items: [["navigation.market", "/market", ChartNoAxesCombined], ["navigation.auctions", "/auction-radar", Gavel], ["navigation.sales", "/market#sales", BookOpenCheck]] },
   { labelKey: "navigation.collect", items: [["navigation.portfolio", "/portfolio", WalletCards], ["navigation.collection", "/collections", FolderHeart], ["navigation.alerts", "/alerts", BellRing]] },
-  { labelKey: "navigation.intelligence", items: [["球员动量", "/momentum", Activity], ["navigation.ai", "/analysis", WandSparkles]] },
+  { labelKey: "navigation.intelligence", items: [["navigation.momentum", "/momentum", Activity], ["navigation.ai", "/analysis", WandSparkles]] },
 ];
 
 function active(pathname: string, href: string) { const base = href.split("#")[0]; return base === "/" ? pathname === "/" : pathname.startsWith(base); }
@@ -26,7 +26,7 @@ export function ShellNavigation() {
 
 export function ShellMobileNavigation() {
   const pathname = usePathname(); const { t } = useI18n();
-  const items: Array<[string, string, typeof Gauge]> = [["navigation.home", "/", Gauge], ["navigation.market", "/market", ChartNoAxesCombined], ["navigation.auctions", "/auction-radar", Gavel], ["navigation.portfolio", "/portfolio", WalletCards], ["球员动量", "/momentum", Activity], ["navigation.ai", "/analysis", WandSparkles]];
+  const items: Array<[string, string, typeof Gauge]> = [["navigation.home", "/", Gauge], ["navigation.market", "/market", ChartNoAxesCombined], ["navigation.auctions", "/auction-radar", Gavel], ["navigation.portfolio", "/portfolio", WalletCards], ["navigation.momentum", "/momentum", Activity], ["navigation.ai", "/analysis", WandSparkles]];
   return <nav className={styles.mobileNavigation} aria-label={t("shell.mobileNavigation")}>{items.map(([labelKey, href, Icon]) => <Link className={active(pathname, href) ? styles.active : ""} href={href} key={href}><Icon size={18} aria-hidden /><span>{labelKey.startsWith("navigation.") ? t(labelKey as TranslationKey) : labelKey}</span></Link>)}</nav>;
 }
 

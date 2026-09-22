@@ -78,3 +78,8 @@
 .featureCardArrow{align-self:end;color:#b3aab4;justify-self:end;transition:color .2s ease,transform .2s ease}
 .featureCard:hover .featureCardArrow,.featureCard:focus-visible .featureCardArrow{color:#ff9b8f;transform:translateX(3px)}
 .featureCard:active{transform:translateY(-1px) scale(.99)}
+
+/* Give the three homepage capabilities a clear lead-and-support hierarchy. */
+.featureGrid{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);grid-template-rows:repeat(2,minmax(190px,1fr))}
+.featureGrid>.featureCard:first-child{align-content:space-between;background:linear-gradient(145deg,rgba(117,35,49,.42),rgba(27,18,27,.94) 64%);border-color:rgba(243,126,111,.34);grid-row:1/span 2;min-height:394px;padding:26px}
+@media(max-width:620px){.featureGrid{grid-template-columns:1fr;grid-template-rows:none}.featureGrid>.featureCard:first-child{grid-row:auto;min-height:0;padding:18px}}

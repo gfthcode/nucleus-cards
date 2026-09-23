@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Grid2X2, List, Search, SlidersHorizontal, Star, Database } from "lucide-react";
 import { CardVisual } from "@/components/card-visual";
@@ -13,7 +13,9 @@ import { displayPlayerName, displayTeamName } from "@/i18n/display-names";
 
 type MarketRow = Card & { player: Player; team?: Team };
 type View = "gallery" | "table";
+type SavedView = { id: string; name: string; query: string; brand: string; draftYear: string; price: string; cohort: string; risk: string; onlySales: boolean; highLiquidity: boolean };
 const years = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
+const savedViewsKey = "nucleus-market-saved-views";
 
 export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
   const { locale, t } = useI18n();
@@ -29,6 +31,40 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
   const [highLiquidity, setHighLiquidity] = useState(false);
   const [view, setView] = useState<View>("gallery");
   const [watched, setWatched] = useState<Set<string>>(new Set());
+  const [savedViews, setSavedViews] = useState<SavedView[]>([]);
+  const [savingView, setSavingView] = useState(false);
+  const [viewName, setViewName] = useState("");
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      try {
+        const stored = window.localStorage.getItem(savedViewsKey);
+        if (stored) setSavedViews(JSON.parse(stored) as SavedView[]);
+      } catch { /* Ignore unavailable or malformed local storage. */ }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  function persistViews(next: SavedView[]) {
+    setSavedViews(next);
+    try { window.localStorage.setItem(savedViewsKey, JSON.stringify(next)); } catch { /* Ignore private browsing storage limits. */ }
+  }
+
+  function currentView(name: string): SavedView {
+    return { id: `${Date.now()}`, name, query, brand, draftYear, price, cohort, risk, onlySales, highLiquidity };
+  }
+
+  function saveCurrentView() {
+    const name = viewName.trim();
+    if (!name) return;
+    persistViews([currentView(name), ...savedViews].slice(0, 8));
+    setViewName("");
+    setSavingView(false);
+  }
+
+  function applySavedView(saved: SavedView) {
+    setQuery(saved.query); setBrand(saved.brand); setDraftYear(saved.draftYear); setPrice(saved.price); setCohort(saved.cohort); setRisk(saved.risk); setOnlySales(saved.onlySales); setHighLiquidity(saved.highLiquidity);
+  }
 
   const filtered = useMemo(() => rows.filter((row) => {
     const haystack = `${row.player.name} ${row.player.displayNameZh} ${row.brand} ${row.productLine} ${displayTeamName(row.team, locale)}`.toLowerCase();
@@ -61,6 +97,11 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
       <button className={onlySales ? styles.selected : ""} onClick={() => setOnlySales((value) => !value)}>{t("market.withSales")}</button>
       <button className={highLiquidity ? styles.selected : ""} onClick={() => setHighLiquidity((value) => !value)}>{t("market.highLiquidity")}</button>
       <button className={risk === "high" ? styles.danger : ""} onClick={() => setRisk((value) => value === "high" ? "all" : "high")}>{t("market.highRisk")}</button>
+    </div>
+    <div className={styles.savedViews} aria-label={t("market.savedViews")}>
+      <div className={styles.savedViewsHeader}><span>{t("market.savedViews")}</span><button type="button" onClick={() => setSavingView((value) => !value)}>{t("market.saveView")}</button></div>
+      {savingView && <div className={styles.saveViewForm}><input aria-label={t("market.viewName")} placeholder={t("market.viewNamePlaceholder")} value={viewName} onChange={(event) => setViewName(event.target.value)} onKeyDown={(event) => event.key === "Enter" && saveCurrentView()} /><button type="button" onClick={saveCurrentView} disabled={!viewName.trim()}>{t("market.save")}</button><small>{t("market.saveViewHint")}</small></div>}
+      {savedViews.length ? <div className={styles.savedViewList}>{savedViews.map((saved) => <span className={styles.savedView} key={saved.id}><button type="button" onClick={() => applySavedView(saved)}>{saved.name}</button><button type="button" aria-label={`${t("market.removeView")}: ${saved.name}`} onClick={() => persistViews(savedViews.filter((item) => item.id !== saved.id))}>×</button></span>)}</div> : <small className={styles.noSavedViews}>{t("market.noSavedViews")}</small>}
     </div>
     {advancedOpen && <div className={styles.advanced} role="region" aria-label={t("market.filter")}><label><span>{t("market.riskLevel")}</span><select value={risk} onChange={(event) => setRisk(event.target.value)}><option value="all">{t("market.all")}</option><option value="low">{t("market.low")}</option><option value="medium">{t("market.medium")}</option><option value="high">{t("market.high")}</option></select></label><label><span>{t("market.observationType")}</span><select disabled aria-label={t("market.observationType")}><option>{t("market.realRowsRequired")}</option></select></label><label><span>{t("market.dataSource")}</span><select disabled aria-label={t("market.dataSource")}><option>eBay Browse API</option></select></label><p>{t("market.filterHint")} {t("market.realFiltersPending")}</p></div>}
     <div id="recent-sales" className={`${styles.resultsBar} ${styles.salesAnchor}`}>

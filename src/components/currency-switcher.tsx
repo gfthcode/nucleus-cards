@@ -87,3 +87,37 @@ export function CurrencyValue({
   );
 }
 
+/** Compact price renderer shared by market cards and homepage surfaces. */
+export function DisplayedAmount({ cny, className }: { cny?: number; className?: string }) {
+  const { locale } = useI18n();
+  const [currency, setCurrency] = useState<Currency>(() => readStoredCurrency(locale));
+  const [rates, setRates] = useState<Record<Currency, number>>(fallbackRates);
+
+  useEffect(() => {
+    const onCurrencyChange = (event: Event) => {
+      const next = (event as CustomEvent<Currency>).detail;
+      if (locale === "en" && next !== "USD") return;
+      if (locale === "zh-CN" && next === "USD") return;
+      setCurrency(next);
+    };
+    window.addEventListener(currencyEventName, onCurrencyChange);
+    return () => window.removeEventListener(currencyEventName, onCurrencyChange);
+  }, [locale]);
+
+  useEffect(() => {
+    let active = true;
+    void fetch("/api/exchange-rates", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() as Promise<{ rates?: Partial<Record<Currency, number>> }> : null)
+      .then((payload) => {
+        if (active && payload?.rates) setRates((current) => ({ ...current, ...payload.rates }));
+      })
+      .catch(() => undefined);
+    return () => { active = false; };
+  }, []);
+
+  if (cny == null) return <span className={className}>—</span>;
+  const displayCurrency: Currency = locale === "en" ? "USD" : currency === "USD" ? "CNY" : currency;
+  const label = displayCurrency === "CNY" ? "人民币" : displayCurrency === "HKD" ? "港币" : "USD";
+  return <span className={className}>{label} {symbols[displayCurrency]}{Math.round(cny * rates[displayCurrency]).toLocaleString(locale === "en" ? "en-US" : "zh-CN")}</span>;
+}
+

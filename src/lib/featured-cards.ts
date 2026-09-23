@@ -13,7 +13,7 @@ export interface FeaturedCardRecord {
   image: CardImageRecord;
 }
 
-const FEATURED_CARD_IDS = ["2", "19", "21"] as const;
+const FEATURED_CARD_IDS = ["2", "19", "21", "6", "8", "12", "16", "17", "20"] as const;
 
 export function getFeaturedCards(): FeaturedCardRecord[] {
   return FEATURED_CARD_IDS.flatMap((cardId) => {
@@ -27,3 +27,4 @@ export function getFeaturedCards(): FeaturedCardRecord[] {
     return [{ card, player, image }];
   });
 }
+

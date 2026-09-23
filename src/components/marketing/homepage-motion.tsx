@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "./marketing.module.css";
+import { useI18n } from "@/i18n/client";
 
 const features = [
   "REAL SALES DATA",
@@ -20,9 +21,10 @@ const features = [
 ];
 
 export function FeatureRail() {
+  const { t } = useI18n();
   const items = [...features, ...features];
   return (
-    <section className={styles.featureRail} aria-label="Nucleus Cards 功能">
+    <section className={styles.featureRail} aria-label={`Nucleus Cards ${t("homepage.section.featuresShort")}`}>
       <div className={styles.featureRailViewport}>
         <div className={styles.featureRailTrack}>
           {items.map((feature, index) => (
@@ -60,3 +62,4 @@ export function Reveal({ children, className = "" }: { children: React.ReactNode
 
   return <div ref={ref} className={`${styles.reveal} ${visible ? styles.revealVisible : ""} ${className}`}>{children}</div>;
 }
+

@@ -9,10 +9,11 @@ export async function GET() {
     });
     if (!response.ok) throw new Error(`Exchange rate service returned ${response.status}`);
     const payload = (await response.json()) as { rates?: Record<string, number> };
+    const sourceRates = payload.rates ?? {};
     const rates = {
       CNY: 1,
-      HKD: Number.isFinite(payload.rates?.HKD) ? payload.rates.HKD : fallbackRates.HKD,
-      USD: Number.isFinite(payload.rates?.USD) ? payload.rates.USD : fallbackRates.USD,
+      HKD: Number.isFinite(sourceRates.HKD) ? sourceRates.HKD : fallbackRates.HKD,
+      USD: Number.isFinite(sourceRates.USD) ? sourceRates.USD : fallbackRates.USD,
     };
     return NextResponse.json(
       { base: "CNY", rates, fetchedAt: new Date().toISOString(), source: "live" },

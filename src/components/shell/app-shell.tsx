@@ -17,6 +17,7 @@ import { ShellFooterNavigation, ShellMobileNavigation, ShellNavigation } from ".
 import styles from "./app-shell.module.css";
 import marketingStyles from "@/components/marketing/marketing.module.css";
 import { HOMEPAGE_SECTIONS, useHomepageScrollSpy } from "@/components/marketing/homepage-scrollspy";
+import { RelatedSiteCard } from "@/components/related-site-card";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -41,7 +42,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className={styles.disclaimer}><ShieldCheck size={14} aria-hidden /><span>{t("shell.disclaimer")}</span><Link href="/methodology">{t("common.dataMethodology")}</Link></div>
       <DataTrustBar />
       <div id="main-content" className={styles.content}>{children}</div>
-      <footer className={styles.footer}><p>{t("shell.disclaimer")}</p><Link href="/methodology">{t("navigation.methodology")}</Link><Link href="/settings">{t("shell.privacy")}</Link></footer>
+      <RelatedSiteCard compact /><footer className={styles.footer}><p>{t("shell.disclaimer")}</p><Link href="/methodology">{t("navigation.methodology")}</Link><Link href="/settings">{t("shell.privacy")}</Link></footer>
     </div>
     <ShellMobileNavigation />
     <PwaRegister />
@@ -78,4 +79,3 @@ function MarketingChrome({ children }: { children: React.ReactNode }) {
     <footer className={marketingStyles.marketingFooter}><div><b>Nucleus Cards</b><span>{t("shell.footerSummary")}</span></div><nav aria-label={t("shell.mainNavigation")}><a href="#features">{t("homepage.section.featuresShort")}</a><a href="#market">{t("homepage.section.marketShort")}</a><Link href="/methodology">{t("common.dataMethodology")}</Link><Link href="/settings">{t("shell.privacy")}</Link></nav><small>{t("shell.snapshot")}</small></footer>
   </div>;
 }
-

@@ -8,6 +8,7 @@ import { CardVisual } from "@/components/card-visual";
 import styles from "@/components/marketing/marketing.module.css";
 import { getFeaturedCards } from "@/lib/featured-cards";
 import { useI18n } from "@/i18n/client";
+import { RelatedSiteCard } from "@/components/related-site-card";
 
 export default function Home() {
   const featuredCards = getFeaturedCards();
@@ -60,7 +61,7 @@ export default function Home() {
 
     <Reveal><section id="faq" className={styles.sectionBand} aria-labelledby="faq-title"><header><span className={styles.featureKicker}>FAQ</span><h2 id="faq-title">{t("homepage.faq.title")}</h2><p>{t("homepage.faq.description")}</p></header><div className={styles.faqGrid}><article className={styles.faqItem}><h3>{t("homepage.faq.priceQuestion")}</h3><p>{t("homepage.faq.priceAnswer")}</p></article><article className={styles.faqItem}><h3>{t("homepage.faq.importQuestion")}</h3><p>{t("homepage.faq.importAnswer")}</p></article><article className={styles.faqItem}><h3>{t("homepage.faq.aiQuestion")}</h3><p>{t("homepage.faq.aiAnswer")}</p></article><article className={styles.faqItem}><h3>{t("homepage.faq.privacyQuestion")}</h3><p>{t("homepage.faq.privacyAnswer")}</p></article></div></section></Reveal>
 
+    <RelatedSiteCard />
     <aside className={styles.homeTrust}><ShieldCheck size={17} /><span><b>{t("homepage.trust.title")}</b>　{t("homepage.trust.description")}</span><Link href="/methodology">{t("homepage.trust.action")} <ArrowRight size={14} /></Link></aside>
   </main>;
 }
-

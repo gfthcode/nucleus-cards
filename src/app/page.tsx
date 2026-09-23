@@ -12,7 +12,7 @@ import { RelatedSiteCard } from "@/components/related-site-card";
 
 export default function Home() {
   const featuredCards = getFeaturedCards();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
 
   return <main id="home" className={`${styles.home} ${styles.marketingHome}`}>
     <section className={styles.homeHero} aria-labelledby="home-title">
@@ -21,7 +21,7 @@ export default function Home() {
         <h1 id="home-title"><span>{t("homepage.title.1")}</span><span>{t("homepage.title.2")}</span><span>{t("homepage.title.3")}</span></h1>
         <p>{t("homepage.description")}</p>
         <div className={styles.heroActions}><Link href="/market">{t("homepage.exploreMarket")} <ArrowRight size={16} /></Link><Link href="/collections/demo">{t("homepage.publicCollection")} <WalletCards size={15} /></Link></div>
-        <div className={styles.heroMeta}><span>{t("homepage.free")}</span><span>·</span><span>{t("homepage.demoLabel")}</span><span>·</span><span>NBA / CNY</span></div>
+        <div className={styles.heroMeta}><span>{t("homepage.free")}</span><span>·</span><span>{t("homepage.demoLabel")}</span><span>·</span><span>{locale === "en" ? "NBA / USD" : "NBA / 人民币"}</span></div>
       </div>
       <AppPreviewWindow rows={featuredCards} />
     </section>
@@ -65,3 +65,4 @@ export default function Home() {
     <aside className={styles.homeTrust}><ShieldCheck size={17} /><span><b>{t("homepage.trust.title")}</b>　{t("homepage.trust.description")}</span><Link href="/methodology">{t("homepage.trust.action")} <ArrowRight size={14} /></Link></aside>
   </main>;
 }
+

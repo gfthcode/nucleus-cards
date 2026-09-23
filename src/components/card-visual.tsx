@@ -2,6 +2,7 @@
 "use client";
 
 import { getCardImage } from "@/lib/card-images";
+import { DisplayedAmount } from "@/components/currency-switcher";
 import type { Card, Player } from "@/types/domain";
 import styles from "./card-visual.module.css";
 import { useI18n } from "@/i18n/client";
@@ -23,7 +24,6 @@ export function CardVisual({
   const image = getCardImage(card);
   const imageUrl = side === "back" ? image.backUrl : image.frontUrl;
   const hasImage = Boolean(imageUrl);
-  const price = card.latestSaleCny ? `¥${card.latestSaleCny.toLocaleString()}` : t("market.noSales");
   const change = card.change30d;
 
   return <div className={`${styles.card} ${side === "back" ? styles.sideBack : ""} ${density === "compact" ? styles.compact : ""}`} aria-label={`${playerName} ${side === "front" ? t("market.front") : t("market.back")}`}>
@@ -34,7 +34,7 @@ export function CardVisual({
     <div className={styles.meta}>
       <b className={styles.player}>{playerName}</b>
       <span className={styles.identity}>{card.releaseYear} {card.productLine} · {card.parallel} · #{card.cardNumber}</span>
-      <div className={styles.valueRow}><b>{price}</b><small className={change == null ? "" : change >= 0 ? styles.up : styles.down}>{change == null ? t("market.insufficientData") : `${change > 0 ? "+" : ""}${change}% / 30D`}</small></div>
+      <div className={styles.valueRow}><b><DisplayedAmount cny={card.latestSaleCny} /></b><small className={change == null ? "" : change >= 0 ? styles.up : styles.down}>{change == null ? t("market.insufficientData") : `${change > 0 ? "+" : ""}${change}% / 30D`}</small></div>
     </div>
   </div>;
 }

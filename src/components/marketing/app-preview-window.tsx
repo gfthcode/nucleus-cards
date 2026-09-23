@@ -4,6 +4,7 @@ import { PointerEvent, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowUpRight, BarChart3, BookOpen, Search, Sparkles, WalletCards } from "lucide-react";
 import { CardVisual } from "@/components/card-visual";
+import { DisplayedAmount } from "@/components/currency-switcher";
 import type { Card, Player } from "@/types/domain";
 import { useI18n } from "@/i18n/client";
 import styles from "./marketing.module.css";
@@ -49,7 +50,7 @@ export function AppPreviewWindow({ rows }: { rows: PreviewRow[] }) {
         <aside className={styles.previewSidebar}><b>NC</b><span className={styles.previewActive}><WalletCards size={14} />{t("homepage.preview.collection")}</span><span><Search size={14} />{t("homepage.preview.search")}</span><span><BarChart3 size={14} />{t("homepage.preview.market")}</span><span><Sparkles size={14} />{t("homepage.preview.ai")}</span><span><BookOpen size={14} />{t("homepage.preview.methodology")}</span></aside>
         <div className={styles.previewMain}>
           <div className={styles.previewGreeting}><div><small>MY COLLECTION</small><h3>{t("homepage.preview.greeting")}</h3></div><Link href="/portfolio">{t("homepage.preview.openPortfolio")} <ArrowUpRight size={13} /></Link></div>
-          <div className={styles.previewStats}><div><small>{t("homepage.preview.portfolioValue")}</small><strong>¥68,420</strong><em>+8.4% / 30D</em></div><div><small>{t("homepage.preview.cardsOwned")}</small><strong>12</strong><span>{t("homepage.preview.publicCollections")}</span></div><div><small>{t("homepage.preview.watchlist")}</small><strong>08</strong><span>{t("homepage.preview.newSignals")}</span></div></div>
+          <div className={styles.previewStats}><div><small>{t("homepage.preview.portfolioValue")}</small><strong><DisplayedAmount cny={68420} /></strong><em>+8.4% / 30D</em></div><div><small>{t("homepage.preview.cardsOwned")}</small><strong>12</strong><span>{t("homepage.preview.publicCollections")}</span></div><div><small>{t("homepage.preview.watchlist")}</small><strong>08</strong><span>{t("homepage.preview.newSignals")}</span></div></div>
           <div className={styles.previewChart}><div><small>{t("homepage.preview.history")}</small><span>30D　90D　1Y</span></div><svg viewBox="0 0 640 120" role="img" aria-label={t("homepage.preview.history")}><defs><linearGradient id="preview-gradient" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#df6a63" /><stop offset="1" stopColor="#df6a63" stopOpacity="0" /></linearGradient></defs><path d="M0 96 C70 88 95 100 150 79 S245 85 300 63 S405 70 462 42 S550 53 640 15" /><path className={styles.chartFill} d="M0 96 C70 88 95 100 150 79 S245 85 300 63 S405 70 462 42 S550 53 640 15 V120 H0Z" /></svg></div>
           <div className={styles.previewCollectionHeader}><small>{t("homepage.preview.featuredCards")}</small><Link href="/market">{t("homepage.preview.viewAll")} <ArrowUpRight size={12} /></Link></div>
           <div className={styles.previewCards}>{featured.map(({ card, player }) => <Link href={`/cards/${card.id}`} key={card.id} className={styles.previewCard}>

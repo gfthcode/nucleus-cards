@@ -35,7 +35,7 @@ function tokens(value: string) {
   return new Set(normalize(value).split(" ").filter((token) => token.length > 2));
 }
 
-function playerMatches(target: string, candidate: string) {
+function playerMatches(target: string, candidate: string | undefined) {
   const wanted = normalize(target);
   const found = normalize(candidate);
   return Boolean(wanted && found && (found.includes(wanted) || wanted.includes(found)));

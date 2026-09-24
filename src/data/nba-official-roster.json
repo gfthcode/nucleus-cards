@@ -1,7 +1,9 @@
 {
-  "source": "NBA.com League Roster",
+  "source": "NBA.com League Roster visible table",
   "sourceUrl": "https://www.nba.com/players",
-  "fetchedAt": "2026-09-08T00:00:00.000Z",
+  "fetchedAt": "2026-09-24T10:44:19.000Z",
+  "contractStatus": "Not provided by source. Rows do not establish standard or two-way contracts.",
+  "draftMetadataNote": "Carried forward from 2026-09-08T00:00:00.000Z; 0 means not verified",
   "records": [
     {
       "personId": "1630173",
@@ -50,6 +52,26 @@
       "draftYear": 2017,
       "draftPick": 14,
       "sourceSlug": "bam-adebayo"
+    },
+    {
+      "personId": "1630534",
+      "name": "Ochai Agbaji",
+      "teamAbbreviation": "NYK",
+      "jerseyNumber": "30",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
+      "personId": "1643772",
+      "name": "Rashaun Agee",
+      "teamAbbreviation": "CLE",
+      "jerseyNumber": "",
+      "position": "",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1642369",
@@ -196,6 +218,16 @@
       "sourceSlug": "og-anunoby"
     },
     {
+      "personId": "1643113",
+      "name": "Zack Austin",
+      "teamAbbreviation": "CLE",
+      "jerseyNumber": "",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1630166",
       "name": "Deni Avdija",
       "teamAbbreviation": "POR",
@@ -254,6 +286,16 @@
       "draftYear": 2025,
       "draftPick": 5,
       "sourceSlug": "ace-bailey"
+    },
+    {
+      "personId": "1643131",
+      "name": "Ace Baldwin",
+      "teamAbbreviation": "ORL",
+      "jerseyNumber": "",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1630163",
@@ -352,6 +394,16 @@
       "sourceSlug": "brooks-barnhizer"
     },
     {
+      "personId": "1643709",
+      "name": "Miles Barnstable",
+      "teamAbbreviation": "SAS",
+      "jerseyNumber": "",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1629628",
       "name": "RJ Barrett",
       "teamAbbreviation": "TOR",
@@ -400,18 +452,6 @@
       "sourceSlug": "jamison-battle"
     },
     {
-      "personId": "201587",
-      "name": "Nicolas Batum",
-      "teamAbbreviation": "LAC",
-      "teamName": "Clippers",
-      "teamCity": "LA",
-      "position": "G-F",
-      "jerseyNumber": "33",
-      "draftYear": 2008,
-      "draftPick": 25,
-      "sourceSlug": "nicolas-batum"
-    },
-    {
       "personId": "203078",
       "name": "Bradley Beal",
       "teamAbbreviation": "LAC",
@@ -422,18 +462,6 @@
       "draftYear": 2012,
       "draftPick": 3,
       "sourceSlug": "bradley-beal"
-    },
-    {
-      "personId": "1630699",
-      "name": "MarJon Beauchamp",
-      "teamAbbreviation": "PHI",
-      "teamName": "76ers",
-      "teamCity": "Philadelphia",
-      "position": "F",
-      "jerseyNumber": "16",
-      "draftYear": 2022,
-      "draftPick": 24,
-      "sourceSlug": "marjon-beauchamp"
     },
     {
       "personId": "1642866",
@@ -556,6 +584,16 @@
       "sourceSlug": "devin-booker"
     },
     {
+      "personId": "1643394",
+      "name": "Keylan Boone",
+      "teamAbbreviation": "POR",
+      "jerseyNumber": "",
+      "position": "F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1643409",
       "name": "Cameron Boozer",
       "teamAbbreviation": "MEM",
@@ -592,6 +630,16 @@
       "sourceSlug": "jamaree-bouyea"
     },
     {
+      "personId": "1643592",
+      "name": "Nick Boyd",
+      "teamAbbreviation": "GSW",
+      "jerseyNumber": "",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1643558",
       "name": "Jaden Bradley",
       "teamAbbreviation": "TOR",
@@ -604,25 +652,13 @@
       "sourceSlug": "jaden-bradley"
     },
     {
-      "personId": "1628396",
-      "name": "Tony Bradley",
-      "teamAbbreviation": "ATL",
-      "teamName": "Hawks",
-      "teamCity": "Atlanta",
-      "position": "C-F",
-      "jerseyNumber": "13",
-      "draftYear": 2017,
-      "draftPick": 28,
-      "sourceSlug": "tony-bradley"
-    },
-    {
       "personId": "1631103",
       "name": "Malaki Branham",
       "teamAbbreviation": "ORL",
       "teamName": "Magic",
       "teamCity": "Orlando",
       "position": "F",
-      "jerseyNumber": "8",
+      "jerseyNumber": "12",
       "draftYear": 2022,
       "draftPick": 20,
       "sourceSlug": "malaki-branham"
@@ -714,7 +750,7 @@
     {
       "personId": "1628971",
       "name": "Bruce Brown",
-      "teamAbbreviation": "DEN",
+      "teamAbbreviation": "NYK",
       "teamName": "Nuggets",
       "teamCity": "Denver",
       "position": "G-F",
@@ -904,6 +940,26 @@
       "sourceSlug": "toumani-camara"
     },
     {
+      "personId": "1643655",
+      "name": "John Camden",
+      "teamAbbreviation": "PHX",
+      "jerseyNumber": "",
+      "position": "F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
+      "personId": "1643710",
+      "name": "Corey Camper",
+      "teamAbbreviation": "PHX",
+      "jerseyNumber": "",
+      "position": "",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "203991",
       "name": "Clint Capela",
       "teamAbbreviation": "HOU",
@@ -966,7 +1022,7 @@
     {
       "personId": "1642269",
       "name": "Devin Carter",
-      "teamAbbreviation": "ATL",
+      "teamAbbreviation": "BOS",
       "teamName": "Hawks",
       "teamCity": "Atlanta",
       "position": "G",
@@ -1216,18 +1272,6 @@
       "sourceSlug": "noah-clowney"
     },
     {
-      "personId": "1629599",
-      "name": "Amir Coffey",
-      "teamAbbreviation": "PHX",
-      "teamName": "Suns",
-      "teamCity": "Phoenix",
-      "position": "G-F",
-      "jerseyNumber": "2",
-      "draftYear": 0,
-      "draftPick": null,
-      "sourceSlug": "amir-coffey"
-    },
-    {
       "personId": "1642268",
       "name": "Isaiah Collier",
       "teamAbbreviation": "UTA",
@@ -1300,18 +1344,6 @@
       "sourceSlug": "ryan-conwell"
     },
     {
-      "personId": "1630536",
-      "name": "Sharife Cooper",
-      "teamAbbreviation": "WAS",
-      "teamName": "Wizards",
-      "teamCity": "Washington",
-      "position": "G",
-      "jerseyNumber": "13",
-      "draftYear": 2021,
-      "draftPick": 48,
-      "sourceSlug": "sharife-cooper"
-    },
-    {
       "personId": "1643595",
       "name": "Quadir Copeland",
       "teamAbbreviation": "HOU",
@@ -1334,6 +1366,16 @@
       "draftYear": 2023,
       "draftPick": 7,
       "sourceSlug": "bilal-coulibaly"
+    },
+    {
+      "personId": "1641741",
+      "name": "Ricky Council IV",
+      "teamAbbreviation": "ORL",
+      "jerseyNumber": "14",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1642907",
@@ -1372,6 +1414,16 @@
       "sourceSlug": "lj-cryer"
     },
     {
+      "personId": "1629600",
+      "name": "Jarron Cumberland",
+      "teamAbbreviation": "ORL",
+      "jerseyNumber": "",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1630595",
       "name": "Cade Cunningham",
       "teamAbbreviation": "DET",
@@ -1382,18 +1434,6 @@
       "draftYear": 2021,
       "draftPick": 1,
       "sourceSlug": "cade-cunningham"
-    },
-    {
-      "personId": "203552",
-      "name": "Seth Curry",
-      "teamAbbreviation": "GSW",
-      "teamName": "Warriors",
-      "teamCity": "Golden State",
-      "position": "G",
-      "jerseyNumber": "31",
-      "draftYear": 0,
-      "draftPick": null,
-      "sourceSlug": "seth-curry"
     },
     {
       "personId": "201939",
@@ -1430,6 +1470,16 @@
       "draftYear": 2024,
       "draftPick": 25,
       "sourceSlug": "pacome-dadiet"
+    },
+    {
+      "personId": "1643120",
+      "name": "Dain Dainja",
+      "teamAbbreviation": "BKN",
+      "jerseyNumber": "",
+      "position": "F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1630700",
@@ -1504,6 +1554,16 @@
       "sourceSlug": "rayj-dennis"
     },
     {
+      "personId": "201942",
+      "name": "DeMar DeRozan",
+      "teamAbbreviation": "DEN",
+      "jerseyNumber": "10",
+      "position": "G-F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1643620",
       "name": "Tucker DeVries",
       "teamAbbreviation": "BOS",
@@ -1552,6 +1612,16 @@
       "sourceSlug": "alpha-diallo"
     },
     {
+      "personId": "1642496",
+      "name": "Ibrahima Diallo",
+      "teamAbbreviation": "UTA",
+      "jerseyNumber": "",
+      "position": "C",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1642885",
       "name": "Mohamed Diawara",
       "teamAbbreviation": "NYK",
@@ -1566,7 +1636,7 @@
     {
       "personId": "1641711",
       "name": "Gradey Dick",
-      "teamAbbreviation": "TOR",
+      "teamAbbreviation": "LAC",
       "teamName": "Raptors",
       "teamCity": "Toronto",
       "position": "G-F",
@@ -1718,6 +1788,16 @@
       "draftYear": 2024,
       "draftPick": 28,
       "sourceSlug": "ryan-dunn"
+    },
+    {
+      "personId": "1643764",
+      "name": "Barry Dunning",
+      "teamAbbreviation": "POR",
+      "jerseyNumber": "",
+      "position": "",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "201142",
@@ -1876,6 +1956,16 @@
       "sourceSlug": "noa-essengue"
     },
     {
+      "personId": "1629234",
+      "name": "Drew Eubanks",
+      "teamAbbreviation": "NYK",
+      "jerseyNumber": "19",
+      "position": "F-C",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1642912",
       "name": "Isaiah Evans",
       "teamAbbreviation": "MIN",
@@ -1926,7 +2016,7 @@
     {
       "personId": "1627827",
       "name": "Dorian Finney-Smith",
-      "teamAbbreviation": "CHA",
+      "teamAbbreviation": "ATL",
       "teamName": "Hornets",
       "teamCity": "Charlotte",
       "position": "F",
@@ -2116,18 +2206,6 @@
       "sourceSlug": "paul-george"
     },
     {
-      "personId": "201959",
-      "name": "Taj Gibson",
-      "teamAbbreviation": "MEM",
-      "teamName": "Grizzlies",
-      "teamCity": "Memphis",
-      "position": "F",
-      "jerseyNumber": "67",
-      "draftYear": 2009,
-      "draftPick": 26,
-      "sourceSlug": "taj-gibson"
-    },
-    {
       "personId": "1630581",
       "name": "Josh Giddey",
       "teamAbbreviation": "CHI",
@@ -2286,7 +2364,7 @@
     {
       "personId": "1643060",
       "name": "Hayden Gray",
-      "teamAbbreviation": "UTA",
+      "teamAbbreviation": "BOS",
       "teamName": "Jazz",
       "teamCity": "Utah",
       "position": "G",
@@ -2342,18 +2420,6 @@
       "draftYear": 0,
       "draftPick": null,
       "sourceSlug": "javonte-green"
-    },
-    {
-      "personId": "201145",
-      "name": "Jeff Green",
-      "teamAbbreviation": "HOU",
-      "teamName": "Rockets",
-      "teamCity": "Houston",
-      "position": "F",
-      "jerseyNumber": "32",
-      "draftYear": 2007,
-      "draftPick": 5,
-      "sourceSlug": "jeff-green"
     },
     {
       "personId": "1630182",
@@ -2586,7 +2652,7 @@
     {
       "personId": "1641722",
       "name": "Jordan Hawkins",
-      "teamAbbreviation": "NOP",
+      "teamAbbreviation": "MEM",
       "teamName": "Pelicans",
       "teamCity": "New Orleans",
       "position": "G",
@@ -2670,7 +2736,7 @@
     {
       "personId": "1627741",
       "name": "Buddy Hield",
-      "teamAbbreviation": "ATL",
+      "teamAbbreviation": "CHA",
       "teamName": "Hawks",
       "teamCity": "Atlanta",
       "position": "G",
@@ -2704,16 +2770,14 @@
       "sourceSlug": "blake-hinson"
     },
     {
-      "personId": "1628988",
-      "name": "Aaron Holiday",
-      "teamAbbreviation": "HOU",
-      "teamName": "Rockets",
-      "teamCity": "Houston",
-      "position": "G",
-      "jerseyNumber": "0",
-      "draftYear": 2018,
-      "draftPick": 23,
-      "sourceSlug": "aaron-holiday"
+      "personId": "1643778",
+      "name": "Samuel Hoiberg",
+      "teamAbbreviation": "PHX",
+      "jerseyNumber": "",
+      "position": "",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "201950",
@@ -2848,6 +2912,16 @@
       "sourceSlug": "ariel-hukporti"
     },
     {
+      "personId": "1643750",
+      "name": "Ben Humrichous",
+      "teamAbbreviation": "BKN",
+      "jerseyNumber": "",
+      "position": "F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1629631",
       "name": "De'Andre Hunter",
       "teamAbbreviation": "SAC",
@@ -2896,9 +2970,19 @@
       "sourceSlug": "oso-ighodaro"
     },
     {
+      "personId": "1643633",
+      "name": "Graham Ike",
+      "teamAbbreviation": "GSW",
+      "jerseyNumber": "",
+      "position": "",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1627742",
       "name": "Brandon Ingram",
-      "teamAbbreviation": "TOR",
+      "teamAbbreviation": "LAC",
       "teamName": "Raptors",
       "teamCity": "Toronto",
       "position": "F",
@@ -2942,18 +3026,6 @@
       "draftYear": 2017,
       "draftPick": 6,
       "sourceSlug": "jonathan-isaac"
-    },
-    {
-      "personId": "1643585",
-      "name": "Vsevolod Ishchenko",
-      "teamAbbreviation": "DAL",
-      "teamName": "Mavericks",
-      "teamCity": "Dallas",
-      "position": "G",
-      "jerseyNumber": "",
-      "draftYear": 2026,
-      "draftPick": 56,
-      "sourceSlug": "vsevolod-ishchenko"
     },
     {
       "personId": "1641713",
@@ -3150,7 +3222,7 @@
     {
       "personId": "1642358",
       "name": "AJ Johnson",
-      "teamAbbreviation": "MEM",
+      "teamAbbreviation": "NOP",
       "teamName": "Grizzlies",
       "teamCity": "Memphis",
       "position": "G",
@@ -3196,6 +3268,16 @@
       "sourceSlug": "jalen-johnson"
     },
     {
+      "personId": "201949",
+      "name": "James Johnson",
+      "teamAbbreviation": "IND",
+      "jerseyNumber": "16",
+      "position": "F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1629640",
       "name": "Keldon Johnson",
       "teamAbbreviation": "SAS",
@@ -3206,6 +3288,16 @@
       "draftYear": 2019,
       "draftPick": 29,
       "sourceSlug": "keldon-johnson"
+    },
+    {
+      "personId": "1630553",
+      "name": "Keon Johnson",
+      "teamAbbreviation": "ATL",
+      "jerseyNumber": "45",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1642352",
@@ -3220,16 +3312,14 @@
       "sourceSlug": "keshad-johnson"
     },
     {
-      "personId": "1643516",
-      "name": "Morez Johnson",
-      "teamAbbreviation": "DAL",
-      "teamName": "Mavericks",
-      "teamCity": "Dallas",
-      "position": "F",
-      "jerseyNumber": "14",
-      "draftYear": 2026,
-      "draftPick": 9,
-      "sourceSlug": "morez-johnson"
+      "personId": "1641800",
+      "name": "Meechie Johnson",
+      "teamAbbreviation": "LAL",
+      "jerseyNumber": "",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1642848",
@@ -3244,16 +3334,16 @@
       "sourceSlug": "tre-johnson"
     },
     {
-      "personId": "1641935",
-      "name": "Jarkel Joiner",
-      "teamAbbreviation": "CHA",
-      "teamName": "Hornets",
-      "teamCity": "Charlotte",
-      "position": "G",
-      "jerseyNumber": "",
-      "draftYear": 0,
-      "draftPick": null,
-      "sourceSlug": "jarkel-joiner"
+      "personId": "1643516",
+      "name": "Morez Johnson Jr.",
+      "teamAbbreviation": "DAL",
+      "teamName": "Mavericks",
+      "teamCity": "Dallas",
+      "position": "F",
+      "jerseyNumber": "14",
+      "draftYear": 2026,
+      "draftPick": 9,
+      "sourceSlug": "morez-johnson"
     },
     {
       "personId": "203999",
@@ -3270,7 +3360,7 @@
     {
       "personId": "1642938",
       "name": "Curtis Jones",
-      "teamAbbreviation": "DEN",
+      "teamAbbreviation": "CLE",
       "teamName": "Nuggets",
       "teamCity": "Denver",
       "position": "G",
@@ -3282,7 +3372,7 @@
     {
       "personId": "1641794",
       "name": "Dillon Jones",
-      "teamAbbreviation": "NYK",
+      "teamAbbreviation": "PHI",
       "teamName": "Knicks",
       "teamCity": "New York",
       "position": "F",
@@ -3326,18 +3416,6 @@
       "draftYear": 2025,
       "draftPick": 38,
       "sourceSlug": "kam-jones"
-    },
-    {
-      "personId": "1643650",
-      "name": "Lajae Jones",
-      "teamAbbreviation": "GSW",
-      "teamName": "Warriors",
-      "teamCity": "Golden State",
-      "position": "G-F",
-      "jerseyNumber": "25",
-      "draftYear": 2026,
-      "draftPick": 54,
-      "sourceSlug": "lajae-jones"
     },
     {
       "personId": "1642461",
@@ -3460,18 +3538,6 @@
       "sourceSlug": "alex-karaban"
     },
     {
-      "personId": "1643626",
-      "name": "Trey Kaufman-Renn",
-      "teamAbbreviation": "MIN",
-      "teamName": "Timberwolves",
-      "teamCity": "Minnesota",
-      "position": "F",
-      "jerseyNumber": "14",
-      "draftYear": 2026,
-      "draftPick": 59,
-      "sourceSlug": "trey-kaufman-renn"
-    },
-    {
       "personId": "1642530",
       "name": "Yuki Kawamura",
       "teamAbbreviation": "LAC",
@@ -3484,28 +3550,14 @@
       "sourceSlug": "yuki-kawamura"
     },
     {
-      "personId": "1643583",
-      "name": "Jack Kayil",
-      "teamAbbreviation": "NYK",
-      "teamName": "Knicks",
-      "teamCity": "New York",
-      "position": "G",
+      "personId": "1643627",
+      "name": "Keba Keita",
+      "teamAbbreviation": "IND",
       "jerseyNumber": "",
-      "draftYear": 2026,
-      "draftPick": 39,
-      "sourceSlug": "jack-kayil"
-    },
-    {
-      "personId": "1631211",
-      "name": "Trevor Keels",
-      "teamAbbreviation": "MIA",
-      "teamName": "Heat",
-      "teamCity": "Miami",
-      "position": "G",
-      "jerseyNumber": "3",
-      "draftYear": 2022,
-      "draftPick": 42,
-      "sourceSlug": "trevor-keels"
+      "position": "C",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1628379",
@@ -3604,6 +3656,16 @@
       "sourceSlug": "christian-koloko"
     },
     {
+      "personId": "1629723",
+      "name": "John Konchar",
+      "teamAbbreviation": "NYK",
+      "jerseyNumber": "55",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1628436",
       "name": "Luke Kornet",
       "teamAbbreviation": "SAS",
@@ -3634,7 +3696,7 @@
       "teamName": "Timberwolves",
       "teamCity": "Minnesota",
       "position": "F",
-      "jerseyNumber": "0",
+      "jerseyNumber": "24",
       "draftYear": 2021,
       "draftPick": 7,
       "sourceSlug": "jonathan-kuminga"
@@ -3724,18 +3786,6 @@
       "sourceSlug": "tobi-lawal"
     },
     {
-      "personId": "1630639",
-      "name": "A.J. Lawson",
-      "teamAbbreviation": "TOR",
-      "teamName": "Raptors",
-      "teamCity": "Toronto",
-      "position": "G",
-      "jerseyNumber": "0",
-      "draftYear": 0,
-      "draftPick": null,
-      "sourceSlug": "aj-lawson"
-    },
-    {
       "personId": "1642865",
       "name": "Yaxel Lendeborg",
       "teamAbbreviation": "GSW",
@@ -3750,7 +3800,7 @@
     {
       "personId": "202695",
       "name": "Kawhi Leonard",
-      "teamAbbreviation": "LAC",
+      "teamAbbreviation": "TOR",
       "teamName": "Clippers",
       "teamCity": "LA",
       "position": "F",
@@ -3784,18 +3834,6 @@
       "sourceSlug": "caris-levert"
     },
     {
-      "personId": "1641831",
-      "name": "Malique Lewis",
-      "teamAbbreviation": "MIL",
-      "teamName": "Bucks",
-      "teamCity": "Milwaukee",
-      "position": "F",
-      "jerseyNumber": "",
-      "draftYear": 2026,
-      "draftPick": 60,
-      "sourceSlug": "malique-lewis"
-    },
-    {
       "personId": "203081",
       "name": "Damian Lillard",
       "teamAbbreviation": "POR",
@@ -3818,18 +3856,6 @@
       "draftYear": 2023,
       "draftPick": 12,
       "sourceSlug": "dereck-lively-ii"
-    },
-    {
-      "personId": "1630587",
-      "name": "Isaiah Livers",
-      "teamAbbreviation": "PHX",
-      "teamName": "Suns",
-      "teamCity": "Phoenix",
-      "position": "F",
-      "jerseyNumber": "18",
-      "draftYear": 2021,
-      "draftPick": 42,
-      "sourceSlug": "isaiah-livers"
     },
     {
       "personId": "1626172",
@@ -3880,30 +3906,6 @@
       "sourceSlug": "caleb-love"
     },
     {
-      "personId": "201567",
-      "name": "Kevin Love",
-      "teamAbbreviation": "UTA",
-      "teamName": "Jazz",
-      "teamCity": "Utah",
-      "position": "F-C",
-      "jerseyNumber": "42",
-      "draftYear": 2008,
-      "draftPick": 5,
-      "sourceSlug": "kevin-love"
-    },
-    {
-      "personId": "200768",
-      "name": "Kyle Lowry",
-      "teamAbbreviation": "PHI",
-      "teamName": "76ers",
-      "teamCity": "Philadelphia",
-      "position": "G",
-      "jerseyNumber": "7",
-      "draftYear": 2006,
-      "draftPick": 24,
-      "sourceSlug": "kyle-lowry"
-    },
-    {
       "personId": "1626168",
       "name": "Trey Lyles",
       "teamAbbreviation": "MIN",
@@ -3914,6 +3916,16 @@
       "draftYear": 2015,
       "draftPick": 12,
       "sourceSlug": "trey-lyles"
+    },
+    {
+      "personId": "1643744",
+      "name": "Houston Mallette",
+      "teamAbbreviation": "CHI",
+      "jerseyNumber": "",
+      "position": "",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1642863",
@@ -4048,18 +4060,6 @@
       "sourceSlug": "caleb-martin"
     },
     {
-      "personId": "1631213",
-      "name": "Tyrese Martin",
-      "teamAbbreviation": "PHI",
-      "teamName": "76ers",
-      "teamCity": "Philadelphia",
-      "position": "F",
-      "jerseyNumber": "23",
-      "draftYear": 2022,
-      "draftPick": 51,
-      "sourceSlug": "tyrese-martin"
-    },
-    {
       "personId": "1643568",
       "name": "Nick Martinelli",
       "teamAbbreviation": "LAC",
@@ -4084,9 +4084,19 @@
       "sourceSlug": "jahmai-mashack"
     },
     {
+      "personId": "1643792",
+      "name": "Rienk Mast",
+      "teamAbbreviation": "IND",
+      "jerseyNumber": "",
+      "position": "C",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1631097",
       "name": "Bennedict Mathurin",
-      "teamAbbreviation": "LAC",
+      "teamAbbreviation": "NOP",
       "teamName": "Clippers",
       "teamCity": "LA",
       "position": "G-F",
@@ -4122,7 +4132,7 @@
     {
       "personId": "1643016",
       "name": "Bez Mbeng",
-      "teamAbbreviation": "UTA",
+      "teamAbbreviation": "MIA",
       "teamName": "Jazz",
       "teamCity": "Utah",
       "position": "G",
@@ -4180,18 +4190,6 @@
       "sourceSlug": "tj-mcconnell"
     },
     {
-      "personId": "1641755",
-      "name": "Kevin McCullar Jr.",
-      "teamAbbreviation": "NYK",
-      "teamName": "Knicks",
-      "teamCity": "New York",
-      "position": "G",
-      "jerseyNumber": "9",
-      "draftYear": 2024,
-      "draftPick": 56,
-      "sourceSlug": "kevin-mccullar-jr"
-    },
-    {
       "personId": "1630183",
       "name": "Jaden McDaniels",
       "teamAbbreviation": "MIN",
@@ -4204,6 +4202,16 @@
       "sourceSlug": "jaden-mcdaniels"
     },
     {
+      "personId": "1642440",
+      "name": "Gabe McGlothan",
+      "teamAbbreviation": "BOS",
+      "jerseyNumber": "41",
+      "position": "F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1631121",
       "name": "Bryce McGowens",
       "teamAbbreviation": "NOP",
@@ -4214,6 +4222,16 @@
       "draftYear": 2022,
       "draftPick": 40,
       "sourceSlug": "bryce-mcgowens"
+    },
+    {
+      "personId": "1643724",
+      "name": "Isaac McKneely",
+      "teamAbbreviation": "ATL",
+      "jerseyNumber": "",
+      "position": "",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1629162",
@@ -4468,18 +4486,6 @@
       "sourceSlug": "moses-moody"
     },
     {
-      "personId": "1631111",
-      "name": "Wendell Moore Jr.",
-      "teamAbbreviation": "DET",
-      "teamName": "Pistons",
-      "teamCity": "Detroit",
-      "position": "G",
-      "jerseyNumber": "14",
-      "draftYear": 2022,
-      "draftPick": 26,
-      "sourceSlug": "wendell-moore-jr"
-    },
-    {
       "personId": "1631457",
       "name": "Alex Morales",
       "teamAbbreviation": "ORL",
@@ -4502,6 +4508,16 @@
       "draftYear": 2019,
       "draftPick": 2,
       "sourceSlug": "ja-morant"
+    },
+    {
+      "personId": "1643564",
+      "name": "KeShawn Murphy",
+      "teamAbbreviation": "WAS",
+      "jerseyNumber": "",
+      "position": "F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1630530",
@@ -4662,7 +4678,7 @@
     {
       "personId": "1642948",
       "name": "Ryan Nembhard",
-      "teamAbbreviation": "ATL",
+      "teamAbbreviation": "CHA",
       "teamName": "Hawks",
       "teamCity": "Atlanta",
       "position": "G",
@@ -4696,18 +4712,6 @@
       "sourceSlug": "asa-newell"
     },
     {
-      "personId": "1643712",
-      "name": "Narcisse Ngoy",
-      "teamAbbreviation": "LAC",
-      "teamName": "Clippers",
-      "teamCity": "LA",
-      "position": "C",
-      "jerseyNumber": "",
-      "draftYear": 2026,
-      "draftPick": 57,
-      "sourceSlug": "narcisse-ngoy"
-    },
-    {
       "personId": "1627777",
       "name": "Georges Niang",
       "teamAbbreviation": "GSW",
@@ -4718,18 +4722,6 @@
       "draftYear": 2016,
       "draftPick": 50,
       "sourceSlug": "georges-niang"
-    },
-    {
-      "personId": "1643589",
-      "name": "Tyler Nickel",
-      "teamAbbreviation": "NYK",
-      "teamName": "Knicks",
-      "teamCity": "New York",
-      "position": "F",
-      "jerseyNumber": "",
-      "draftYear": 2026,
-      "draftPick": 47,
-      "sourceSlug": "tyler-nickel"
     },
     {
       "personId": "1642949",
@@ -4840,18 +4832,6 @@
       "sourceSlug": "felix-okpara"
     },
     {
-      "personId": "1641807",
-      "name": "Norchad Omier",
-      "teamAbbreviation": "LAC",
-      "teamName": "Clippers",
-      "teamCity": "LA",
-      "position": "F",
-      "jerseyNumber": "",
-      "draftYear": 0,
-      "draftPick": null,
-      "sourceSlug": "norchad-omier"
-    },
-    {
       "personId": "1626220",
       "name": "Royce O'Neale",
       "teamAbbreviation": "CHA",
@@ -4900,6 +4880,16 @@
       "sourceSlug": "otega-oweh"
     },
     {
+      "personId": "203901",
+      "name": "Elfrid Payton",
+      "teamAbbreviation": "SAC",
+      "jerseyNumber": "4",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1627780",
       "name": "Gary Payton II",
       "teamAbbreviation": "GSW",
@@ -4926,7 +4916,7 @@
     {
       "personId": "1642877",
       "name": "Micah Peavy",
-      "teamAbbreviation": "NOP",
+      "teamAbbreviation": "MEM",
       "teamName": "Pelicans",
       "teamCity": "New Orleans",
       "position": "G-F",
@@ -5200,18 +5190,6 @@
       "sourceSlug": "drake-powell"
     },
     {
-      "personId": "203939",
-      "name": "Dwight Powell",
-      "teamAbbreviation": "DAL",
-      "teamName": "Mavericks",
-      "teamCity": "Dallas",
-      "position": "F-C",
-      "jerseyNumber": "7",
-      "draftYear": 2014,
-      "draftPick": 45,
-      "sourceSlug": "dwight-powell"
-    },
-    {
       "personId": "1626181",
       "name": "Norman Powell",
       "teamAbbreviation": "CHI",
@@ -5234,6 +5212,16 @@
       "draftYear": 2016,
       "draftPick": 12,
       "sourceSlug": "taurean-prince"
+    },
+    {
+      "personId": "1643761",
+      "name": "Nick Pringle",
+      "teamAbbreviation": "BKN",
+      "jerseyNumber": "",
+      "position": "F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1630202",
@@ -5392,18 +5380,6 @@
       "sourceSlug": "tarris-reed-jr"
     },
     {
-      "personId": "1641810",
-      "name": "Antonio Reeves",
-      "teamAbbreviation": "CHA",
-      "teamName": "Hornets",
-      "teamCity": "Charlotte",
-      "position": "G",
-      "jerseyNumber": "12",
-      "draftYear": 2024,
-      "draftPick": 47,
-      "sourceSlug": "antonio-reeves"
-    },
-    {
       "personId": "1629675",
       "name": "Naz Reid",
       "teamAbbreviation": "CHA",
@@ -5450,6 +5426,26 @@
       "draftYear": 2025,
       "draftPick": 25,
       "sourceSlug": "jase-richardson"
+    },
+    {
+      "personId": "1642955",
+      "name": "Kadary Richmond",
+      "teamAbbreviation": "CLE",
+      "jerseyNumber": "",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
+      "personId": "1643740",
+      "name": "Jordan Riley",
+      "teamAbbreviation": "DET",
+      "jerseyNumber": "",
+      "position": "",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1642860",
@@ -5500,18 +5496,6 @@
       "sourceSlug": "mitchell-robinson"
     },
     {
-      "personId": "1631223",
-      "name": "David Roddy",
-      "teamAbbreviation": "DEN",
-      "teamName": "Nuggets",
-      "teamCity": "Denver",
-      "position": "F",
-      "jerseyNumber": "45",
-      "draftYear": 2022,
-      "draftPick": 23,
-      "sourceSlug": "david-roddy"
-    },
-    {
       "personId": "1631157",
       "name": "Ryan Rollins",
       "teamAbbreviation": "MIL",
@@ -5522,6 +5506,16 @@
       "draftYear": 2022,
       "draftPick": 44,
       "sourceSlug": "ryan-rollins"
+    },
+    {
+      "personId": "1643732",
+      "name": "Chase Ross",
+      "teamAbbreviation": "LAL",
+      "jerseyNumber": "",
+      "position": "",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1641712",
@@ -5596,6 +5590,16 @@
       "sourceSlug": "kobe-sanders"
     },
     {
+      "personId": "1642362",
+      "name": "Payton Sandfort",
+      "teamAbbreviation": "MIN",
+      "jerseyNumber": "14",
+      "position": "F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1630611",
       "name": "Gui Santos",
       "teamAbbreviation": "GSW",
@@ -5606,6 +5610,16 @@
       "draftYear": 2022,
       "draftPick": 55,
       "sourceSlug": "gui-santos"
+    },
+    {
+      "personId": "1642957",
+      "name": "Nate Santos",
+      "teamAbbreviation": "MIN",
+      "jerseyNumber": "",
+      "position": "F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1642879",
@@ -5644,18 +5658,6 @@
       "sourceSlug": "marcus-sasser"
     },
     {
-      "personId": "1643563",
-      "name": "Richie Saunders",
-      "teamAbbreviation": "MEM",
-      "teamName": "Grizzlies",
-      "teamCity": "Memphis",
-      "position": "G",
-      "jerseyNumber": "",
-      "draftYear": 2026,
-      "draftPick": 32,
-      "sourceSlug": "richie-saunders"
-    },
-    {
       "personId": "1631248",
       "name": "Baylor Scheierman",
       "teamAbbreviation": "BOS",
@@ -5678,6 +5680,16 @@
       "draftYear": 2013,
       "draftPick": 17,
       "sourceSlug": "dennis-schroder"
+    },
+    {
+      "personId": "1641813",
+      "name": "Mark Sears",
+      "teamAbbreviation": "POR",
+      "jerseyNumber": "19",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1643637",
@@ -5836,18 +5848,6 @@
       "sourceSlug": "reed-sheppard"
     },
     {
-      "personId": "1642917",
-      "name": "Max Shulga",
-      "teamAbbreviation": "BOS",
-      "teamName": "Celtics",
-      "teamCity": "Boston",
-      "position": "G",
-      "jerseyNumber": "44",
-      "draftYear": 2025,
-      "draftPick": 57,
-      "sourceSlug": "max-shulga"
-    },
-    {
       "personId": "1627783",
       "name": "Pascal Siakam",
       "teamAbbreviation": "IND",
@@ -5858,6 +5858,16 @@
       "draftYear": 2016,
       "draftPick": 27,
       "sourceSlug": "pascal-siakam"
+    },
+    {
+      "personId": "1627732",
+      "name": "Ben Simmons",
+      "teamAbbreviation": "SAC",
+      "jerseyNumber": "25",
+      "position": "G-F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1629014",
@@ -6064,6 +6074,16 @@
       "sourceSlug": "hannes-steinbach"
     },
     {
+      "personId": "1641868",
+      "name": "Jake Stephens",
+      "teamAbbreviation": "MIL",
+      "jerseyNumber": "",
+      "position": "C",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1630191",
       "name": "Isaiah Stewart",
       "teamAbbreviation": "MEM",
@@ -6074,18 +6094,6 @@
       "draftYear": 2020,
       "draftPick": 16,
       "sourceSlug": "isaiah-stewart"
-    },
-    {
-      "personId": "1643225",
-      "name": "Kobe Stewart",
-      "teamAbbreviation": "CHA",
-      "teamName": "Hornets",
-      "teamCity": "Charlotte",
-      "position": "G-F",
-      "jerseyNumber": "",
-      "draftYear": 0,
-      "draftPick": null,
-      "sourceSlug": "kobe-stewart"
     },
     {
       "personId": "1642892",
@@ -6122,6 +6130,16 @@
       "draftYear": 0,
       "draftPick": null,
       "sourceSlug": "max-strus"
+    },
+    {
+      "personId": "1643614",
+      "name": "Peter Suder",
+      "teamAbbreviation": "CHI",
+      "jerseyNumber": "35",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1630591",
@@ -6280,16 +6298,14 @@
       "sourceSlug": "matisse-thybulle"
     },
     {
-      "personId": "1630214",
-      "name": "Xavier Tillman",
-      "teamAbbreviation": "CHA",
-      "teamName": "Hornets",
-      "teamCity": "Charlotte",
-      "position": "F",
-      "jerseyNumber": "26",
-      "draftYear": 2020,
-      "draftPick": 35,
-      "sourceSlug": "xavier-tillman"
+      "personId": "1643754",
+      "name": "Cristoph Tilly",
+      "teamAbbreviation": "OKC",
+      "jerseyNumber": "",
+      "position": "",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1641772",
@@ -6304,6 +6320,16 @@
       "sourceSlug": "naeqwan-tomlin"
     },
     {
+      "personId": "1631421",
+      "name": "Au'Diese Toney",
+      "teamAbbreviation": "ORL",
+      "jerseyNumber": "",
+      "position": "G",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1642910",
       "name": "John Tonje",
       "teamAbbreviation": "POR",
@@ -6314,6 +6340,16 @@
       "draftYear": 2025,
       "draftPick": 53,
       "sourceSlug": "john-tonje"
+    },
+    {
+      "personId": "1642893",
+      "name": "Alex Toohey",
+      "teamAbbreviation": "GSW",
+      "jerseyNumber": "22",
+      "position": "F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1642260",
@@ -6484,18 +6520,6 @@
       "sourceSlug": "henri-veesaar"
     },
     {
-      "personId": "1629216",
-      "name": "Gabe Vincent",
-      "teamAbbreviation": "ATL",
-      "teamName": "Hawks",
-      "teamCity": "Atlanta",
-      "position": "G",
-      "jerseyNumber": "4",
-      "draftYear": 0,
-      "draftPick": null,
-      "sourceSlug": "gabe-vincent"
-    },
-    {
       "personId": "202696",
       "name": "Nikola Vučević",
       "teamAbbreviation": "ORL",
@@ -6592,6 +6616,16 @@
       "sourceSlug": "jarace-walker"
     },
     {
+      "personId": "1629022",
+      "name": "Lonnie Walker IV",
+      "teamAbbreviation": "DEN",
+      "jerseyNumber": "16",
+      "position": "G-F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1641717",
       "name": "Cason Wallace",
       "teamAbbreviation": "OKC",
@@ -6602,18 +6636,6 @@
       "draftYear": 2023,
       "draftPick": 10,
       "sourceSlug": "cason-wallace"
-    },
-    {
-      "personId": "1630811",
-      "name": "Keaton Wallace",
-      "teamAbbreviation": "ATL",
-      "teamName": "Hawks",
-      "teamCity": "Atlanta",
-      "position": "G",
-      "jerseyNumber": "2",
-      "draftYear": 0,
-      "draftPick": null,
-      "sourceSlug": "keaton-wallace"
     },
     {
       "personId": "1641775",
@@ -6662,18 +6684,6 @@
       "draftYear": 2019,
       "draftPick": 12,
       "sourceSlug": "pj-washington"
-    },
-    {
-      "personId": "1631102",
-      "name": "TyTy Washington Jr.",
-      "teamAbbreviation": "LAC",
-      "teamName": "Clippers",
-      "teamCity": "LA",
-      "position": "G",
-      "jerseyNumber": "14",
-      "draftYear": 2022,
-      "draftPick": 29,
-      "sourceSlug": "tyty-washington-jr"
     },
     {
       "personId": "1630570",
@@ -6736,18 +6746,6 @@
       "sourceSlug": "victor-wembanyama"
     },
     {
-      "personId": "1631104",
-      "name": "Blake Wesley",
-      "teamAbbreviation": "POR",
-      "teamName": "Trail Blazers",
-      "teamCity": "Portland",
-      "position": "G",
-      "jerseyNumber": "1",
-      "draftYear": 2022,
-      "draftPick": 25,
-      "sourceSlug": "blake-wesley"
-    },
-    {
       "personId": "1629632",
       "name": "Coby White",
       "teamAbbreviation": "CHA",
@@ -6770,6 +6768,16 @@
       "draftYear": 2017,
       "draftPick": 29,
       "sourceSlug": "derrick-white"
+    },
+    {
+      "personId": "1641715",
+      "name": "Cam Whitmore",
+      "teamAbbreviation": "DEN",
+      "jerseyNumber": "1",
+      "position": "F",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
     },
     {
       "personId": "1630598",
@@ -6826,7 +6834,7 @@
       "teamName": "Timberwolves",
       "teamCity": "Minnesota",
       "position": "F",
-      "jerseyNumber": "5",
+      "jerseyNumber": "9",
       "draftYear": 2024,
       "draftPick": 10,
       "sourceSlug": "cody-williams"
@@ -6890,18 +6898,6 @@
       "draftYear": 2022,
       "draftPick": 15,
       "sourceSlug": "mark-williams"
-    },
-    {
-      "personId": "1631466",
-      "name": "Nate Williams",
-      "teamAbbreviation": "GSW",
-      "teamName": "Warriors",
-      "teamCity": "Golden State",
-      "position": "G",
-      "jerseyNumber": "19",
-      "draftYear": 0,
-      "draftPick": null,
-      "sourceSlug": "nate-williams"
     },
     {
       "personId": "1630172",
@@ -6976,6 +6972,16 @@
       "sourceSlug": "jalen-wilson"
     },
     {
+      "personId": "1630164",
+      "name": "James Wiseman",
+      "teamAbbreviation": "NYK",
+      "jerseyNumber": "11",
+      "position": "C",
+      "sourceSlug": "",
+      "draftYear": 0,
+      "draftPick": null
+    },
+    {
       "personId": "1642874",
       "name": "Danny Wolf",
       "teamAbbreviation": "BKN",
@@ -6986,18 +6992,6 @@
       "draftYear": 2025,
       "draftPick": 27,
       "sourceSlug": "danny-wolf"
-    },
-    {
-      "personId": "1642443",
-      "name": "Jahmir Young",
-      "teamAbbreviation": "MIA",
-      "teamName": "Heat",
-      "teamCity": "Miami",
-      "position": "G",
-      "jerseyNumber": "17",
-      "draftYear": 0,
-      "draftPick": null,
-      "sourceSlug": "jahmir-young"
     },
     {
       "personId": "1629027",

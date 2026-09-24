@@ -7,16 +7,15 @@ import { FeatureRail, Reveal } from "@/components/marketing/homepage-motion";
 import { CardVisual } from "@/components/card-visual";
 import styles from "@/components/marketing/marketing.module.css";
 import { getFeaturedCards } from "@/lib/featured-cards";
+import { publicPhotoCards } from "@/lib/demo-data";
 import { useI18n } from "@/i18n/client";
 import { RelatedSiteCard } from "@/components/related-site-card";
-import { EditorialIntro } from "@/components/marketing/editorial-intro";
 
 export default function Home() {
   const featuredCards = getFeaturedCards();
   const { locale, t } = useI18n();
 
   return <main id="home" className={`${styles.home} ${styles.marketingHome}`}>
-    <EditorialIntro rows={featuredCards} />
     <section className={styles.homeHero} aria-labelledby="home-title">
       <div className={styles.heroCopy}>
         <span>{t("homepage.eyebrow")}</span>
@@ -48,11 +47,11 @@ export default function Home() {
 
     <Reveal><section id="market" className={styles.splitSection} aria-labelledby="market-title">
       <div><span className={styles.featureKicker}>{t("homepage.section.market")}</span><h2 id="market-title">{t("market.headline")}</h2><p>{t("market.description")}</p><Link className={styles.heroActions} href="/market">{t("homepage.market.action")} <ArrowRight size={15} /></Link></div>
-      <div className={styles.splitVisual}><div className={styles.metricRow}><div><small>{t("homepage.market.cardsTracked")}</small><strong>4,000+</strong></div><div><small>{t("homepage.market.samples")}</small><strong>28</strong></div><div><small>{t("homepage.market.dataStatus")}</small><strong>{t("homepage.market.statusClear")}</strong></div></div><div className={styles.mockList}><span>{t("homepage.market.signals")}</span><b>Victor Wembanyama · Silver Prizm</b><small>{t("homepage.market.saleSample")}</small><b>Shai Gilgeous-Alexander · Silver Prizm</b><small>{t("homepage.market.waitingSource")}</small></div></div>
+      <div className={styles.splitVisual}><div className={styles.metricRow}><div><small>{t("homepage.market.cardsTracked")}</small><strong>{publicPhotoCards.length}</strong></div><div><small>{t("homepage.market.samples")}</small><strong>—</strong></div><div><small>{t("homepage.market.dataStatus")}</small><strong>{t("homepage.market.statusClear")}</strong></div></div><div className={styles.mockList}><span>{t("homepage.market.signals")}</span>{featuredCards.slice(0, 2).map(({ card, player }) => <div key={card.id}><b>{player.name} · {card.parallel}</b><small>{locale === "en" ? "Catalogue photograph · not a sale" : "目录实物图 · 非成交"}</small></div>)}</div></div>
     </section></Reveal>
 
     <Reveal><section id="collection" className={`${styles.splitSection} ${styles.reverse}`} aria-labelledby="collection-title">
-      <div className={styles.splitVisual}><div className={styles.collectionPreviewHeader}><span>MY COLLECTION</span><strong>{t("homepage.collection.preview")}</strong></div><div className={styles.collectionPreviewGrid}>{featuredCards.map(({ card, player }) => <Link href={`/cards/${card.id}`} key={card.id}><CardVisual card={card} player={player} density="compact" /><span>{player.displayNameZh}</span></Link>)}</div><Link className={styles.previewLink} href="/portfolio">{t("homepage.collection.manage")} <ArrowRight size={14} /></Link></div>
+      <div className={styles.splitVisual}><div className={styles.collectionPreviewHeader}><span>MY COLLECTION</span><strong>{t("homepage.collection.preview")}</strong></div><div className={styles.collectionPreviewGrid}>{featuredCards.map(({ card, player }) => <Link href={`/cards/${card.id}`} key={card.id}><CardVisual card={card} player={player} density="image" /><span>{locale === "en" ? player.name : player.displayNameZh}</span></Link>)}</div><Link className={styles.previewLink} href="/portfolio">{t("homepage.collection.manage")} <ArrowRight size={14} /></Link></div>
       <div><span className={styles.featureKicker}>{t("homepage.collection.kicker")}</span><h2 id="collection-title">{t("homepage.collection.title")}</h2><p>{t("homepage.collection.description")}</p><ul className={styles.checkList}><li><Check size={15} />{t("homepage.collection.separate")}</li><li><Check size={15} />{t("homepage.collection.watch")}</li><li><Check size={15} />{t("homepage.collection.privacy")}</li></ul></div>
     </section></Reveal>
 

@@ -162,6 +162,15 @@ export interface Card {
   matchConfidence: number;
   dataCompleteness: number;
   demo: boolean;
+  /** A real photographed catalogue record is not evidence of a completed sale. */
+  photoEvidence?: {
+    sourceName: string;
+    sourceUrl: string;
+    sourceId: string;
+    title: string;
+    retrievedAt: string;
+  };
+  image?: CardImageRecord;
 }
 
 export type CardImageType = "official" | "raw_card" | "graded_card" | "auction_scan" | "marketplace" | "catalog_scan" | "placeholder";

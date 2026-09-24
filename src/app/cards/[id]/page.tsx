@@ -6,6 +6,10 @@ import { productConfig } from "@/config/product";
 import { DeterministicDemoAI } from "@/lib/ai-analysis";
 import { calculateMarketReference } from "@/lib/market-math";
 import { getPlayerCohortLabel } from "@/lib/player-cohorts";
+import Link from "next/link";
+import { CardVisual } from "@/components/card-visual";
+import { CardActions } from "@/components/card-actions";
+import { getLocale } from "@/i18n/server";
 import {
   cards,
   dataSources,
@@ -27,7 +31,7 @@ export async function generateMetadata({
   const player = card ? getPlayer(card.playerId) : undefined;
   if (!card || !player) return { title: "卡片不存在" };
   const title = `${player.name} ${card.releaseYear} ${card.productLine} ${card.cardNumber}`;
-  const description = `${card.parallel} · ${card.condition === "graded" ? `${card.gradingCompany} ${card.grade}` : "裸卡"} · Nucleus Cards 演示行情`;
+  const description = `${card.parallel} · ${card.condition === "graded" ? `${card.gradingCompany} ${card.grade}` : "裸卡"} · ${card.photoEvidence ? "来源实物卡图目录 / Real card photo catalogue" : "Nucleus Cards 演示行情"}`;
   return {
     title,
     description,
@@ -42,6 +46,20 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
   if (!card) notFound();
   const player = getPlayer(card.playerId);
   if (!player) notFound();
+  if (card.photoEvidence) {
+    const en = await getLocale() === "en";
+    return <main className="page-shell inner-page card-detail-page">
+      <nav aria-label={en ? "Breadcrumbs" : "面包屑"}><Link href="/market">{en ? "Card market" : "球星卡目录"}</Link> / <Link href={`/players/${player.id}`}>{player.name}</Link></nav>
+      <section className="data-panel" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: 28, marginTop: 24 }}>
+        <div style={{ maxWidth: 420, width: "100%", margin: "0 auto" }}><CardVisual card={card} player={player} density="image" /></div>
+        <div><span className="section-kicker">{en ? "REAL CARD PHOTOGRAPH" : "真实实物卡图"}</span><h1>{player.name}</h1><h2>{card.releaseYear} {card.productLine} #{card.cardNumber}</h2><p>{card.parallel} · {card.gradingCompany} {card.grade}</p><p>{en ? "Original catalogue title" : "来源原始标题"}：{card.photoEvidence.title}</p><p>{en ? "Catalogue identity is source-reported. A photo is not a verified sale; no insurance appraisal or simulated amount is used as a market price." : "卡片身份由来源目录提供，评级以实物标签与来源详情为准。照片不是成交凭证，保险估值和模拟金额不会作为行情价格。"}</p>
+          <p><a href={card.photoEvidence.sourceUrl} target="_blank" rel="noopener noreferrer">{en ? "View original card and photograph" : "查看原始卡片与图片来源"} ↗ · {card.photoEvidence.sourceName}</a></p><small>{en ? "Checked" : "核对时间"}：{card.photoEvidence.retrievedAt.slice(0, 10)}</small>
+          <div style={{ marginTop: 24 }}><CardActions cardId={card.id} /><Link href={`/analysis?card=${card.id}`}>{en ? "Research this card" : "研究这张卡"}</Link></div>
+        </div>
+      </section>
+      <section className="data-panel" style={{ marginTop: 24 }}><h2>{en ? "Price evidence unavailable" : "暂无已核验成交价格"}</h2><p>{en ? "No invented sale, trend chart or prediction is generated for this photograph. Compare the exact year, number, parallel and grade when new evidence is available." : "不会为这张照片生成虚构成交、走势或预测。补充价格证据时，将核对年份、卡号、平行版本和评级。"}</p></section>
+    </main>;
+  }
   const currentTeam = player.currentTeamId
     ? getTeam(player.currentTeamId)
     : undefined;

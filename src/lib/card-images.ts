@@ -268,6 +268,7 @@ function buildRosterCatalogImage(card: Card, playerName?: string): CardImageReco
 }
 
 export function getCardImage(card: Card, playerName?: string): CardImageRecord {
+  if (card.image?.cardId === card.id) return card.image;
   const userProvidedImage = userProvidedCardImages[card.id];
   if (userProvidedImage) return userProvidedImage;
   const publicCatalogImage = publicCatalogCardImages[card.id];

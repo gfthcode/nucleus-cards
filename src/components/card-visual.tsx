@@ -44,7 +44,7 @@ export function CardVisual({
 
   return <div className={`${styles.card} ${side === "back" ? styles.sideBack : ""} ${density === "compact" ? styles.compact : ""}`} aria-label={`${playerName} ${side === "front" ? t("market.front") : t("market.back")}`}>
     <div className={styles.imageWrap}>
-      {imageUrl && hasImage ? <img src={imageUrl} alt={`${playerName} ${card.releaseYear} ${card.productLine} ${card.parallel} #${card.cardNumber}`} /> : <div className={styles.placeholder}><b>{side === "front" ? t("market.cardImage") : t("market.back")}</b><strong>{playerName}</strong><small>{card.releaseYear} · {card.brand} {card.productLine}<br />{card.parallel} · #${card.cardNumber}<br />{t("market.noFiction")}</small></div>}
+      {imageUrl && hasImage ? <img src={imageUrl} alt={`${playerName} ${card.releaseYear} ${card.productLine} ${card.parallel} #${card.cardNumber}`} /> : <div className={styles.placeholder}><b>{side === "front" ? t("market.cardImage") : t("market.back")}</b><strong>{playerName}</strong><small>{card.releaseYear} · {card.brand} {card.productLine}<br />{card.parallel} · #{card.cardNumber}<br />{t("market.noFiction")}</small></div>}
       {card.condition === "graded" && <span className={styles.grade}>{card.gradingCompany} {card.grade}</span>}
     </div>
     <div className={styles.meta}>

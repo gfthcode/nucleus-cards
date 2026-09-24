@@ -93,3 +93,37 @@
 .heroActions a:active,.featureCard:active,.previewLink:active,.homeTrust a:active{transform:translateY(1px) scale(.985)}
 @media(max-width:900px){.homeHero{grid-template-columns:1fr;padding-top:46px}.heroArchiveImage{min-height:360px}.heroProofs dl{grid-template-columns:1fr}.heroProofs dl>div{min-height:0}.heroProofs dl>div+div{border-left:0;border-top:1px solid var(--m-border);padding-left:0}.faqGrid{grid-template-columns:1fr}.faqItem:nth-child(odd),.faqItem:nth-child(even){border-left:0;padding-left:0;padding-right:0}.faqItem:nth-child(even){border-top:1px solid var(--m-border)}}
 @media(max-width:620px){.homeHero{min-height:0;padding:36px 0 24px}.heroCopy h1{font-size:clamp(3rem,15vw,4.65rem)}.heroMeta{grid-template-columns:1fr;margin-top:24px}.heroMeta span{border-left:0;border-top:1px solid rgba(255,255,255,.14);padding:9px 0}.heroMeta span:first-child{border-top:0;padding-top:0}.heroArchive{border-radius:16px}.heroArchiveImage{min-height:270px}.heroCardFrame{max-width:190px;width:54%}.heroArchive figcaption{font-size:.61rem;padding:10px 12px}.heroProofs{margin-top:0;padding:0 16px}.heroProofs dl>div{padding:16px 0}.sectionBand,.splitSection{padding:60px 0}.faqItem{min-height:0;padding:18px 0}}
+
+/* Editorial adaptation of the supplied reference video: calm catalogue, serif hierarchy, archival color. */
+.marketingShell.marketingShell{background:#f5f0e9;color:#261a1a}
+.marketingShell.marketingShell:before{background:radial-gradient(circle at 75% 14%,rgba(193,151,120,.26),transparent 30%),radial-gradient(circle at 16% 70%,rgba(157,104,91,.16),transparent 32%),linear-gradient(135deg,#f9f5ef 0%,#efe6dd 100%);opacity:1}
+.marketingShell.marketingShell:after{background-image:linear-gradient(rgba(64,35,29,.045) 1px,transparent 1px);background-size:100% 9px;opacity:.25}
+.marketingShell .marketingHeader{background:rgba(245,240,233,.92);border-bottom-color:rgba(44,28,25,.18)}
+.marketingShell .marketingBrand{color:#261a1a}
+.marketingShell .marketingBrand b{font-family:Georgia,"Times New Roman",serif;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
+.marketingShell .marketingBrand small{color:#816b66}
+.marketingShell .marketingNav{background:transparent;border:0}
+.marketingShell .marketingNav a{color:#6b5b59;border-radius:0;letter-spacing:.12em;text-transform:uppercase}
+.marketingShell .marketingNav a:hover,.marketingShell .marketingNav a:focus-visible,.marketingShell .marketingNav a.marketingNavActive{background:transparent;box-shadow:inset 0 -2px 0 #7e2931;color:#7e2931}
+.marketingShell .marketingActions a,.marketingShell .marketingActions button{background:transparent;border-color:rgba(44,28,25,.22);border-radius:0;color:#4c3a38;letter-spacing:.08em;text-transform:uppercase}
+.marketingShell .marketingActions a:last-child{background:#7e2931;border-color:#7e2931;color:#fffaf4}
+.marketingHome.marketingHome .heroCopy h1{color:#261a1a;font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing:-.065em}
+.marketingHome.marketingHome .heroCopy h1 span:nth-child(2){color:#7e2931;font-style:italic}
+.marketingHome.marketingHome .heroCopy>span,.marketingHome.marketingHome .featureKicker{color:#7e2931;letter-spacing:.22em;text-transform:uppercase}
+.marketingHome.marketingHome .heroCopy p,.marketingHome.marketingHome .sectionBand p,.marketingHome.marketingHome .splitSection p{color:#6c5e5b;font-family:Georgia,"Times New Roman",serif;line-height:1.8}
+.marketingHome.marketingHome .heroActions a{border-color:rgba(44,28,25,.28);border-radius:0;color:#3d2b29;letter-spacing:.11em;text-transform:uppercase}
+.marketingHome.marketingHome .heroActions a:first-child{background:#7e2931;border-color:#7e2931;color:#fffaf4}
+.marketingHome.marketingHome .heroMeta{color:#897774;letter-spacing:.08em;text-transform:uppercase}
+.marketingHome.marketingHome .previewWindow{border-color:rgba(44,28,25,.28);border-radius:0;box-shadow:22px 24px 0 rgba(126,41,49,.12),0 28px 60px rgba(44,28,25,.16);transform:rotate(0deg)}
+.marketingHome.marketingHome .windowChrome{background:#261a1a;color:#f2e6dd}
+.marketingHome.marketingHome .featureGrid{gap:0;grid-template-columns:repeat(3,1fr);grid-template-rows:none}
+.marketingHome.marketingHome .featureCard{background:rgba(251,248,243,.6);border-color:rgba(44,28,25,.18);border-radius:0;min-height:210px}
+.marketingHome.marketingHome .featureGrid>.featureCard:first-child{background:rgba(251,248,243,.6);border-color:rgba(44,28,25,.18);grid-row:auto}
+.marketingHome.marketingHome .featureCard h3,.marketingHome.marketingHome .sectionBand h2,.marketingHome.marketingHome .splitSection h2{color:#261a1a;font-family:Georgia,"Times New Roman",serif;font-weight:400}
+.marketingHome.marketingHome .featureCard svg{color:#7e2931}
+.marketingHome.marketingHome .sectionBand,.marketingHome.marketingHome .splitSection{border-color:rgba(44,28,25,.18)}
+.marketingHome.marketingHome .splitVisual{background:rgba(251,248,243,.6);border-color:rgba(44,28,25,.18);border-radius:0;box-shadow:14px 14px 0 rgba(126,41,49,.1)}
+.marketingHome.marketingHome .metricRow div{background:rgba(255,252,247,.72);border-color:rgba(44,28,25,.18)}
+.marketingHome.marketingHome .metricRow strong{color:#7e2931;font-family:Georgia,"Times New Roman",serif;font-weight:400}
+.marketingHome.marketingHome .marketingFooter{border-color:rgba(44,28,25,.18)}
+@media(max-width:620px){.marketingHome.marketingHome .featureGrid{grid-template-columns:1fr}.marketingHome.marketingHome .featureCard,.marketingHome.marketingHome .featureGrid>.featureCard:first-child{border-left:0;border-right:0;border-bottom:1px solid rgba(44,28,25,.18)}}

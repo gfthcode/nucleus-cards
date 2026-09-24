@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { getLocale, getServerTranslator } from "@/i18n/server";
 import { MarketExplorer } from "@/components/market-explorer";
-import { cards, getPlayer, getTeam } from "@/lib/demo-data";
+import { cards, getPlayer, getTeam, officialRosterRecords } from "@/lib/demo-data";
+import type { Card } from "@/types/domain";
 import { DemoDataBadge } from "@/components/data-provenance";
 import styles from "./market.module.css";
 import { FreshnessBadge, MetricCard } from "@/components/hud/hud";
@@ -15,7 +16,41 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function MarketPage() {
   const t = getServerTranslator(await getLocale());
   const health = await getDataHealth();
-  const rows = cards.map((card) => ({
+  const rosterCatalogCards: Card[] = officialRosterRecords
+    .filter((record) => Boolean(record.jerseyNumber))
+    .slice(0, 450)
+    .map((record, index) => {
+      const playerId = `nba-${record.personId}`;
+      const seed = [...record.personId].reduce((sum, character) => sum + character.charCodeAt(0), 0);
+      const referenceListingCny = 280 + (seed % 24) * 35;
+      return {
+        id: `catalog-${record.personId}`,
+        identityKey: `catalog-${record.personId}-topps-basketball-base`,
+        playerId,
+        releaseYear: record.draftYear || 2025,
+        draftYear: record.draftYear || 2025,
+        brand: "Topps",
+        productLine: "Topps Basketball Base",
+        cardNumber: `NBA-${String(index + 1).padStart(3, "0")}`,
+        rookie: Boolean(record.draftYear && record.draftYear >= 2025),
+        type: "Base",
+        parallel: "Base",
+        autograph: false,
+        memorabilia: false,
+        condition: "raw",
+        printedTeamId: getTeam(record.teamAbbreviation)?.id,
+        latestListingCny: referenceListingCny,
+        sales30d: 0,
+        listingsCount: 0,
+        liquidity: 0,
+        riskLevel: "high",
+        matchConfidence: 78,
+        dataCompleteness: 35,
+        demo: true,
+      } satisfies Card;
+    });
+  const marketCards = [...cards, ...rosterCatalogCards];
+  const rows = marketCards.map((card) => ({
     ...card,
     player: getPlayer(card.playerId)!,
     team: card.printedTeamId ? getTeam(card.printedTeamId) : undefined,
@@ -31,12 +66,12 @@ export default async function MarketPage() {
         </div>
         <aside>
           <DemoDataBadge />
-          <strong>{cards.length}<small> {t("market.standardizedCards")}</small></strong>
+          <strong>{marketCards.length}<small> {t("market.standardizedCards")}</small></strong>
           <p>{t("market.coverage")} 78.4% · 4 {t("market.pendingAnomalies")}<br />{t("market.separation")}</p>
         </aside>
       </header>
       <section className="hud-grid" aria-label="Market data status">
-        <MetricCard label="STANDARDIZED CARDS" value={cards.length} detail="Catalog identity records" state="PASS" />
+        <MetricCard label="STANDARDIZED CARDS" value={marketCards.length} detail="Catalog identity records" state="PASS" />
         <MetricCard label="ACTIVE LISTINGS" value={health.counts?.market_listings ?? "—"} detail={health.counts?.market_listings ? "Official eBay active listings" : "Real market database not yet populated"} state={health.counts?.market_listings ? "PASS" : "EMPTY"} />
         <MetricCard label="MARKET SNAPSHOTS" value={health.counts?.market_price_snapshots ?? "—"} detail="Fixed-price median only" state={health.counts?.market_price_snapshots ? "PASS" : "COLLECTING"} />
         <MetricCard label="VERIFIED SOLD PRICE" value={health.counts?.verified_sales ?? "—"} detail={health.counts?.verified_sales ? "Authorized sale evidence" : "Verified sold-price data unavailable"} state={health.counts?.verified_sales ? "PASS" : "UNAVAILABLE"} />

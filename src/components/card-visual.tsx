@@ -25,6 +25,8 @@ export function CardVisual({
   const imageUrl = side === "back" ? image.backUrl : image.frontUrl;
   const hasImage = Boolean(imageUrl);
   const change = card.change30d;
+  const referenceAmount = card.latestSaleCny ?? card.latestListingCny;
+  const isReferenceListing = card.latestSaleCny == null && card.latestListingCny != null;
 
   return <div className={`${styles.card} ${side === "back" ? styles.sideBack : ""} ${density === "compact" ? styles.compact : ""}`} aria-label={`${playerName} ${side === "front" ? t("market.front") : t("market.back")}`}>
     <div className={styles.imageWrap}>
@@ -34,8 +36,7 @@ export function CardVisual({
     <div className={styles.meta}>
       <b className={styles.player}>{playerName}</b>
       <span className={styles.identity}>{card.releaseYear} {card.productLine} · {card.parallel} · #{card.cardNumber}</span>
-      <div className={styles.valueRow}><b><DisplayedAmount cny={card.latestSaleCny} /></b><small className={change == null ? "" : change >= 0 ? styles.up : styles.down}>{change == null ? t("market.insufficientData") : `${change > 0 ? "+" : ""}${change}% / 30D`}</small></div>
+      <div className={styles.valueRow}><b><DisplayedAmount cny={referenceAmount} /></b><small className={change == null ? "" : change >= 0 ? styles.up : styles.down}>{isReferenceListing ? (locale === "en" ? "Reference listing · not a sale" : "参考挂牌 · 非成交") : change == null ? t("market.insufficientData") : `${change > 0 ? "+" : ""}${change}% / 30D`}</small></div>
     </div>
   </div>;
 }
-

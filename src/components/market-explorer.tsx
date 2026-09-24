@@ -69,7 +69,7 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
 
   const filtered = useMemo(() => rows.filter((row) => {
     const haystack = `${row.player.name} ${row.player.displayNameZh} ${row.brand} ${row.productLine} ${displayTeamName(row.team, locale)}`.toLowerCase();
-    const amount = row.latestSaleCny ?? 0;
+    const amount = row.latestSaleCny ?? row.latestListingCny ?? 0;
     return haystack.includes(query.toLowerCase()) &&
       (brand === "all" || row.brand === brand) &&
       (draftYear === "all" || row.draftYear === Number(draftYear)) &&
@@ -77,7 +77,7 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
       (cohort === "all" || row.player.cohort === cohort) &&
       (price === "all" || (price === "under1k" && amount < 1000) || (price === "1k5k" && amount >= 1000 && amount <= 5000) || (price === "over5k" && amount > 5000)) &&
       (!onlySales || row.sales30d > 0) && (!highLiquidity || row.liquidity >= 70);
-  }).sort((a, b) => (b.latestSaleCny ?? 0) - (a.latestSaleCny ?? 0)), [rows, query, brand, draftYear, price, risk, cohort, onlySales, highLiquidity, locale]);
+  }).sort((a, b) => (b.latestSaleCny ?? b.latestListingCny ?? 0) - (a.latestSaleCny ?? a.latestListingCny ?? 0)), [rows, query, brand, draftYear, price, risk, cohort, onlySales, highLiquidity, locale]);
 
   function reset() { setQuery(""); setBrand("all"); setDraftYear("all"); setPrice("all"); setRisk("all"); setCohort("all"); setOnlySales(false); setHighLiquidity(false); }
   function toggleWatch(id: string) { setWatched((current) => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; }); }
@@ -114,4 +114,3 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
     <p className={styles.methodology}>{t("market.methodology")}<Link href="/methodology#metrics">{t("market.readMethodology")}</Link></p>
   </section>;
 }
-

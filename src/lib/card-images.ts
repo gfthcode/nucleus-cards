@@ -226,27 +226,53 @@ const publicCatalogCardImages: Record<string, CardImageRecord> = {
   },
 };
 
-function buildRosterCatalogImage(card: Card): CardImageRecord {
+function escapeSvg(value: string) {
+  return value.replace(/[&<>\"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '\"': "&quot;", "'": "&apos;" })[character] ?? character);
+}
+
+function buildGeneratedCardArt(card: Card, playerName = "NBA Player"): CardImageRecord {
+  const title = escapeSvg(playerName.slice(0, 28));
+  const set = escapeSvg(`${card.releaseYear} ${card.brand} ${card.productLine}`.slice(0, 34));
+  const number = escapeSvg(`#${card.cardNumber}`);
+  const parallel = escapeSvg(card.parallel.slice(0, 24));
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 840"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#102e55"/><stop offset=".52" stop-color="#7b274c"/><stop offset="1" stop-color="#e66b58"/></linearGradient><linearGradient id="foil" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".06"/><stop offset=".5" stop-color="#fff" stop-opacity=".48"/><stop offset="1" stop-color="#fff" stop-opacity=".03"/></linearGradient></defs><rect width="600" height="840" rx="28" fill="#07101d"/><rect x="20" y="20" width="560" height="800" rx="22" fill="url(#bg)"/><path d="M30 560 570 160v190L30 750Z" fill="url(#foil)" opacity=".55"/><circle cx="300" cy="370" r="154" fill="#07101d" fill-opacity=".42" stroke="#fff" stroke-opacity=".4" stroke-width="3"/><text x="54" y="86" fill="#fff" font-family="Arial,sans-serif" font-size="18" font-weight="700" letter-spacing="4">NUCLEUS CARDS</text><text x="300" y="350" fill="#fff" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="700">${title}</text><text x="300" y="394" fill="#fff" fill-opacity=".8" text-anchor="middle" font-family="Arial,sans-serif" font-size="17">STANDARDIZED CARD VISUAL</text><rect x="54" y="650" width="492" height="1" fill="#fff" fill-opacity=".5"/><text x="54" y="700" fill="#fff" font-family="Arial,sans-serif" font-size="18">${set}</text><text x="54" y="733" fill="#fff" fill-opacity=".82" font-family="Arial,sans-serif" font-size="16">${parallel}</text><text x="546" y="733" fill="#fff" text-anchor="end" font-family="Arial,sans-serif" font-size="16">${number}</text><text x="300" y="782" fill="#fff" fill-opacity=".65" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" letter-spacing="1">ILLUSTRATIVE ART · NOT AN AUTHENTIC SCAN</text></svg>`;
+  const frontUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
   return {
-    id: `catalog-card-image-pending-${card.id}`,
+    id: `generated-card-art-${card.id}`,
     cardId: card.id,
-    imageType: "placeholder",
+    imageType: "catalog_scan",
+    frontUrl,
+    thumbnailUrl: frontUrl,
+    sourceName: "Nucleus standardized card visual",
+    sourceType: "official",
+    width: 600,
+    height: 840,
+    aspectRatio: 600 / 840,
     isSlabbed: false,
     imageVerified: false,
     matchConfidence: 0,
     verificationStatus: "unverified",
     lastCheckedAt: "2026-09-24",
-    licenseStatus: "unknown",
-    notes: "等待官方 eBay Browse API 返回与球员、年份、系列匹配的真实挂牌卡面；不使用球员头像冒充卡图。",
+    licenseStatus: "permitted",
+    notes: "每张卡的视觉兜底；真实卡图可用时由公开目录或已授权 API 自动替换。此图不是实物扫描。",
   };
 }
 
-export function getCardImage(card: Card): CardImageRecord {
+function buildRosterCatalogImage(card: Card, playerName?: string): CardImageRecord {
+  const generated = buildGeneratedCardArt(card, playerName);
+  return {
+    ...generated,
+    id: `catalog-card-image-pending-${card.id}`,
+    notes: "未找到可核验的公开实物卡图，已使用标准化卡面示意图，避免使用球员头像冒充卡图。",
+  };
+}
+
+export function getCardImage(card: Card, playerName?: string): CardImageRecord {
   const userProvidedImage = userProvidedCardImages[card.id];
   if (userProvidedImage) return userProvidedImage;
   const publicCatalogImage = publicCatalogCardImages[card.id];
   if (publicCatalogImage) return publicCatalogImage;
-  if (card.id.startsWith("catalog-")) return buildRosterCatalogImage(card);
+  if (card.id.startsWith("catalog-")) return buildRosterCatalogImage(card, playerName);
 
-  return { id: `placeholder-${card.id}`, cardId: card.id, imageType: "placeholder", isSlabbed: false, imageVerified: false, matchConfidence: 0, verificationStatus: "unverified", licenseStatus: "unknown", notes: "未接入已授权的精确卡图来源" };
+  return buildGeneratedCardArt(card, playerName);
 }

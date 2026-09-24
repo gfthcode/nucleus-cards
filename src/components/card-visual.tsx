@@ -22,7 +22,7 @@ export function CardVisual({
 }) {
   const { locale, t } = useI18n();
   const playerName = displayPlayerName(player, locale);
-  const image = getCardImage(card);
+  const image = getCardImage(card, player.name);
   const [liveImage, setLiveImage] = useState<{ url: string; sourceName: string; sourceUrl?: string } | null>(null);
   useEffect(() => {
     if (!card.id.startsWith("catalog-") || side === "back") return;
@@ -49,7 +49,7 @@ export function CardVisual({
     </div>
     <div className={styles.meta}>
       <b className={styles.player}>{playerName}</b>
-      <span className={styles.identity}>{card.releaseYear} {card.productLine} · {card.parallel} · #{card.cardNumber}{liveImage ? <> · {liveImage.sourceUrl ? <a href={liveImage.sourceUrl} target="_blank" rel="noreferrer" className={styles.sourceLink}>{liveImage.sourceName}</a> : liveImage.sourceName}</> : ""}</span>
+      <span className={styles.identity}>{card.releaseYear} {card.productLine} · {card.parallel} · #{card.cardNumber}{liveImage ? <> · {liveImage.sourceUrl ? <a href={liveImage.sourceUrl} target="_blank" rel="noreferrer" className={styles.sourceLink}>{liveImage.sourceName}</a> : liveImage.sourceName}</> : image.sourceName ? <> · {image.sourceName}</> : ""}</span>
       <div className={styles.valueRow}><b><DisplayedAmount cny={referenceAmount} /></b><small className={change == null ? "" : change >= 0 ? styles.up : styles.down}>{isReferenceListing ? (locale === "en" ? "Reference listing · not a sale" : "参考挂牌 · 非成交") : change == null ? t("market.insufficientData") : `${change > 0 ? "+" : ""}${change}% / 30D`}</small></div>
     </div>
   </div>;

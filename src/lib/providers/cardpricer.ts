@@ -64,8 +64,8 @@ export async function searchCardPricerImage(input: {
     next: { revalidate: 900 },
   });
   if (!response.ok) return null;
-  const payload = await response.json() as { cards?: CardPricerCard[] } | CardPricerCard[];
-  const cards = Array.isArray(payload) ? payload : payload.cards ?? [];
+  const payload = await response.json() as { cards?: CardPricerCard[]; data?: CardPricerCard[] } | CardPricerCard[];
+  const cards = Array.isArray(payload) ? payload : payload.data ?? payload.cards ?? [];
   const targetYear = input.year;
   const candidates = cards.filter((card) => {
     const year = Number(card.year);

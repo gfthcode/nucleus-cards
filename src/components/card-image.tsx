@@ -3,7 +3,7 @@ import type { Card, CardImageRecord, Player } from "@/types/domain";
 import { getCardImage } from "@/lib/card-images";
 
 export function CardImage({ card, player, image, size = "medium", preferAuctionImage = false }: { card: Card; player: Player; image?: CardImageRecord; size?: "thumbnail" | "small" | "medium" | "large"; preferAuctionImage?: boolean }) {
-  const record = image ?? getCardImage(card);
+  const record = image ?? getCardImage(card, player.name);
   const alt = `${card.releaseYear}-${String(card.releaseYear + 1).slice(-2)} ${card.brand} ${card.productLine} ${player.name} ${card.parallel} ${card.cardNumber}`;
   return <div className={`card-image card-image-${size} ${record.imageType === "placeholder" ? "is-placeholder" : ""}`} aria-label={alt}>
     {record.frontUrl ? <img src={record.frontUrl} alt={alt} loading={size === "large" ? "eager" : "lazy"} onError={(event) => { event.currentTarget.hidden = true; event.currentTarget.parentElement?.classList.add("is-placeholder"); }} /> : <>

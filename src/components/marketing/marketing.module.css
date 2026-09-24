@@ -127,3 +127,7 @@
 .marketingHome.marketingHome .metricRow strong{color:#7e2931;font-family:Georgia,"Times New Roman",serif;font-weight:400}
 .marketingHome.marketingHome .marketingFooter{border-color:rgba(44,28,25,.18)}
 @media(max-width:620px){.marketingHome.marketingHome .featureGrid{grid-template-columns:1fr}.marketingHome.marketingHome .featureCard,.marketingHome.marketingHome .featureGrid>.featureCard:first-child{border-left:0;border-right:0;border-bottom:1px solid rgba(44,28,25,.18)}}
+
+/* Keep editorial hero type readable on the light canvas. */
+.marketingHome.marketingHome .heroCopy h1 span{color:#261a1a}
+.marketingHome.marketingHome .heroCopy h1 span:nth-child(2){color:#7e2931}

@@ -258,3 +258,5 @@ export function getCardImage(card: Card): CardImageRecord {
   if (publicCatalogImage) return publicCatalogImage;
   if (card.id.startsWith("catalog-")) return buildRosterCatalogImage(card);
 
+  return { id: `placeholder-${card.id}`, cardId: card.id, imageType: "placeholder", isSlabbed: false, imageVerified: false, matchConfidence: 0, verificationStatus: "unverified", licenseStatus: "unknown", notes: "未接入已授权的精确卡图来源" };
+}

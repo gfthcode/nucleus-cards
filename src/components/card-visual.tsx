@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { useEffect, useState } from "react";
 import { getCardImage } from "@/lib/card-images";
 import { DisplayedAmount } from "@/components/currency-switcher";
 import type { Card, Player } from "@/types/domain";
@@ -22,7 +23,20 @@ export function CardVisual({
   const { locale, t } = useI18n();
   const playerName = displayPlayerName(player, locale);
   const image = getCardImage(card);
-  const imageUrl = side === "back" ? image.backUrl : image.frontUrl;
+  const [liveImage, setLiveImage] = useState<{ url: string; sourceName: string } | null>(null);
+  useEffect(() => {
+    if (!card.id.startsWith("catalog-") || side === "back") return;
+    const controller = new AbortController();
+    const params = new URLSearchParams({ player: player.name, year: String(card.releaseYear), brand: card.brand, set: card.productLine });
+    fetch(`/api/cards/catalog-image?${params.toString()}`, { signal: controller.signal })
+      .then((response) => response.ok ? response.json() as Promise<{ image?: { url?: string; sourceName?: string } }> : null)
+      .then((payload) => {
+        if (payload?.image?.url) setLiveImage({ url: payload.image.url, sourceName: payload.image.sourceName ?? "eBay Browse API listing image" });
+      })
+      .catch(() => undefined);
+    return () => controller.abort();
+  }, [card, player.name, side]);
+  const imageUrl = side === "back" ? image.backUrl : liveImage?.url ?? image.frontUrl;
   const hasImage = Boolean(imageUrl);
   const change = card.change30d;
   const referenceAmount = card.latestSaleCny ?? card.latestListingCny;
@@ -35,7 +49,7 @@ export function CardVisual({
     </div>
     <div className={styles.meta}>
       <b className={styles.player}>{playerName}</b>
-      <span className={styles.identity}>{card.releaseYear} {card.productLine} · {card.parallel} · #{card.cardNumber}</span>
+      <span className={styles.identity}>{card.releaseYear} {card.productLine} · {card.parallel} · #{card.cardNumber}{liveImage ? ` · ${liveImage.sourceName}` : ""}</span>
       <div className={styles.valueRow}><b><DisplayedAmount cny={referenceAmount} /></b><small className={change == null ? "" : change >= 0 ? styles.up : styles.down}>{isReferenceListing ? (locale === "en" ? "Reference listing · not a sale" : "参考挂牌 · 非成交") : change == null ? t("market.insufficientData") : `${change > 0 ? "+" : ""}${change}% / 30D`}</small></div>
     </div>
   </div>;

@@ -39,6 +39,7 @@ export type MarketObservation = {
   auctionEnd: string | null;
   retrievedAt: string;
   sourceVerified: true;
+  imageUrl?: string | null;
 };
 
 type EbayItem = {
@@ -174,6 +175,7 @@ function normalizeItem(item: EbayItem, retrievedAt: string): MarketObservation |
     auctionEnd: auction ? item.itemEndDate ?? null : null,
     retrievedAt,
     sourceVerified: true,
+    imageUrl: item.image?.imageUrl ?? null,
   };
 }
 

@@ -23,15 +23,15 @@ export function CardVisual({
   const { locale, t } = useI18n();
   const playerName = displayPlayerName(player, locale);
   const image = getCardImage(card);
-  const [liveImage, setLiveImage] = useState<{ url: string; sourceName: string } | null>(null);
+  const [liveImage, setLiveImage] = useState<{ url: string; sourceName: string; sourceUrl?: string } | null>(null);
   useEffect(() => {
     if (!card.id.startsWith("catalog-") || side === "back") return;
     const controller = new AbortController();
     const params = new URLSearchParams({ player: player.name, year: String(card.releaseYear), brand: card.brand, set: card.productLine });
     fetch(`/api/cards/catalog-image?${params.toString()}`, { signal: controller.signal })
-      .then((response) => response.ok ? response.json() as Promise<{ image?: { url?: string; sourceName?: string } }> : null)
+      .then((response) => response.ok ? response.json() as Promise<{ image?: { url?: string; sourceName?: string; sourceUrl?: string } }> : null)
       .then((payload) => {
-        if (payload?.image?.url) setLiveImage({ url: payload.image.url, sourceName: payload.image.sourceName ?? "eBay Browse API listing image" });
+        if (payload?.image?.url) setLiveImage({ url: payload.image.url, sourceName: payload.image.sourceName ?? "eBay Browse API listing image", sourceUrl: payload.image.sourceUrl });
       })
       .catch(() => undefined);
     return () => controller.abort();
@@ -49,7 +49,7 @@ export function CardVisual({
     </div>
     <div className={styles.meta}>
       <b className={styles.player}>{playerName}</b>
-      <span className={styles.identity}>{card.releaseYear} {card.productLine} · {card.parallel} · #{card.cardNumber}{liveImage ? ` · ${liveImage.sourceName}` : ""}</span>
+      <span className={styles.identity}>{card.releaseYear} {card.productLine} · {card.parallel} · #{card.cardNumber}{liveImage ? <> · {liveImage.sourceUrl ? <a href={liveImage.sourceUrl} target="_blank" rel="noreferrer" className={styles.sourceLink}>{liveImage.sourceName}</a> : liveImage.sourceName}</> : ""}</span>
       <div className={styles.valueRow}><b><DisplayedAmount cny={referenceAmount} /></b><small className={change == null ? "" : change >= 0 ? styles.up : styles.down}>{isReferenceListing ? (locale === "en" ? "Reference listing · not a sale" : "参考挂牌 · 非成交") : change == null ? t("market.insufficientData") : `${change > 0 ? "+" : ""}${change}% / 30D`}</small></div>
     </div>
   </div>;

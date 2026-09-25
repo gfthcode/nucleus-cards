@@ -14,8 +14,8 @@ import {
 import { getFeaturedCards } from "@/lib/featured-cards";
 import { buildPublicPhotoCards, photoCatalogSnapshot } from "@/lib/public-card-catalog";
 
-const PHOTO_HOSTS = new Set(["d1xpxki1g4htqu.cloudfront.net", "collectorcrypt-prod.s3.us-west-2.amazonaws.com"]);
-const ARCHIVE_HOSTS = new Set([...PHOTO_HOSTS, "arweave.net"]);
+const PHOTO_HOSTS = new Set(["d1xpxki1g4htqu.cloudfront.net", "collectorcrypt-prod.s3.us-west-2.amazonaws.com", "static.courtyard.io", "arweave.net", "i2c.seadn.io"]);
+const ARCHIVE_HOSTS = new Set([...PHOTO_HOSTS]);
 const SOURCE_NAME_ALIASES: Record<string, string> = { "Alex Sarr": "Alexandre Sarr" };
 
 function normalizeName(value: string) {
@@ -57,8 +57,13 @@ describe("public card photograph catalogue", () => {
     for (const record of photoCatalogSnapshot.records) {
       const source = new URL(record.sourceUrl);
       expect(source.protocol).toBe("https:");
-      expect(source.hostname).toBe("collectorcrypt.com");
-      expect(source.pathname).toMatch(/^\/assets\/solana\/[1-9A-HJ-NP-Za-km-z]+$/);
+      if (record.sourceName === "CardPricer") {
+        expect(source.hostname).toBe("cardpricer.co");
+        expect(source.pathname).toMatch(/^\/cards\/[0-9a-f-]+$/);
+      } else {
+        expect(source.hostname).toBe("collectorcrypt.com");
+        expect(source.pathname).toMatch(/^\/assets\/solana\/[1-9A-HJ-NP-Za-km-z]+$/);
+      }
       expect(PHOTO_HOSTS.has(new URL(record.imageUrl).hostname)).toBe(true);
       for (const value of [record.imageUrl, record.fullImageUrl, record.backImageUrl].filter((url): url is string => Boolean(url))) {
         const url = new URL(value);

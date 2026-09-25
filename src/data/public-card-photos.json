@@ -1,8 +1,8 @@
 {
-  "source": "Collector Crypt public catalogue",
+  "source": "Collector Crypt public catalogue + CardPricer public API",
   "sourceUrl": "https://docs.collectorcrypt.com/marketplace/api",
   "imageDocs": "https://docs.collectorcrypt.com/metadata",
-  "fetchedAt": "2026-09-24T11:04:07.958Z",
+  "fetchedAt": "2026-09-25T02:29:59.229Z",
   "candidateCount": 2485,
   "records": [
     {
@@ -4288,7 +4288,64 @@
       "height": 1136,
       "sourceUrl": "https://collectorcrypt.com/assets/solana/HmVzxggxREeLU6ord7xtnkyy5ZKSL8qsKepZdufmHUWi",
       "checkedAt": "2026-09-24T10:47:11.921Z"
+    },
+    {
+      "id": "cardpricer-a11aea1d-9482-4095-8725-cd69a977f342",
+      "sourceId": "a11aea1d-9482-4095-8725-cd69a977f342",
+      "personId": "201143",
+      "playerName": "Al Horford",
+      "title": "2006 Al Horford Finest",
+      "year": 2006,
+      "set": "Finest",
+      "cardNumber": "103",
+      "parallel": null,
+      "grade": "PSA 10",
+      "gradingCompany": null,
+      "autographed": false,
+      "imageUrl": "https://static.courtyard.io/graded-cards-renders/PSA%2093677046/nft_image.jpg",
+      "fullImageUrl": "https://static.courtyard.io/graded-cards-renders/PSA%2093677046/nft_image.jpg",
+      "backImageUrl": null,
+      "width": 1200,
+      "height": 1200,
+      "sourceUrl": "https://cardpricer.co/cards/a11aea1d-9482-4095-8725-cd69a977f342",
+      "sourceName": "CardPricer",
+      "sourceDocs": "https://cardpricer.co/docs/api",
+      "checkedAt": "2026-09-25T02:29:57.927Z",
+      "sourcePrice": 71.99
     }
   ],
-  "failures": []
+  "failures": [],
+  "sourceDocs": [
+    "https://docs.collectorcrypt.com/marketplace/api",
+    "https://cardpricer.co/docs/api"
+  ],
+  "cardPricerCandidateCount": 1069,
+  "cardPricerRecordsAdded": 1,
+  "cardPricerFailures": [
+    {
+      "sourceId": "74164c27-9cfc-4d55-9145-5c1079c9ce38",
+      "playerName": "Ayo Dosunmu",
+      "error": "image response was not a decodable card image"
+    },
+    {
+      "sourceId": "ecdda888-0465-46f8-acb3-2453ac58c6e1",
+      "playerName": "Bryce McGowens",
+      "error": "image response was not a decodable card image"
+    },
+    {
+      "sourceId": "5eef25ec-56dd-470c-aa50-201dc80cd427",
+      "playerName": "James Wiseman",
+      "error": "image response was not a decodable card image"
+    },
+    {
+      "sourceId": "480d5557-6637-4b5f-bcab-9949c21dd96e",
+      "playerName": "Obi Toppin",
+      "error": "image response was not a decodable card image"
+    },
+    {
+      "sourceId": "98abf7aa-a7d8-44d3-b23b-c3442d06eee5",
+      "playerName": "Daniel Gafford",
+      "error": "image response was not a decodable card image"
+    }
+  ]
 }

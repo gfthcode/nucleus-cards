@@ -8,7 +8,7 @@ test("market defaults to sourced card photographs and keeps demo browsing explic
   await expect(products.first()).toBeVisible();
   expect(await products.count()).toBeLessThanOrEqual(36);
   await expect(page.locator('[data-evidence="demo"]')).toHaveCount(0);
-  await expect(products.first()).toContainText(/实物卡图 · 非成交记录|Card photo · not a sale record/);
+  await expect(products.first()).toContainText(/实时价格和价格波动|Live price & price movement/);
   await expect(products.first().locator('footer a[target="_blank"]')).toHaveAttribute("href", /^https:\/\//);
   await expect(page.locator("a a")).toHaveCount(0);
   await scope.getByRole("button", { name: /演示样本|Demo samples/ }).click();

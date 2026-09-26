@@ -135,7 +135,7 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
   }
   const evidenceLabel = (row: MarketRow) => row.demo
     ? t("market.demoNotSale")
-    : locale === "en" ? "Card photo · not a sale record" : "实物卡图 · 非成交记录";
+    : locale === "en" ? "Live price & price movement" : "实时价格和价格波动";
   const scopes: { value: CatalogScope; label: string }[] = [
     { value: "photos", label: locale === "en" ? "Real card photos" : "实物卡图" },
     { value: "demo", label: locale === "en" ? "Demo samples" : "演示样本" },

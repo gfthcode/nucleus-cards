@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, BarChart3, Camera, Check, Search, ShieldCheck, Sparkles, WalletCards } from "lucide-react";
-import { AppPreviewWindow } from "@/components/marketing/app-preview-window";
+import { CinematicHero } from "@/components/marketing/cinematic-hero";
 import { FeatureRail, Reveal } from "@/components/marketing/homepage-motion";
 import { CardVisual } from "@/components/card-visual";
 import styles from "@/components/marketing/marketing.module.css";
@@ -24,7 +24,7 @@ export default function Home() {
         <div className={styles.heroActions}><Link href="/market">{t("homepage.exploreMarket")} <ArrowRight size={16} /></Link><Link href="/collections/demo">{t("homepage.publicCollection")} <WalletCards size={15} /></Link></div>
         <div className={styles.heroMeta}><span>{t("homepage.free")}</span><span>·</span><span>{t("homepage.demoLabel")}</span><span>·</span><span>{locale === "en" ? "NBA / USD" : "NBA / 人民币"}</span></div>
       </div>
-      <AppPreviewWindow rows={featuredCards} />
+      <CinematicHero cards={featuredCards} locale={locale} />
     </section>
 
     <FeatureRail />

@@ -51,7 +51,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
 function MarketingChrome({ children }: { children: React.ReactNode }) {
   const { activeId, scrollToSection } = useHomepageScrollSpy();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const brandName = locale === "zh-CN" ? "NBA 球星卡" : "NBA SPORTS CARDS";
+  const brandTagline = locale === "zh-CN" ? "球星卡情报" : "CARD INTELLIGENCE";
   const activeSection = HOMEPAGE_SECTIONS.find((section) => section.id === activeId) ?? HOMEPAGE_SECTIONS[0];
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(`.${marketingStyles.marketingHeader}`);
@@ -63,7 +65,7 @@ function MarketingChrome({ children }: { children: React.ReactNode }) {
   return <div className={marketingStyles.marketingShell}>
     <a className={marketingStyles.marketingSkip} href="#main-content">{t("shell.skipToContent")}</a>
     <header className={marketingStyles.marketingHeader}>
-      <Link className={marketingStyles.marketingBrand} href="#home" aria-current={activeId === "home" ? "page" : undefined} onClick={(event) => scrollToSection(event, "home")} aria-label={`Nucleus Cards ${t("navigation.home")}`}><Image src="/icon.svg" alt="" width={38} height={38} priority /><span><b>Nucleus Cards</b><small>SPORTS CARD INTELLIGENCE</small></span></Link>
+      <Link className={marketingStyles.marketingBrand} href="#home" aria-current={activeId === "home" ? "page" : undefined} onClick={(event) => scrollToSection(event, "home")} aria-label={`${brandName} ${t("navigation.home")}`}><Image src="/icon.svg" alt="" width={38} height={38} priority /><span><b>{brandName}</b><small>{brandTagline}</small></span></Link>
       <nav className={marketingStyles.marketingNav} aria-label={t("shell.mainNavigation")}>
         {HOMEPAGE_SECTIONS.slice(1).map((section) => <a href={`#${section.id}`} key={section.id} aria-current={activeId === section.id ? "page" : undefined} className={activeId === section.id ? marketingStyles.marketingNavActive : undefined} onClick={(event) => scrollToSection(event, section.id)}>{t(section.shortLabelKey)}</a>)}
       </nav>
@@ -76,6 +78,6 @@ function MarketingChrome({ children }: { children: React.ReactNode }) {
     </header>
     <div id="main-content" className={marketingStyles.marketingContent}>{children}</div>
     <nav className={marketingStyles.marketingMobileNav} aria-label={t("shell.mobileNavigation")}><Link href="/">{t("navigation.home")}</Link><Link href="/market">{t("navigation.market")}</Link><Link href="/collections/demo">{t("navigation.collection")}</Link><Link href="/analysis">AI</Link></nav>
-    <footer className={marketingStyles.marketingFooter}><div><b>Nucleus Cards</b><span>{t("shell.footerSummary")}</span></div><nav aria-label={t("shell.mainNavigation")}><a href="#features">{t("homepage.section.featuresShort")}</a><a href="#market">{t("homepage.section.marketShort")}</a><Link href="/methodology">{t("common.dataMethodology")}</Link><Link href="/settings">{t("shell.privacy")}</Link></nav><small>{t("shell.snapshot")}</small></footer>
+    <footer className={marketingStyles.marketingFooter}><div><b>{brandName}</b><span>{t("shell.footerSummary")}</span></div><nav aria-label={t("shell.mainNavigation")}><a href="#features">{t("homepage.section.featuresShort")}</a><a href="#market">{t("homepage.section.marketShort")}</a><Link href="/methodology">{t("common.dataMethodology")}</Link><Link href="/settings">{t("shell.privacy")}</Link></nav><small>{t("shell.snapshot")}</small></footer>
   </div>;
 }

@@ -10,7 +10,7 @@ export function GET() {
     roster: { source: roster.sourceUrl, checkedAt: roster.fetchedAt, players: officialRosterRecords.length, teams: new Set(officialRosterRecords.map((r) => r.teamAbbreviation).filter(Boolean)).size, note: "NBA public directory entries, not a standard-contract count" },
     photos: publicPhotoCards.length, playersWithPhotos: found.size,
     source: photoCatalogSnapshot.sourceUrl,
-    sourceDocs: photoCatalogSnapshot.sourceDocs ?? [
+    sourceDocs: [
       "https://docs.collectorcrypt.com/marketplace/api",
       "https://cardpricer.co/docs/api",
       "https://www.phygitals.com/docs/public-api",

@@ -6,9 +6,11 @@ test("market defaults to sourced card photographs and keeps demo browsing explic
   await expect(scope.getByRole("button", { name: /实物卡图|Real card photos/ })).toHaveAttribute("aria-pressed", "true");
   const products = page.getByTestId("market-gallery").locator("article");
   await expect(products.first()).toBeVisible();
-  expect(await products.count()).toBeLessThanOrEqual(36);
+  const resultCount = Number(await page.getByTestId("market-result-count").innerText());
+  await expect(products).toHaveCount(resultCount);
+  expect(resultCount).toBeGreaterThan(48);
   await expect(page.locator('[data-evidence="demo"]')).toHaveCount(0);
-  await expect(products.first()).toContainText(/实时价格和价格波动|Live price & price movement/);
+  await expect(products.first()).toContainText(/实时价格和价格波动|Live price & price movement|卡片资料与图片来源|Card details & photo source/);
   await expect(products.first().locator('footer a[target="_blank"]')).toHaveAttribute("href", /^https:\/\//);
   await expect(page.locator("a a")).toHaveCount(0);
   await scope.getByRole("button", { name: /演示样本|Demo samples/ }).click();
@@ -17,19 +19,18 @@ test("market defaults to sourced card photographs and keeps demo browsing explic
   await expect(page.getByTestId("market-result-count")).toHaveText("21");
 });
 
-test("pagination is bounded and a search starts on page one", async ({ page }) => {
+test("market shows every filtered card in one continuous scroll without page navigation", async ({ page }) => {
   await page.goto("/market");
   await page.getByRole("group", { name: /卡片目录范围|Catalog scope/ }).getByRole("button", { name: /全部记录|All records/ }).click();
   const count = Number(await page.getByTestId("market-result-count").innerText());
-  const pager = page.getByRole("navigation", { name: /卡片分页|Card pages/ });
-  if (count > 36) {
-    await pager.getByRole("button", { name: /下一页|Next/ }).click();
-    await expect(page.getByTestId("market-page-number")).toContainText(/(?:第|Page) 2/);
-  }
+  expect(count).toBeGreaterThan(48);
+  await expect(page.getByTestId("market-gallery").locator("article")).toHaveCount(count);
+  await expect(page.getByRole("navigation", { name: /卡片分页|Card pages/ })).toHaveCount(0);
   const name = await page.getByTestId("market-gallery").locator("article > a").first().getAttribute("data-analytics-label");
   await page.locator('input[data-analytics-event="search_used"]').fill(name!);
-  await expect(page.getByTestId("market-page-number")).toContainText(/(?:第|Page) 1/);
-  expect(await page.getByTestId("market-gallery").locator("article").count()).toBeLessThanOrEqual(36);
+  const searchCount = Number(await page.getByTestId("market-result-count").innerText());
+  await expect(page.getByTestId("market-gallery").locator("article")).toHaveCount(searchCount);
+  await expect(page.getByRole("navigation", { name: /卡片分页|Card pages/ })).toHaveCount(0);
 });
 
 test("unknown photographed-card prices are not treated as under-one-thousand sales", async ({ page }) => {

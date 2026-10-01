@@ -10,7 +10,12 @@ export function GET() {
     roster: { source: roster.sourceUrl, checkedAt: roster.fetchedAt, players: officialRosterRecords.length, teams: new Set(officialRosterRecords.map((r) => r.teamAbbreviation).filter(Boolean)).size, note: "NBA public directory entries, not a standard-contract count" },
     photos: publicPhotoCards.length, playersWithPhotos: found.size,
     source: photoCatalogSnapshot.sourceUrl,
-    sourceDocs: photoCatalogSnapshot.sourceDocs ?? ["https://docs.collectorcrypt.com/marketplace/api"],
+    sourceDocs: photoCatalogSnapshot.sourceDocs ?? [
+      "https://docs.collectorcrypt.com/marketplace/api",
+      "https://cardpricer.co/docs/api",
+      "https://www.phygitals.com/docs/public-api",
+      "https://www.hobbyscan.com/cards",
+    ],
     noInventedCardNumbers: true, generatedImagesCountedAsPhotos: 0,
     missingPlayers: officialRosterRecords.filter((p) => !found.has(`nba-${p.personId}`)).map((p) => ({ personId: p.personId, name: p.name, team: p.teamAbbreviation })),
   }, { headers: { "Cache-Control": "public, s-maxage=300" } });

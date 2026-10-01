@@ -79,13 +79,13 @@ export function CardVisual({
           </span>
           <div className={styles.valueRow}>
             <b><DisplayedAmount cny={referenceAmount} /></b>
-            <small className={change == null ? "" : change >= 0 ? styles.up : styles.down}>
-              {isReferenceListing
-                ? locale === "en" ? "Reference listing · not a sale" : "参考挂牌 · 非成交"
-                : change == null
-                  ? t("market.insufficientData")
-                  : `${change > 0 ? "+" : ""}${change}% / 30D`}
-            </small>
+            {(isReferenceListing || change != null) && (
+              <small className={change == null ? "" : change >= 0 ? styles.up : styles.down}>
+                {isReferenceListing
+                  ? locale === "en" ? "Reference listing · not a sale" : "参考挂牌 · 非成交"
+                  : `${change! > 0 ? "+" : ""}${change}% / 30D`}
+              </small>
+            )}
           </div>
         </div>
       )}

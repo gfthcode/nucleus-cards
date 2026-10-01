@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("homepage capability hierarchy adapts to mobile", async ({ page }) => {
+test("homepage capability grid keeps three desktop columns and one mobile column", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/");
 
@@ -15,8 +15,8 @@ test("homepage capability hierarchy adapts to mobile", async ({ page }) => {
   });
 
   expect(await grid.locator(":scope > a").count()).toBe(3);
-  expect(desktopLayout.columns).toBe(2);
-  expect(desktopLayout.firstCardRowEnd).toBe("span 2");
+  expect(desktopLayout.columns).toBe(3);
+  expect(desktopLayout.firstCardRowEnd).toBe("auto");
 
   await page.setViewportSize({ width: 390, height: 844 });
 

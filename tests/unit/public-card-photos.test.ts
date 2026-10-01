@@ -14,7 +14,7 @@ import {
 import { getFeaturedCards } from "@/lib/featured-cards";
 import { buildPublicPhotoCards, photoCatalogSnapshot } from "@/lib/public-card-catalog";
 
-const PHOTO_HOSTS = new Set(["d1xpxki1g4htqu.cloudfront.net", "collectorcrypt-prod.s3.us-west-2.amazonaws.com", "static.courtyard.io", "arweave.net", "i2c.seadn.io"]);
+const PHOTO_HOSTS = new Set(["d1xpxki1g4htqu.cloudfront.net", "collectorcrypt-prod.s3.us-west-2.amazonaws.com", "static.courtyard.io", "arweave.net", "i2c.seadn.io", "img.phygitals.com", "hobbyscan-images-prod.s3.us-east-2.amazonaws.com"]);
 const ARCHIVE_HOSTS = new Set([...PHOTO_HOSTS]);
 const SOURCE_NAME_ALIASES: Record<string, string> = { "Alex Sarr": "Alexandre Sarr" };
 
@@ -60,6 +60,14 @@ describe("public card photograph catalogue", () => {
       if (record.sourceName === "CardPricer") {
         expect(source.hostname).toBe("cardpricer.co");
         expect(source.pathname).toMatch(/^\/cards\/[0-9a-f-]+$/);
+      } else if (record.sourceName === "Phygitals") {
+        expect(source.hostname).toBe("api.phygitals.com");
+        expect(source.pathname).toMatch(/^\/api\/vm\/chase\/[a-z0-9-]+$/);
+        expect(new URL(record.imageUrl).hostname).toBe("img.phygitals.com");
+      } else if (record.sourceName === "HobbyScan") {
+        expect(source.hostname).toBe("www.hobbyscan.com");
+        expect(source.pathname).toMatch(/^\/card\/\d+$/);
+        expect(new URL(record.imageUrl).hostname).toBe("hobbyscan-images-prod.s3.us-east-2.amazonaws.com");
       } else {
         expect(source.hostname).toBe("collectorcrypt.com");
         expect(source.pathname).toMatch(/^\/assets\/solana\/[1-9A-HJ-NP-Za-km-z]+$/);

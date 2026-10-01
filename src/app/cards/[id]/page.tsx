@@ -4,8 +4,8 @@ import { CardDetailHero } from "@/components/card-detail-hero";
 import { PriceChart } from "@/components/price-chart";
 import { productConfig } from "@/config/product";
 import { DeterministicDemoAI } from "@/lib/ai-analysis";
+import { getCourtMatchPlayerContext } from "@/lib/courtmatch-context";
 import { calculateMarketReference } from "@/lib/market-math";
-import { getPlayerCohortLabel } from "@/lib/player-cohorts";
 import Link from "next/link";
 import { CardVisual } from "@/components/card-visual";
 import { CardActions } from "@/components/card-actions";
@@ -68,7 +68,13 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
     : undefined;
   const cardSales = getCardSales(card.id);
   const marketReference = calculateMarketReference(cardSales);
-  const ai = await new DeterministicDemoAI().analyze(card, player, "7-30d");
+  const ai = await new DeterministicDemoAI().analyze(
+    card,
+    player,
+    "7-30d",
+    null,
+    getCourtMatchPlayerContext(player.name),
+  );
   const trustedSales = cardSales.filter(
     (sale) => sale.verified && !sale.isOutlier && !sale.isBundle,
   );
@@ -213,8 +219,8 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
       <section className="ai-analysis-panel" id="analysis">
         <header>
           <div>
-            <span>DETERMINISTIC AI · {ai.modelVersion}</span>
-            <h2>AI 辅助趋势分析</h2>
+            <span>规则辅助研究 · {ai.modelVersion}</span>
+            <h2>证据与趋势观察</h2>
           </div>
           <div>
             <small>模型置信度</small>
@@ -229,22 +235,63 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
         </header>
         <div className="ai-prob-grid">
           <div>
-            <span>球员代际</span>
-            <b>{getPlayerCohortLabel(player)}</b>
+            <span>{ai.observedPeriodLabel}价格变化记录</span>
+            <b className={ai.trendDirection === "up" ? "up" : ai.trendDirection === "down" ? "down" : ""}>
+              {ai.observedPriceChangePct === null
+                ? "暂无记录"
+                : `${ai.observedPriceChangePct > 0 ? "+" : ""}${ai.observedPriceChangePct}%`}
+            </b>
           </div>
           <div>
-            <span>上行观察区间</span>
-            <b className="up">{ai.upwardProbabilityRange.join("–")}%</b>
+            <span>近 30 日成交样本</span>
+            <b>{ai.marketEvidence.sales30d} 笔</b>
           </div>
           <div>
-            <span>中性观察区间</span>
-            <b>{ai.neutralProbabilityRange.join("–")}%</b>
+            <span>当前挂牌记录</span>
+            <b>{ai.marketEvidence.listings} 条</b>
           </div>
           <div>
-            <span>下行观察区间</span>
-            <b className="down">{ai.downwardProbabilityRange.join("–")}%</b>
+            <span>流动性评分</span>
+            <b>{ai.marketEvidence.liquidity}/100</b>
           </div>
         </div>
+        <p className="ai-analysis-data-note">
+          {ai.marketEvidence.isDemo
+            ? "演示行情：价格变化、成交和挂牌数字仅用于展示，不代表真实市场数据。"
+            : "站内行情记录不等同于独立核验的成交凭证。"}
+          {ai.marketEvidence.hasObservedPriceChange
+            ? ` 当前观察方向：${ai.trendDirection === "up" ? "价格记录上行" : ai.trendDirection === "down" ? "价格记录回落" : "价格记录平稳"}。`
+            : " 当前周期缺少价格变化记录。"}
+        </p>
+        {ai.courtMatchContext && (
+          <section className="ai-courtmatch-context" aria-labelledby="courtmatch-context-title">
+            <div className="ai-courtmatch-heading">
+              <div>
+                <span>CourtMatch Analytics · {ai.courtMatchContext.season}</span>
+                <h3 id="courtmatch-context-title">球员对位表现背景</h3>
+              </div>
+              <a href={ai.courtMatchContext.sourceUrl} target="_blank" rel="noopener noreferrer">查看引流站数据 ↗</a>
+            </div>
+            <div className="ai-courtmatch-metrics">
+              <div>
+                <span>进攻 · 得分 / 100 次对位回合</span>
+                <b>{ai.courtMatchContext.offensePointsPer100MatchupPossessions?.toFixed(1) ?? "暂无"}</b>
+                <small>{ai.courtMatchContext.offenseMatchupPossessions.toLocaleString()} 次对位回合 · {ai.courtMatchContext.offenseOpponentCount} 名对手</small>
+              </div>
+              <div>
+                <span>防守 · 对手得分 / 100 次对位回合</span>
+                <b>{ai.courtMatchContext.defensePointsAllowedPer100MatchupPossessions?.toFixed(1) ?? "暂无"}</b>
+                <small>{ai.courtMatchContext.defenseMatchupPossessions.toLocaleString()} 次对位回合 · {ai.courtMatchContext.defenseOpponentCount} 名对手</small>
+              </div>
+              <div>
+                <span>球队 · 数据更新时间</span>
+                <b>{ai.courtMatchContext.teamAbbreviation}</b>
+                <small>{ai.courtMatchContext.lastUpdated.slice(0, 10)} · {ai.courtMatchContext.status === "stale" ? "来源已标记为过期" : "来源状态 " + ai.courtMatchContext.status}</small>
+              </div>
+            </div>
+            <p>{ai.courtMatchContext.metricNote} 覆盖说明：{ai.courtMatchContext.coverage}</p>
+          </section>
+        )}
         <div className="ai-peer-comparison">
           <span>同届 / 同代际对比</span>
           <p>{ai.peerComparison}</p>

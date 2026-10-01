@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Grid2X2, List, Search, SlidersHorizontal, Star, Database, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { Grid2X2, List, Search, SlidersHorizontal, Star, Database, ExternalLink } from "lucide-react";
 import { CardVisual } from "@/components/card-visual";
 import { MetricHelp } from "@/components/data-provenance";
 import type { Card, Player, Team } from "@/types/domain";
@@ -23,7 +23,6 @@ type Filters = {
 type SavedView = Omit<Filters, "scope"> & { id: string; name: string; scope?: CatalogScope };
 const years = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
 const savedViewsKey = "nucleus-market-saved-views";
-const PAGE_SIZE = 36;
 const defaultFilters: Filters = {
   query: "", brand: "all", draftYear: "all", price: "all", cohort: "all",
   risk: "all", onlySales: false, highLiquidity: false, scope: "photos",
@@ -46,7 +45,6 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<Filters>({ ...defaultFilters, query: searchParams.get("q") ?? "" });
   const { query, brand, draftYear, price, cohort, risk, onlySales, highLiquidity, scope } = filters;
-  const [page, setPage] = useState(1);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [view, setView] = useState<View>("gallery");
   const [watched, setWatched] = useState<Set<string>>(new Set());
@@ -66,7 +64,6 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
 
   function updateFilter<K extends keyof Filters>(key: K, value: Filters[K]) {
     setFilters((current) => ({ ...current, [key]: value }));
-    setPage(1);
   }
 
   function persistViews(next: SavedView[]) {
@@ -89,7 +86,6 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
       onlySales: saved.onlySales, highLiquidity: saved.highLiquidity,
       scope: saved.scope ?? "photos",
     });
-    setPage(1);
   }
 
   const photoRows = useMemo(() => rows.filter(hasAuthenticPhoto), [rows]);
@@ -121,20 +117,16 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
     if (amountA !== undefined || amountB !== undefined) return (amountB ?? -1) - (amountA ?? -1);
     return a.player.name.localeCompare(b.player.name) || a.id.localeCompare(b.id);
   }), [rows, query, brand, draftYear, price, risk, cohort, onlySales, highLiquidity, scope, locale]);
-  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const currentPage = Math.min(page, pageCount);
-  const visibleRows = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  const visibleRows = filtered;
   const filteredPhotoCount = filtered.filter(hasAuthenticPhoto).length;
   const filteredPlayerCount = new Set(filtered.map((row) => row.player.name)).size;
 
-  function reset() { setFilters(defaultFilters); setPage(1); }
+  function reset() { setFilters(defaultFilters); }
   function toggleWatch(id: string) { setWatched((current) => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; }); }
-  function changePage(next: number) {
-    setPage(next);
-    document.getElementById("recent-sales")?.scrollIntoView({ behavior: "instant", block: "start" });
-  }
   const evidenceLabel = (row: MarketRow) => row.demo
     ? t("market.demoNotSale")
+    : ["HobbyScan", "Phygitals"].includes(row.photoEvidence?.sourceName ?? "")
+      ? locale === "en" ? "Card details & photo source" : "卡片资料与图片来源"
     : locale === "en" ? "Live price & price movement" : "实时价格和价格波动";
   const scopes: { value: CatalogScope; label: string }[] = [
     { value: "photos", label: locale === "en" ? "Real card photos" : "实物卡图" },
@@ -186,11 +178,6 @@ export function MarketExplorer({ rows }: { rows: MarketRow[] }) {
       <td><Link aria-label={`${displayPlayerName(row.player, locale)} ${row.releaseYear} ${row.productLine}`} href={`/cards/${row.id}`}><b>{displayPlayerName(row.player, locale)}</b><small>{row.releaseYear} {row.brand} · {row.parallel} · #{row.cardNumber.replace(/^#+/, "")}</small></Link>{row.photoEvidence && <a className={styles.sourceLink} href={row.photoEvidence.sourceUrl} target="_blank" rel="noreferrer">{row.photoEvidence.sourceName} ↗</a>}</td>
       <td><b><DisplayedAmount cny={row.latestSaleCny} /></b><small>{evidenceLabel(row)}</small></td><td className={row.change30d == null ? undefined : row.change30d >= 0 ? styles.up : styles.down}>{row.change30d == null ? "—" : `${row.change30d > 0 ? "+" : ""}${row.change30d}%`}</td><td>{row.sales30d} {t("market.salesCount")}</td><td>{row.demo || row.sales30d > 0 ? `${row.liquidity}/100` : "—"}</td><td><button className={watched.has(row.id) ? styles.watching : ""} onClick={() => toggleWatch(row.id)} aria-label={watched.has(row.id) ? t("market.removeWatch") : t("market.addWatch")}><Star size={14} fill={watched.has(row.id) ? "currentColor" : "none"} /></button></td>
     </tr>)}</tbody></table></div>}
-    {filtered.length > 0 && <nav className={styles.pagination} aria-label={locale === "en" ? "Card pages" : "卡片分页"}>
-      <button type="button" disabled={currentPage <= 1} onClick={() => changePage(currentPage - 1)}><ChevronLeft size={16} aria-hidden />{locale === "en" ? "Previous" : "上一页"}</button>
-      <span data-testid="market-page-number">{locale === "en" ? `Page ${currentPage} / ${pageCount}` : `第 ${currentPage} / ${pageCount} 页`}<small>{locale === "en" ? `${(currentPage - 1) * PAGE_SIZE + 1}–${Math.min(currentPage * PAGE_SIZE, filtered.length)} of ${filtered.length}` : `展示 ${(currentPage - 1) * PAGE_SIZE + 1}–${Math.min(currentPage * PAGE_SIZE, filtered.length)} / ${filtered.length}`}</small></span>
-      <button type="button" disabled={currentPage >= pageCount} onClick={() => changePage(currentPage + 1)}>{locale === "en" ? "Next" : "下一页"}<ChevronRight size={16} aria-hidden /></button>
-    </nav>}
     <p className={styles.methodology}>{t("market.methodology")}<Link href="/methodology#metrics">{t("market.readMethodology")}</Link></p>
   </section>;
 }

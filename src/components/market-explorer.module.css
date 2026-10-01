@@ -23,3 +23,20 @@
 .pagination span{color:#eadfe8;font-family:var(--font-mono);font-size:.78rem;text-align:center}
 .pagination small{color:#a996a7;display:block;font-family:var(--font-sans);font-size:.64rem;margin-top:5px}
 @media(max-width:600px){.catalogControls{padding:14px}.pagination{gap:12px}.pagination button{font-size:.68rem;padding:8px 10px}.resultsBar>div:first-child{align-items:baseline;flex-wrap:wrap;row-gap:2px}.resultsBar>div:first-child small{width:100%}}
+
+/* Keep the global site footer sizing from creating a blank block in each card. */
+.product > footer {
+  border-top: 0;
+  min-height: 0;
+  padding: 6px 9px 8px;
+}
+
+.gallery {
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .gallery {
+    gap: 8px;
+  }
+}

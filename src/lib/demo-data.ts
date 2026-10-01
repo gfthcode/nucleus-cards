@@ -10,6 +10,7 @@ import type {
   PlayerTeamMembership,
 } from "@/types/domain";
 import officialRosterSnapshot from "@/data/nba-official-roster.json";
+import { buildPublicPhotoCards } from "@/lib/public-card-catalog";
 
 type OfficialRosterRecord = (typeof officialRosterSnapshot.records)[number];
 
@@ -886,6 +887,9 @@ export const players: Player[] = [
     demo: true,
   },
 ];
+
+const officialPlayers = officialRosterRecords.map((record) => createOfficialPlayer(record, teamId(record.teamAbbreviation)));
+const playerIndex = new Map([...officialPlayers, ...players].map((player) => [player.id, player]));
 
 const makeIdentity = (card: Omit<Card, "identityKey">) =>
   [
@@ -1885,16 +1889,17 @@ export const brands = [
 ];
 
 export function getPlayer(id: string) {
-  return players.find((item) => item.id === id) ??
-    officialRosterRecords
-      .map((record) => createOfficialPlayer(record, teamId(record.teamAbbreviation)))
-      .find((item) => item.id === id);
+  return playerIndex.get(id);
 }
+export const publicPhotoCards: Card[] = buildPublicPhotoCards(
+  officialPlayers,
+);
+
 export function getCard(id: string) {
-  return cards.find((item) => item.id === id);
+  return cards.find((item) => item.id === id) ?? publicPhotoCards.find((item) => item.id === id);
 }
 export function getTeam(idOrSlug: string) {
-  return teams.find((item) => item.id === idOrSlug || item.slug === idOrSlug);
+  return teams.find((item) => item.id === idOrSlug || item.slug === idOrSlug || item.abbreviation === idOrSlug);
 }
 
 // The UI consumes memberships rather than treating Player.currentTeamId as permanent history.
@@ -1910,7 +1915,8 @@ export function getCurrentTeamPlayers(targetTeamId: string) {
   return players.filter((player) => memberIds.has(player.id));
 }
 export function getPlayerCards(playerId: string) {
-  return cards.filter((item) => item.playerId === playerId);
+  const player = getPlayer(playerId);
+  return [...cards, ...publicPhotoCards].filter((item) => item.playerId === playerId || (player && getPlayer(item.playerId)?.name === player.name));
 }
 export function getCardSales(cardId: string) {
   return sales.filter((item) => item.cardId === cardId);

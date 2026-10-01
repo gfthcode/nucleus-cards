@@ -4,8 +4,12 @@ import { CardDetailHero } from "@/components/card-detail-hero";
 import { PriceChart } from "@/components/price-chart";
 import { productConfig } from "@/config/product";
 import { DeterministicDemoAI } from "@/lib/ai-analysis";
+import { getCourtMatchPlayerContext } from "@/lib/courtmatch-context";
 import { calculateMarketReference } from "@/lib/market-math";
-import { getPlayerCohortLabel } from "@/lib/player-cohorts";
+import Link from "next/link";
+import { CardVisual } from "@/components/card-visual";
+import { CardActions } from "@/components/card-actions";
+import { getLocale } from "@/i18n/server";
 import {
   cards,
   dataSources,
@@ -27,7 +31,7 @@ export async function generateMetadata({
   const player = card ? getPlayer(card.playerId) : undefined;
   if (!card || !player) return { title: "卡片不存在" };
   const title = `${player.name} ${card.releaseYear} ${card.productLine} ${card.cardNumber}`;
-  const description = `${card.parallel} · ${card.condition === "graded" ? `${card.gradingCompany} ${card.grade}` : "裸卡"} · Nucleus Cards 演示行情`;
+  const description = `${card.parallel} · ${card.condition === "graded" ? `${card.gradingCompany} ${card.grade}` : "裸卡"} · ${card.photoEvidence ? "来源实物卡图目录 / Real card photo catalogue" : "Nucleus Cards 演示行情"}`;
   return {
     title,
     description,
@@ -42,6 +46,20 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
   if (!card) notFound();
   const player = getPlayer(card.playerId);
   if (!player) notFound();
+  if (card.photoEvidence) {
+    const en = await getLocale() === "en";
+    return <main className="page-shell inner-page card-detail-page">
+      <nav aria-label={en ? "Breadcrumbs" : "面包屑"}><Link href="/market">{en ? "Card market" : "球星卡目录"}</Link> / <Link href={`/players/${player.id}`}>{player.name}</Link></nav>
+      <section className="data-panel" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: 28, marginTop: 24 }}>
+        <div style={{ maxWidth: 420, width: "100%", margin: "0 auto" }}><CardVisual card={card} player={player} density="image" /></div>
+        <div><span className="section-kicker">{en ? "REAL CARD PHOTOGRAPH" : "真实实物卡图"}</span><h1>{player.name}</h1><h2>{card.releaseYear} {card.productLine} #{card.cardNumber}</h2><p>{card.parallel} · {card.gradingCompany} {card.grade}</p><p>{en ? "Original catalogue title" : "来源原始标题"}：{card.photoEvidence.title}</p><p>{en ? "Catalogue identity is source-reported. A photo is not a verified sale; no insurance appraisal or simulated amount is used as a market price." : "卡片身份由来源目录提供，评级以实物标签与来源详情为准。照片不是成交凭证，保险估值和模拟金额不会作为行情价格。"}</p>
+          <p><a href={card.photoEvidence.sourceUrl} target="_blank" rel="noopener noreferrer">{en ? "View original card and photograph" : "查看原始卡片与图片来源"} ↗ · {card.photoEvidence.sourceName}</a></p><small>{en ? "Checked" : "核对时间"}：{card.photoEvidence.retrievedAt.slice(0, 10)}</small>
+          <div style={{ marginTop: 24 }}><CardActions cardId={card.id} /><Link href={`/analysis?card=${card.id}`}>{en ? "Research this card" : "研究这张卡"}</Link></div>
+        </div>
+      </section>
+      <section className="data-panel" style={{ marginTop: 24 }}><h2>{en ? "Price evidence unavailable" : "暂无已核验成交价格"}</h2><p>{en ? "No invented sale, trend chart or prediction is generated for this photograph. Compare the exact year, number, parallel and grade when new evidence is available." : "不会为这张照片生成虚构成交、走势或预测。补充价格证据时，将核对年份、卡号、平行版本和评级。"}</p></section>
+    </main>;
+  }
   const currentTeam = player.currentTeamId
     ? getTeam(player.currentTeamId)
     : undefined;
@@ -50,7 +68,13 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
     : undefined;
   const cardSales = getCardSales(card.id);
   const marketReference = calculateMarketReference(cardSales);
-  const ai = await new DeterministicDemoAI().analyze(card, player, "7-30d");
+  const ai = await new DeterministicDemoAI().analyze(
+    card,
+    player,
+    "7-30d",
+    null,
+    getCourtMatchPlayerContext(player.name),
+  );
   const trustedSales = cardSales.filter(
     (sale) => sale.verified && !sale.isOutlier && !sale.isBundle,
   );
@@ -195,8 +219,8 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
       <section className="ai-analysis-panel" id="analysis">
         <header>
           <div>
-            <span>DETERMINISTIC AI · {ai.modelVersion}</span>
-            <h2>AI 辅助趋势分析</h2>
+            <span>规则辅助研究 · {ai.modelVersion}</span>
+            <h2>证据与趋势观察</h2>
           </div>
           <div>
             <small>模型置信度</small>
@@ -211,22 +235,63 @@ export default async function CardPage({ params }: PageProps<"/cards/[id]">) {
         </header>
         <div className="ai-prob-grid">
           <div>
-            <span>球员代际</span>
-            <b>{getPlayerCohortLabel(player)}</b>
+            <span>{ai.observedPeriodLabel}价格变化记录</span>
+            <b className={ai.trendDirection === "up" ? "up" : ai.trendDirection === "down" ? "down" : ""}>
+              {ai.observedPriceChangePct === null
+                ? "暂无记录"
+                : `${ai.observedPriceChangePct > 0 ? "+" : ""}${ai.observedPriceChangePct}%`}
+            </b>
           </div>
           <div>
-            <span>上行观察区间</span>
-            <b className="up">{ai.upwardProbabilityRange.join("–")}%</b>
+            <span>近 30 日成交样本</span>
+            <b>{ai.marketEvidence.sales30d} 笔</b>
           </div>
           <div>
-            <span>中性观察区间</span>
-            <b>{ai.neutralProbabilityRange.join("–")}%</b>
+            <span>当前挂牌记录</span>
+            <b>{ai.marketEvidence.listings} 条</b>
           </div>
           <div>
-            <span>下行观察区间</span>
-            <b className="down">{ai.downwardProbabilityRange.join("–")}%</b>
+            <span>流动性评分</span>
+            <b>{ai.marketEvidence.liquidity}/100</b>
           </div>
         </div>
+        <p className="ai-analysis-data-note">
+          {ai.marketEvidence.isDemo
+            ? "演示行情：价格变化、成交和挂牌数字仅用于展示，不代表真实市场数据。"
+            : "站内行情记录不等同于独立核验的成交凭证。"}
+          {ai.marketEvidence.hasObservedPriceChange
+            ? ` 当前观察方向：${ai.trendDirection === "up" ? "价格记录上行" : ai.trendDirection === "down" ? "价格记录回落" : "价格记录平稳"}。`
+            : " 当前周期缺少价格变化记录。"}
+        </p>
+        {ai.courtMatchContext && (
+          <section className="ai-courtmatch-context" aria-labelledby="courtmatch-context-title">
+            <div className="ai-courtmatch-heading">
+              <div>
+                <span>CourtMatch Analytics · {ai.courtMatchContext.season}</span>
+                <h3 id="courtmatch-context-title">球员对位表现背景</h3>
+              </div>
+              <a href={ai.courtMatchContext.sourceUrl} target="_blank" rel="noopener noreferrer">查看引流站数据 ↗</a>
+            </div>
+            <div className="ai-courtmatch-metrics">
+              <div>
+                <span>进攻 · 得分 / 100 次对位回合</span>
+                <b>{ai.courtMatchContext.offensePointsPer100MatchupPossessions?.toFixed(1) ?? "暂无"}</b>
+                <small>{ai.courtMatchContext.offenseMatchupPossessions.toLocaleString()} 次对位回合 · {ai.courtMatchContext.offenseOpponentCount} 名对手</small>
+              </div>
+              <div>
+                <span>防守 · 对手得分 / 100 次对位回合</span>
+                <b>{ai.courtMatchContext.defensePointsAllowedPer100MatchupPossessions?.toFixed(1) ?? "暂无"}</b>
+                <small>{ai.courtMatchContext.defenseMatchupPossessions.toLocaleString()} 次对位回合 · {ai.courtMatchContext.defenseOpponentCount} 名对手</small>
+              </div>
+              <div>
+                <span>球队 · 数据更新时间</span>
+                <b>{ai.courtMatchContext.teamAbbreviation}</b>
+                <small>{ai.courtMatchContext.lastUpdated.slice(0, 10)} · {ai.courtMatchContext.status === "stale" ? "来源已标记为过期" : "来源状态 " + ai.courtMatchContext.status}</small>
+              </div>
+            </div>
+            <p>{ai.courtMatchContext.metricNote} 覆盖说明：{ai.courtMatchContext.coverage}</p>
+          </section>
+        )}
         <div className="ai-peer-comparison">
           <span>同届 / 同代际对比</span>
           <p>{ai.peerComparison}</p>

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { aiAnalysisSchema, DeterministicDemoAI } from "@/lib/ai-analysis";
 import { cards, getPlayer } from "@/lib/demo-data";
+import { getCourtMatchPlayerContext } from "@/lib/courtmatch-context";
 
 describe("deterministic AI", () => {
   it("returns stable Zod-validated evidence-based output", async () => {
@@ -16,20 +17,44 @@ describe("deterministic AI", () => {
     expect(first.peerComparison).toBe(player.peerComparison);
     expect(first.disclaimer).toContain("不构成投资");
   });
-  it("keeps every probability range within 0-100", async () => {
+  it("reports observed values without presenting them as forecast probabilities", async () => {
     const result = await new DeterministicDemoAI().analyze(
       cards[6],
       getPlayer(cards[6].playerId)!,
       "1-3m",
     );
-    for (const range of [
-      result.upwardProbabilityRange,
-      result.neutralProbabilityRange,
-      result.downwardProbabilityRange,
-    ]) {
-      expect(range[0]).toBeGreaterThanOrEqual(0);
-      expect(range[1]).toBeLessThanOrEqual(100);
-      expect(range[0]).toBeLessThanOrEqual(range[1]);
-    }
+    expect(result.observedPriceChangePct).toBe(cards[6].change90d ?? null);
+    expect(result.observedPeriodLabel).toBe("90 日");
+    expect(result.marketEvidence.isDemo).toBe(true);
+    expect(result.confidenceLevel).toBe("low");
+    expect(result).not.toHaveProperty("upwardProbabilityRange");
+    expect(result).not.toHaveProperty("neutralProbabilityRange");
+    expect(result).not.toHaveProperty("downwardProbabilityRange");
+  });
+
+  it("attaches CourtMatch context only for an exact player-name match", async () => {
+    const context = getCourtMatchPlayerContext("Shai Gilgeous-Alexander");
+    expect(context).toMatchObject({
+      name: "Shai Gilgeous-Alexander",
+      season: "2025-26",
+      status: "stale",
+      source: "CourtMatch Analytics",
+    });
+    expect(context?.offensePointsPer100MatchupPossessions).toBeGreaterThan(0);
+    expect(getCourtMatchPlayerContext("Not A Real Player")).toBeUndefined();
+
+    const card = cards.find((candidate) => {
+      return getPlayer(candidate.playerId)?.name === "Shai Gilgeous-Alexander";
+    });
+    if (!card) return;
+    const analysis = await new DeterministicDemoAI().analyze(
+      card,
+      getPlayer(card.playerId)!,
+      "7-30d",
+      null,
+      context,
+    );
+    expect(analysis.courtMatchContext?.playerId).toBe(context?.playerId);
+    expect(analysis.evidence.some((item) => item.source.includes("CourtMatch Analytics"))).toBe(true);
   });
 });

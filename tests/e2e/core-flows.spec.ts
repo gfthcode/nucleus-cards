@@ -8,6 +8,8 @@ test("critical market, rookie, portfolio, and mobile flows", async ({
     await expect(
       page.getByRole("heading", { name: "球星卡行情市场" }),
     ).toBeVisible();
+    // Legacy sample prices and retired legends live in the explicitly labelled demo tab.
+    await page.getByRole("group", { name: "卡片目录范围" }).getByRole("button", { name: "演示样本" }).click();
     await page
       .getByRole("combobox", { name: "球员代际", exact: true })
       .selectOption("retired_legend");
@@ -87,4 +89,3 @@ test("critical market, rookie, portfolio, and mobile flows", async ({
     await expect(page).toHaveURL(/\/market/);
   });
 });
-

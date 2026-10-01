@@ -4,3 +4,39 @@
 .anchorTarget,.salesAnchor{scroll-margin-top:160px}
 .savedViews{background:rgba(23,16,23,.48);border:1px solid var(--nucleus-border);border-radius:var(--nucleus-radius-md);display:grid;gap:10px;padding:12px 14px}.savedViewsHeader{align-items:center;display:flex;justify-content:space-between}.savedViewsHeader span{color:#cfc1cc;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.savedViewsHeader button,.saveViewForm button{background:var(--nucleus-accent-soft);border:1px solid var(--nucleus-border-hover);border-radius:999px;color:#fff;cursor:pointer;font-size:.7rem;padding:7px 11px}.saveViewForm{align-items:center;display:flex;flex-wrap:wrap;gap:8px}.saveViewForm input{background:rgba(17,10,16,.75);border:1px solid var(--nucleus-border);border-radius:9px;color:var(--nucleus-text);font:inherit;font-size:.76rem;min-width:220px;padding:8px 10px}.saveViewForm input:focus{border-color:var(--nucleus-border-hover);box-shadow:0 0 0 3px rgba(243,126,111,.1);outline:0}.saveViewForm button:disabled{cursor:not-allowed;opacity:.45}.saveViewForm small,.noSavedViews{color:#a996a7;font-size:.68rem}.savedViewList{display:flex;flex-wrap:wrap;gap:7px}.savedView{align-items:center;background:rgba(57,30,46,.65);border:1px solid var(--nucleus-border);border-radius:999px;display:inline-flex;overflow:hidden}.savedView button{background:none;border:0;color:#f2e8f0;cursor:pointer;font-size:.7rem;padding:7px 9px}.savedView button+button{border-left:1px solid var(--nucleus-border);color:#c4aebc;padding-inline:8px}.savedView button:hover{background:rgba(255,255,255,.07)}
 @media(max-width:900px){.anchorTarget,.salesAnchor{scroll-margin-top:132px}}
+
+.catalogControls{display:grid;gap:9px;padding:18px 20px;border:1px solid var(--nucleus-border);border-radius:var(--nucleus-radius-md);background:rgba(23,16,23,.65)}
+.scopeSwitch{display:flex;flex-wrap:wrap;gap:8px}
+.scopeSwitch button,.pagination button{background:rgba(23,16,23,.8);border:1px solid var(--nucleus-border);border-radius:999px;color:#cfc1cc;cursor:pointer;padding:9px 15px;font:inherit;font-size:.76rem}
+.scopeSwitch button[aria-pressed="true"]{background:var(--nucleus-accent-soft);border-color:var(--nucleus-border-hover);color:#fff}
+.catalogControls p{color:#f3eaf0;font-size:.83rem;margin:0}
+.catalogControls small{color:#a996a7;font-size:.7rem;line-height:1.6}
+.evidence{display:grid;gap:5px;min-width:0}
+.evidence a,.tableWrap .sourceLink{align-items:center;color:#f08a7e;display:inline-flex;gap:5px;font-size:.66rem;line-height:1.4;text-decoration:none;width:fit-content}
+.evidence a:hover,.tableWrap .sourceLink:hover{text-decoration:underline}
+.tableWrap .sourceLink{margin-top:7px}
+.tableWrap td>small{display:block;line-height:1.5;margin-top:5px}
+.pagination{align-items:center;display:flex;justify-content:center;gap:24px;padding:16px 0}
+.pagination button{align-items:center;display:inline-flex;gap:5px}
+.pagination button:disabled{cursor:not-allowed;opacity:.4}
+.scopeSwitch button:focus-visible,.pagination button:focus-visible,.evidence a:focus-visible{outline:2px solid #f08a7e;outline-offset:3px}
+.pagination span{color:#eadfe8;font-family:var(--font-mono);font-size:.78rem;text-align:center}
+.pagination small{color:#a996a7;display:block;font-family:var(--font-sans);font-size:.64rem;margin-top:5px}
+@media(max-width:600px){.catalogControls{padding:14px}.pagination{gap:12px}.pagination button{font-size:.68rem;padding:8px 10px}.resultsBar>div:first-child{align-items:baseline;flex-wrap:wrap;row-gap:2px}.resultsBar>div:first-child small{width:100%}}
+
+/* Keep the global site footer sizing from creating a blank block in each card. */
+.product > footer {
+  border-top: 0;
+  min-height: 0;
+  padding: 6px 9px 8px;
+}
+
+.gallery {
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .gallery {
+    gap: 8px;
+  }
+}

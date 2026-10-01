@@ -1,4 +1,4 @@
-import { cards, getPlayer } from "@/lib/demo-data";
+import { cards, getPlayer, publicPhotoCards } from "@/lib/demo-data";
 import { getCardImage } from "@/lib/card-images";
 import type { Card, CardImageRecord, Player } from "@/types/domain";
 
@@ -16,6 +16,13 @@ export interface FeaturedCardRecord {
 const FEATURED_CARD_IDS = ["2", "19", "21", "6", "8", "12", "16", "17", "20"] as const;
 
 export function getFeaturedCards(): FeaturedCardRecord[] {
+  const photoHighlights = ["Victor Wembanyama", "Shai Gilgeous-Alexander", "Luka Dončić", "Anthony Edwards", "Stephen Curry", "LeBron James"].flatMap((name) => {
+    const card = publicPhotoCards.find((item) => getPlayer(item.playerId)?.name === name);
+    const player = card ? getPlayer(card.playerId) : undefined;
+    const image = card ? getCardImage(card) : undefined;
+    return card && player && image?.imageVerified ? [{ card, player, image }] : [];
+  });
+  if (photoHighlights.length >= 3) return photoHighlights.slice(0, 3);
   return FEATURED_CARD_IDS.flatMap((cardId) => {
     const card = cards.find((item) => item.id === cardId);
     const player = card ? getPlayer(card.playerId) : undefined;
@@ -27,4 +34,3 @@ export function getFeaturedCards(): FeaturedCardRecord[] {
     return [{ card, player, image }];
   });
 }
-

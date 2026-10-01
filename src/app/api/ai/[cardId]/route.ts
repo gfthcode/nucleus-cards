@@ -2,6 +2,7 @@ import { DeterministicDemoAI } from "@/lib/ai-analysis";
 import { getCard, getPlayer } from "@/lib/demo-data";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { fetchPlayerRecentPerformance } from "@/lib/providers";
+import { getCourtMatchPlayerContext } from "@/lib/courtmatch-context";
 
 export async function GET(
   request: Request,
@@ -23,17 +24,34 @@ export async function GET(
     return Response.json({ error: "卡片不存在" }, { status: 404 });
   const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
   let performance = null;
+  const courtMatchContext = getCourtMatchPlayerContext(player.name);
   if (!demoMode) {
     try {
       performance = await fetchPlayerRecentPerformance(player);
     } catch {
-      return Response.json({ error: "No verified sports data available", source: process.env.SPORTSDATAIO_API_KEY ? "SportsDataIO" : "BallDontLie" }, { status: 503 });
+      // CourtMatch's explicit, dated matchup context remains useful as a
+      // separately attributed fallback; it is never presented as recent form.
     }
-    if (!performance) return Response.json({ error: "No verified sports data available", source: process.env.SPORTSDATAIO_API_KEY ? "SportsDataIO" : "BallDontLie" }, { status: 404 });
   }
-  const analysis = await new DeterministicDemoAI().analyze(card, player, "7-30d", performance);
+  if (!performance && !courtMatchContext && !demoMode)
+    return Response.json(
+      { error: "No player-performance source matched this player" },
+      { status: 503 },
+    );
+  const analysis = await new DeterministicDemoAI().analyze(
+    card,
+    player,
+    "7-30d",
+    performance,
+    courtMatchContext,
+  );
   return Response.json(
-    { data: analysis, mode: demoMode ? "deterministic-demo" : performance?.source ?? "unknown" },
+    {
+      data: analysis,
+      mode: demoMode
+        ? "deterministic-demo"
+        : performance?.source ?? (courtMatchContext ? "CourtMatch Analytics" : "unavailable"),
+    },
     { headers: { "X-RateLimit-Remaining": String(rate.remaining) } },
   );
 }
